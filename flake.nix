@@ -59,12 +59,22 @@
     # NixOS configuration entrypoint
     # Available through 'nixos-rebuild --flake .#your-hostname'
     nixosConfigurations = {
-      # FIXME replace with your hostname
+      #Personal laptop, thinkpad t490
       athame = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs outputs;};
         modules = [
+          # > Our main nixos configuration file <
+          ./nixos/kde-desktop.nix
           ./nixos/configuration.nix
-          ./nixos/default.nix
+        ];
+      };
+      #Work laptop, dell g15. Nvidia gpu
+      metatron = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs outputs;};
+        modules = [
+          # > Our main nixos configuration file <
+          ./nixos/kde-desktop.nix
+          ./nixos/configuration.nix
         ];
       };
     };
