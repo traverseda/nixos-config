@@ -18,7 +18,7 @@
 
     # Shameless plug: looking for a way to nixify your themes and make
     # everything match nicely? Try nix-colors!
-    # nix-colors.url = "github:misterio77/nix-colors";
+    nix-colors.url = "github:misterio77/nix-colors";
   };
 
   outputs = {
@@ -61,16 +61,16 @@
     nixosConfigurations = {
       #Personal laptop, thinkpad t490
       athame = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs outputs; hostname = "athame";};
+        specialArgs = {inherit inputs outputs;};
         modules = [
           # > Our main nixos configuration file <
           ./nixos/kde-desktop.nix
           ./nixos/configuration.nix
         ];
       };
-      #Work laptop, dell g15. Nvidia gpu
+      #Work laptop, dell g15.
       metatron = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs outputs; hostname = "metatron";};
+        specialArgs = {inherit inputs outputs;};
         modules = [
           # > Our main nixos configuration file <
           ./nixos/kde-desktop.nix
