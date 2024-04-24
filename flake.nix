@@ -63,8 +63,8 @@
       athame = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs outputs;};
         modules = [
-          # > Our main nixos configuration file <
           ./nixos/configuration.nix
+          ./nixos/default.nix
         ];
       };
     };
