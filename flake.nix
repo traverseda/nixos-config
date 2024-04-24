@@ -61,7 +61,7 @@
     nixosConfigurations = {
       #Personal laptop, thinkpad t490
       athame = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
+        specialArgs = {inherit inputs outputs; hostname = "athame";};
         modules = [
           # > Our main nixos configuration file <
           ./nixos/kde-desktop.nix
@@ -70,7 +70,7 @@
       };
       #Work laptop, dell g15. Nvidia gpu
       metatron = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
+        specialArgs = {inherit inputs outputs; hostname = "metatron";};
         modules = [
           # > Our main nixos configuration file <
           ./nixos/kde-desktop.nix
