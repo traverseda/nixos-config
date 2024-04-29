@@ -1,6 +1,6 @@
 # This is your system's configuration file.
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
-{ inputs, outputs, lib, config, pkgs, hostname, ... }: {
+{ inputs, outputs, lib, config, pkgs, hostname, specialArgs, ... }: {
   # You can import other NixOS modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/nixos):
@@ -41,6 +41,8 @@
       allowUnfree = true;
     };
   };
+
+  networking.hostName = specialArgs.hostname; # Define your hostname.
 
   # This will add each flake input as a registry
   # To make nix3 commands consistent with your flake

@@ -3,7 +3,7 @@
 
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     # You can access packages and modules from different nixpkgs revs
     # at the same time. Here's an working example:
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -12,9 +12,6 @@
     # Home manager
     home-manager.url = "github:nix-community/home-manager/release-23.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
-    # TODO: Add any other flake you might need
-    # hardware.url = "github:nixos/nixos-hardware";
 
     # Shameless plug: looking for a way to nixify your themes and make
     # everything match nicely? Try nix-colors!
@@ -57,24 +54,27 @@
     homeManagerModules = import ./modules/home-manager;
 
     # NixOS configuration entrypoint
-    # Available through 'nixos-rebuild --flake .#your-hostname'
     nixosConfigurations = {
       #Personal laptop, thinkpad t490
       athame = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
+        specialArgs = {
+          inherit inputs outputs;
+          hostname = "athame";
+        };
         modules = [
-          # > Our main nixos configuration file <
-          ./nixos/kde-desktop.nix
           ./nixos/configuration.nix
+          ./nixos/kde-desktop.nix
         ];
       };
       #Work laptop, dell g15.
       metatron = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
+        specialArgs = {
+          inherit inputs outputs;
+          hostname = "metatron";
+        };
         modules = [
-          # > Our main nixos configuration file <
-          ./nixos/kde-desktop.nix
           ./nixos/configuration.nix
+          ./nixos/kde-desktop.nix
         ];
       };
     };
