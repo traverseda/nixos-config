@@ -67,6 +67,7 @@
           ./nixos/configuration.nix
           ./nixos/kde-desktop.nix
           ./nixos/cad.nix
+          ./nixos/zerotier.nix
         ];
       };
       #Work laptop, dell g15.
