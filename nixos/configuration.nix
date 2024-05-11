@@ -70,6 +70,8 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  services.automatic-timezoned.enable = true;
+
   virtualisation.docker.enable = true;
 
   #Puts fonts in /run/current-system/sw/share/X11/fonts
