@@ -8,6 +8,10 @@
   services.displayManager.sddm.wayland.enable = true;
   services.displayManager.defaultSession = "plasma";
 
+  services.flatpak.enable = true;
+  services.packagekit.enable = true;
+  services.fwupd.enable = true;
+
   boot.plymouth = {
     enable = false;
     themePackages = with pkgs; [ (adi1090x-plymouth-themes.override {selected_themes = [ "rings" ]; }) ];
@@ -22,6 +26,7 @@
   environment.systemPackages = with pkgs; [
     pkgs.krfb
     pkgs.krdc
+    pkgs.discover
     pkgs.libreoffice-qt
     pkgs.filelight
     pkgs.hunspell
