@@ -55,6 +55,9 @@
         history = {};
     };
   };
+
+  networking.firewall.allowedTCPPorts = [ 8123 ];
+
   #Break touchscreen support
   #${pkgs.wlr-randr}/bin/wlr-randr --output eDP-1 --transform 90 # Adjust command as needed
   services.cage = {

@@ -94,7 +94,7 @@
         modules = [
           ./nixos/configuration.nix
           ./nixos/home-assistant.nix
-          #./nixos/zerotier.nix
+          ./nixos/zerotier.nix
         ];
       };
     };
