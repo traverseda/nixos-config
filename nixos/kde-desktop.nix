@@ -8,8 +8,11 @@
   services.displayManager.sddm.wayland.enable = true;
   services.displayManager.defaultSession = "plasma";
 
-  #boot.plymouth.enable = true;
-  #boot.plymouth.theme="breeze";
+  boot.plymouth = {
+    enable = false;
+    themePackages = with pkgs; [ (adi1090x-plymouth-themes.override {selected_themes = [ "rings" ]; }) ];
+    theme = "rings";
+  };
 
   hardware.opengl.enable = true;
 
@@ -51,7 +54,7 @@
           "widget.use-xdg-desktop-portal.file-picker" = 1;
         };
         ExtensionSettings = {
-          "*".installation_mode = "blocked"; # blocks all addons except the ones specified below
+          #"*".installation_mode = "blocked"; # blocks all addons except the ones specified below
           # uBlock Origin:
           "uBlock0@raymondhill.net" = {
             install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
@@ -61,6 +64,12 @@
     };
   };
 
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+
+  #Enable support for my logitech bluetooth peripherals
+  hardware.logitech.wireless.enable = true;
+  hardware.logitech.wireless.enableGraphical = true;
 
   sound.enable = true;
   hardware.pulseaudio.enable = false;
