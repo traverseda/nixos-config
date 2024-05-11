@@ -14,7 +14,7 @@
     # ./users.nix
 
     # Import your generated (nixos-generate-config) hardware configuration
-    ./hardware-configuration.nix
+    ./hardware/${specialArgs.hostname}.nix
   ];
 
   nixpkgs = {
@@ -43,6 +43,7 @@
   };
 
   networking.hostName = specialArgs.hostname; # Define your hostname.
+  networking.networkmanager.enable = true;
 
   # This will add each flake input as a registry
   # To make nix3 commands consistent with your flake

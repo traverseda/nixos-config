@@ -8,8 +8,8 @@
   services.displayManager.sddm.wayland.enable = true;
   services.displayManager.defaultSession = "plasma";
 
-  boot.plymouth.enable = true;
-  boot.plymouth.theme="breeze";
+  #boot.plymouth.enable = true;
+  #boot.plymouth.theme="breeze";
 
   hardware.opengl.enable = true;
 
@@ -27,6 +27,7 @@
     pkgs.openscad
     pkgs.inkscape
     pkgs.blender
+    pkgs.freecad
     pkgs.gimp
     pkgs.krita
   ];
