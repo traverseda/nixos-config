@@ -14,6 +14,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     ros.url = "github:lopsided98/nix-ros-overlay";
+    agenix.url = "github:ryantm/agenix";
 
     # Shameless plug: looking for a way to nixify your themes and make
     # everything match nicely? Try nix-colors!
@@ -24,6 +25,8 @@
     self,
     nixpkgs,
     home-manager,
+    ros,
+    agenix,
     ...
   } @ inputs: let
     inherit (self) outputs;
@@ -81,6 +84,17 @@
           ./nixos/kde-desktop.nix
           ./nixos/cad.nix
           ./nixos/zerotier.nix
+        ];
+      };
+      hearth = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs outputs;
+          hostname = "hearth";
+        };
+        modules = [
+          ./nixos/configuration.nix
+          ./nixos/home-assistant.nix
+          #./nixos/zerotier.nix
         ];
       };
     };

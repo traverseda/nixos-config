@@ -15,5 +15,8 @@ in {
   services.avahi.publish.workstation = true; # ADDED TO DESKTOP MACHINES
 
   services.zerotierone.enable = true;
-  services.zerotierone.joinNetworks = [ "e04fa485ed2a4dc4" ]; # ZT NETWORK ID
+
+  #Don't join zerotier if I'm testing in a VM
+ if !(options.virtualisation ? qemu) then
+    services.zerotierone.joinNetworks = [ "e04fa485ed2a4dc4" ];
 }
