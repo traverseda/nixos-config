@@ -1,5 +1,4 @@
-{ config, pkgs, lib, ... }:
-
+{ inputs, outputs, lib, config, pkgs, hostname, specialArgs, ... }:
 {
 
   services.home-assistant = {
@@ -30,7 +29,7 @@
     configWritable = true;
     config = {
         homeassistant = {
-          name = "${specialArgs.hostname}";
+          name = "${hostname}";
           unit_system = "metric";
           time_zone = "America/Halifax";
           auth_providers = [
