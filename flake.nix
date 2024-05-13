@@ -62,10 +62,6 @@
     nixosConfigurations = {
       #Personal laptop, thinkpad t490
       athame = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs outputs;
-          hostname = "athame";
-        };
         modules = [
           ./nixos/configuration.nix
           ./nixos/kde-desktop.nix
@@ -75,22 +71,15 @@
       };
       #Work laptop, dell g15.
       metatron = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs outputs;
-          hostname = "metatron";
-        };
         modules = [
           ./nixos/configuration.nix
           ./nixos/kde-desktop.nix
           ./nixos/cad.nix
           ./nixos/zerotier.nix
+          ./nixos/work.nix
         ];
       };
       hearth = nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit inputs outputs;
-          hostname = "hearth";
-        };
         modules = [
           ./nixos/configuration.nix
           ./nixos/home-assistant.nix

@@ -14,7 +14,7 @@
     # ./users.nix
 
     # Import your generated (nixos-generate-config) hardware configuration
-    ./hardware/${specialArgs.hostname}.nix
+    ./hardware/${hostname}.nix
   ];
 
   nixpkgs = {
@@ -42,7 +42,7 @@
     };
   };
 
-  networking.hostName = specialArgs.hostname; # Define your hostname.
+  networking.hostName = hostname; # Define your hostname.
   networking.networkmanager.enable = true;
 
   # This will add each flake input as a registry
@@ -101,7 +101,7 @@
       isNormalUser = true;
       openssh.authorizedKeys.keys = [
       ];
-      extraGroups = ["wheel"];
+      extraGroups = [ "wheel" "dialout" "networkmanager" "dialout" "docker" "plugdev" "vboxusers" ];
     };
   };
 
