@@ -13,7 +13,7 @@
   services.fwupd.enable = true;
 
   boot.plymouth = {
-    enable = false;
+    enable = true;
     themePackages = with pkgs; [ (adi1090x-plymouth-themes.override {selected_themes = [ "rings" ]; }) ];
     theme = "rings";
   };

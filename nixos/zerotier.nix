@@ -1,3 +1,5 @@
+{ config, pkgs, lib, options, ... }:
+
 let
   privateZeroTierInterfaces = [ "ztmwri5sbj" ]; # ZT NET INTERFACE 
 in {
@@ -17,6 +19,5 @@ in {
   services.zerotierone.enable = true;
 
   #Don't join zerotier if I'm testing in a VM
-  #if !(options.virtualisation ? qemu) then
-  services.zerotierone.joinNetworks = [ "e04fa485ed2a4dc4" ];
+  services.zerotierone.joinNetworks = lib.optionals (!options.virtualisation ? qemu) [ "e04fa485ed2a4dc4" ];
 }
