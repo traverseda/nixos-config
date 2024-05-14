@@ -35,6 +35,7 @@
     pkgs.inkscape
     pkgs.gimp
     pkgs.krita
+    pkgs.nextcloud-client
   ];
 
   programs.firefox = {

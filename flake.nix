@@ -98,6 +98,19 @@
           ./nixos/zerotier.nix
         ];
       };
+      gwen = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs outputs;
+          hostname = "gwen";
+          mainUser = "gwen";
+        };
+        modules = [
+          ./nixos/configuration.nix
+          ./nixos/kde-desktop.nix
+          ./nixos/family.nix
+          ./nixos/zerotier.nix
+        ];
+      };
     };
 
     # Standalone home-manager configuration entrypoint

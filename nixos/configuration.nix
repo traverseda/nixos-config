@@ -1,6 +1,6 @@
 # This is your system's configuration file.
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
-{ inputs, outputs, lib, config, pkgs, hostname, specialArgs, ... }: {
+{ inputs, outputs, lib, config, pkgs, hostname, specialArgs, options, ... }: {
   # You can import other NixOS modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/nixos):
@@ -44,6 +44,12 @@
 
   networking.hostName = hostname; # Define your hostname.
   networking.networkmanager.enable = true;
+
+  virtualisation.vmVariant = {
+    # following configuration is added only when building VM with build-vm
+    virtualisation.cores = 4;
+    virtualisation.memorySize = 4096;
+  };
 
   # This will add each flake input as a registry
   # To make nix3 commands consistent with your flake
@@ -114,6 +120,7 @@
       PermitRootLogin = "no";
       # Use keys only. Remove if you want to SSH using password (not recommended)
       PasswordAuthentication = true;
+      AllowUsers = [ "traverseda" ];
     };
   };
 
