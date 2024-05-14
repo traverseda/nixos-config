@@ -1,5 +1,5 @@
 let
-  privateZeroTierInterfaces = [ "ztmwri5sbj" ]; # ZT NET INTERFACE 
+  privateZeroTierInterfaces = [ "zt_aura" ]; # ZT NET INTERFACE 
 in {
 
   networking.firewall.trustedInterfaces = privateZeroTierInterfaces; # TRUST VPN ONLY
@@ -13,6 +13,20 @@ in {
   services.avahi.publish.domain = true;
   services.avahi.nssmdns4 = true;
   services.avahi.publish.workstation = true; # ADDED TO DESKTOP MACHINES
+  
+  systemd.services.createDevicemap = {
+    description = "Create ZeroTier devicemap file";
+    before = [ "zerotierone.service" ]; # Ensure ZeroTier service has started
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      mkdir -p /var/lib/zerotier-one
+      echo "e04fa485ed2a4dc4=zt_aura" > /var/lib/zerotier-one/devicemap
+    '';
+  };
 
   services.zerotierone.enable = true;
 
