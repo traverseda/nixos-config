@@ -45,6 +45,12 @@
   networking.hostName = specialArgs.hostname; # Define your hostname.
   networking.networkmanager.enable = true;
 
+  virtualisation.vmVariant = {
+    # following configuration is added only when building VM with build-vm
+    virtualisation.cores = 4;
+    virtualisation.memorySize = 4096;
+  };
+
   # This will add each flake input as a registry
   # To make nix3 commands consistent with your flake
   nix.registry = (lib.mapAttrs (_: flake: {inherit flake;})) ((lib.filterAttrs (_: lib.isType "flake")) inputs);
