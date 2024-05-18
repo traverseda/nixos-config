@@ -15,6 +15,7 @@
 
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware/${hostname}.nix
+    inputs.home-manager.nixosModules.home-manager
   ];
 
   nixpkgs = {
@@ -108,6 +109,13 @@
       openssh.authorizedKeys.keys = [
       ];
       extraGroups = [ "wheel" "dialout" "networkmanager" "dialout" "docker" "plugdev" "vboxusers" ];
+    };
+  };
+
+  home-manager = {
+    extraSpecialArgs = { inherit inputs outputs; };
+    users = {
+      traverseda = import ../home-manager/home.nix;
     };
   };
 

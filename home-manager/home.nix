@@ -47,19 +47,67 @@
     };
   };
 
-  # TODO: Set your username
   home = {
-    username = "your-username";
-    homeDirectory = "/home/your-username";
+    username = "traverseda";
+    homeDirectory = "/home/traverseda";
   };
 
-  # Add stuff for your user as you see fit:
-  # programs.neovim.enable = true;
-  # home.packages = with pkgs; [ steam ];
+  programs.git = {
+    enable = true;
+    userName = "Alex Davies";
+    userEmail = "traverse.da@gmail.com";
+    extraConfig = {
+      core = {
+        editor = "vim"; # Set default editor for Git
+      };
+      color = {
+        ui = "auto"; # Enable colored output in the terminal
+      };
+      push = {
+        default = "simple"; # Default push behavior to 'simple'
+      };
+      pull = {
+        rebase = "false"; # Avoid rebasing by default on pull
+      };
+      credential = {
+        helper = "cache --timeout=3600"; # Cache credentials for 1 hour (3600 seconds)
+      };
+    };
+  };
+
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true; 
+    viAlias = true;
+    vimAlias = true;
+    vimdiffAlias = true;
+    plugins = with pkgs.vimPlugins; [
+      nvim-lspconfig
+      nvim-treesitter.withAllGrammars 
+      vim-bufferline
+      tokyonight-nvim
+      {
+        plugin = which-key-nvim;
+      }
+    ];
+  };
+
+  programs.ssh = {
+    enable = true; # Enable SSH module
+    extraConfig = ''
+      Host *
+        ControlMaster auto
+        ControlPath ~/.ssh/sockets/%r@%h-%p
+        ControlPersist 600
+    '';
+  };
+
+  home.packages = with pkgs; [ 
+    pkgs.ripgrep
+  ];
 
   # Enable home-manager and git
   programs.home-manager.enable = true;
-  programs.git.enable = true;
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
