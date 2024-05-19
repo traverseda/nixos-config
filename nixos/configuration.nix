@@ -46,6 +46,8 @@
   networking.hostName = hostname; # Define your hostname.
   networking.networkmanager.enable = true;
 
+  nix.optimise.automatic = true;
+
   virtualisation.vmVariant = {
     # following configuration is added only when building VM with build-vm
     virtualisation.cores = 4;
@@ -114,6 +116,7 @@
 
   home-manager = {
     extraSpecialArgs = { inherit inputs outputs; };
+    backupFileExtension = ".bak";
     users = {
       traverseda = import ../home-manager/home.nix;
     };

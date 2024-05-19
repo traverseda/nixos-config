@@ -47,6 +47,7 @@
     };
   };
 
+
   home = {
     username = "traverseda";
     homeDirectory = "/home/traverseda";
@@ -102,9 +103,63 @@
     '';
   };
 
-  home.packages = with pkgs; [ 
+  home.packages = with pkgs; [
+    pkgs.htop
+    pkgs.zsh
+    pkgs.xclip
     pkgs.ripgrep
+    pkgs.mosh
+    pkgs.waypipe
+    pkgs.pwgen
+    pkgs.chezmoi
+    pkgs.neovim-remote
+    pkgs.pipx
+    pkgs.rclone
+    pkgs.pyright
+    pkgs.mosh
+    pkgs.jq
+    pkgs.copier
+    pkgs.pv
+    pkgs.poetry
+    pkgs.nmap
+    pkgs.dig
+    pkgs.tree
+    pkgs.curl
+    pkgs.wget
+    pkgs.wl-clipboard
+
+    (pkgs.writeShellScriptBin "nvr-edit" ''
+      nvr --remote-wait $@
+    '')
+    (pkgs.writeShellScriptBin "nvidia-offload" ''
+      export __NV_PRIME_RENDER_OFFLOAD=1
+      export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
+      export __GLX_VENDOR_LIBRARY_NAME=nvidia
+      export __VK_LAYER_NV_optimus=NVIDIA_only
+      exec "$@"
+    '')
   ];
+
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+
+    history.size = 10000;
+    history.path = "${config.xdg.dataHome}/zsh/history";
+    oh-my-zsh = {
+      enable = true;
+      plugins = [ "git" "docker" "docker-compose"];
+      theme = "robbyrussell";
+    };
+    initExtra = ''
+    if [[ -n ''${NVIM+x} ]]; then
+      alias vim="nvr --remote"
+      export EDITOR=nvr-edit
+    fi
+    '';
+  };
 
   # Enable home-manager and git
   programs.home-manager.enable = true;
