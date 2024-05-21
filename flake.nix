@@ -19,6 +19,9 @@
     # Shameless plug: looking for a way to nixify your themes and make
     # everything match nicely? Try nix-colors!
     nix-colors.url = "github:misterio77/nix-colors";
+
+    nixvim.url = "github:nix-community/nixvim";
+
   };
 
   outputs = {
@@ -71,6 +74,7 @@
           ./nixos/kde-desktop.nix
           ./nixos/cad.nix
           ./nixos/zerotier.nix
+          ./nixos/work.nix
         ];
       };
       #Work laptop, dell g15.

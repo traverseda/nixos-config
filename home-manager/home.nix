@@ -128,6 +128,8 @@
     pkgs.wget
     pkgs.wl-clipboard
 
+    (pkgs.nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" "Hack"]; })
+
     (pkgs.writeShellScriptBin "nvr-edit" ''
       nvr --remote-wait $@
     '')

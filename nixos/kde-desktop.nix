@@ -37,6 +37,8 @@
     pkgs.gimp
     pkgs.krita
     pkgs.nextcloud-client
+    pkgs.iw
+    pkgs.vlc
   ];
 
 programs.dconf.enable = true;
