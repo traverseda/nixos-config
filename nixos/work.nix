@@ -8,6 +8,7 @@
     pkgs.qgroundcontrol
     pkgs.distrobox
     pkgs.element-desktop
+    pkgs.logseq
   ];
 }
 
