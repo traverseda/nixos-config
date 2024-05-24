@@ -46,7 +46,6 @@
   networking.hostName = hostname; # Define your hostname.
   networking.networkmanager.enable = true;
 
-  nix.optimise.automatic = true;
 
   virtualisation.vmVariant = {
     # following configuration is added only when building VM with build-vm
@@ -72,9 +71,10 @@
   nix.settings = {
     # Enable flakes and new 'nix' command
     experimental-features = "nix-command flakes";
-    # Deduplicate and optimize nix store
-    auto-optimise-store = true;
   };
+  
+  #Deduplicate nix store on a timer
+  nix.optimise.automatic = true;
 
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
@@ -143,6 +143,17 @@
       AllowUsers = [ "traverseda" ];
     };
   };
+  system.autoUpgrade = {
+    enable = true;
+    flake = inputs.self.outPath;
+    flags = [
+      "--update-input"
+      "nixpkgs"
+    ];
+    dates = "02:00";
+    randomizedDelaySec = "45min";
+  };
+
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.05";
