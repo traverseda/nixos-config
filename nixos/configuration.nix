@@ -147,7 +147,6 @@
     enable = true;
     flake = "git+https://codeberg.org/traverseda/nixos-config#${hostname}";
     flags = [
-      "nixpkgs"
     ];
     dates = "02:00";
     randomizedDelaySec = "45min";
