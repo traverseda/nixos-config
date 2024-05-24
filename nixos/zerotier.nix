@@ -8,7 +8,7 @@ in {
   
   services.avahi = {
     enable = true;
-    allowInterfaces = privateZeroTierInterfaces; # ONLY BROADCAST ON VPN
+    #allowInterfaces = privateZeroTierInterfaces; # ONLY BROADCAST ON VPN
     ipv6 = true;
     publish.enable = true;
     publish.userServices = true;

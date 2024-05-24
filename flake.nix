@@ -78,10 +78,10 @@
         ];
       };
       #Work laptop, dell g15.
-      metatron = nixpkgs.lib.nixosSystem {
+      azrael = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs outputs;
-          hostname = "metatron";
+          hostname = "azrael";
         };
         modules = [
           ./nixos/configuration.nix
