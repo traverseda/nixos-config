@@ -87,6 +87,11 @@
      appimage-run
   ];
 
+  programs.git = {
+    enable = true;
+    lfs.enable = true;
+  };
+
   boot.binfmt.registrations.appimage = {
     wrapInterpreterInShell = false;
     interpreter = "${pkgs.appimage-run}/bin/appimage-run";
