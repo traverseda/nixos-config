@@ -84,6 +84,7 @@
      pkgs.git
      pkgs.usbutils
      pkgs.pciutils
+     pkgs.atool
      appimage-run
   ];
 

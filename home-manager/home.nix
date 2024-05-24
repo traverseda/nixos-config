@@ -127,6 +127,7 @@
     pkgs.curl
     pkgs.wget
     pkgs.wl-clipboard
+    pkgs.atool
 
     (pkgs.nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" "Hack"]; })
 
