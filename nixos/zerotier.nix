@@ -7,7 +7,7 @@ in {
   networking.firewall.trustedInterfaces = privateZeroTierInterfaces; # TRUST VPN ONLY
   
   services.avahi.enable = true;
-  services.avahi.allowInterfaces = privateZeroTierInterfaces; # ONLY BROADCAST ON VPN
+  #services.avahi.allowInterfaces = privateZeroTierInterfaces; # ONLY BROADCAST ON VPN
   services.avahi.ipv6 = true;
   services.avahi.publish.enable = true;
   services.avahi.publish.userServices = true;
