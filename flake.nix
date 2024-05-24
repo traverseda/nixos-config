@@ -10,7 +10,7 @@
     # Also see the 'unstable-packages' overlay at 'overlays/default.nix'.
 
     # Home manager
-    home-manager.url = "github:nix-community/home-manager/release-23.05";
+    home-manager.url = "github:nix-community/home-manager/master";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     ros.url = "github:lopsided98/nix-ros-overlay";
@@ -19,6 +19,9 @@
     # Shameless plug: looking for a way to nixify your themes and make
     # everything match nicely? Try nix-colors!
     nix-colors.url = "github:misterio77/nix-colors";
+
+    nixvim.url = "github:nix-community/nixvim";
+
   };
 
   outputs = {
@@ -71,6 +74,7 @@
           ./nixos/kde-desktop.nix
           ./nixos/cad.nix
           ./nixos/zerotier.nix
+          ./nixos/work.nix
         ];
       };
       #Work laptop, dell g15.
@@ -103,6 +107,19 @@
           inherit inputs outputs;
           hostname = "gwen";
           mainUser = "gwen";
+        };
+        modules = [
+          ./nixos/configuration.nix
+          ./nixos/kde-desktop.nix
+          ./nixos/family.nix
+          ./nixos/zerotier.nix
+        ];
+      };
+      bill = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs outputs;
+          hostname = "bill";
+          mainUser = "bill";
         };
         modules = [
           ./nixos/configuration.nix

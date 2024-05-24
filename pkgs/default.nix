@@ -1,6 +1,9 @@
 # Custom packages, that can be defined similarly to ones from nixpkgs
 # You can build them using 'nix build .#example'
-pkgs: {
+#
+{ pkgs, ... }:
+
+{
   # example = pkgs.callPackage ./example { };
-  custom-creality-print = pkgs.callPackage ./custom-creality-print { };
+  creality-print = pkgs.callPackage ./creality-print { };
 }

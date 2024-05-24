@@ -47,19 +47,124 @@
     };
   };
 
-  # TODO: Set your username
+
   home = {
-    username = "your-username";
-    homeDirectory = "/home/your-username";
+    username = "traverseda";
+    homeDirectory = "/home/traverseda";
   };
 
-  # Add stuff for your user as you see fit:
-  # programs.neovim.enable = true;
-  # home.packages = with pkgs; [ steam ];
+  programs.git = {
+    enable = true;
+    userName = "Alex Davies";
+    userEmail = "traverse.da@gmail.com";
+    extraConfig = {
+      core = {
+        editor = "vim"; # Set default editor for Git
+      };
+      color = {
+        ui = "auto"; # Enable colored output in the terminal
+      };
+      push = {
+        default = "simple"; # Default push behavior to 'simple'
+      };
+      pull = {
+        rebase = "false"; # Avoid rebasing by default on pull
+      };
+      credential = {
+        helper = "cache --timeout=3600"; # Cache credentials for 1 hour (3600 seconds)
+      };
+    };
+  };
+
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true; 
+    viAlias = true;
+    vimAlias = true;
+    vimdiffAlias = true;
+    plugins = with pkgs.vimPlugins; [
+      nvim-lspconfig
+      nvim-treesitter.withAllGrammars 
+      vim-bufferline
+      tokyonight-nvim
+      {
+        plugin = which-key-nvim;
+      }
+    ];
+  };
+
+  programs.ssh = {
+    enable = true; # Enable SSH module
+    extraConfig = ''
+      Host *
+        ControlMaster auto
+        ControlPath ~/.ssh/sockets/%r@%h-%p
+        ControlPersist 600
+    '';
+  };
+
+  home.packages = with pkgs; [
+    pkgs.htop
+    pkgs.zsh
+    pkgs.xclip
+    pkgs.ripgrep
+    pkgs.mosh
+    pkgs.waypipe
+    pkgs.pwgen
+    pkgs.chezmoi
+    pkgs.neovim-remote
+    pkgs.pipx
+    pkgs.rclone
+    pkgs.pyright
+    pkgs.mosh
+    pkgs.jq
+    pkgs.copier
+    pkgs.pv
+    pkgs.poetry
+    pkgs.nmap
+    pkgs.dig
+    pkgs.tree
+    pkgs.curl
+    pkgs.wget
+    pkgs.wl-clipboard
+
+    (pkgs.nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" "Hack"]; })
+
+    (pkgs.writeShellScriptBin "nvr-edit" ''
+      nvr --remote-wait $@
+    '')
+    (pkgs.writeShellScriptBin "nvidia-offload" ''
+      export __NV_PRIME_RENDER_OFFLOAD=1
+      export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
+      export __GLX_VENDOR_LIBRARY_NAME=nvidia
+      export __VK_LAYER_NV_optimus=NVIDIA_only
+      exec "$@"
+    '')
+  ];
+
+  programs.zsh = {
+    enable = true;
+    enableCompletion = true;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
+
+    history.size = 10000;
+    history.path = "${config.xdg.dataHome}/zsh/history";
+    oh-my-zsh = {
+      enable = true;
+      plugins = [ "git" "docker" "docker-compose"];
+      theme = "robbyrussell";
+    };
+    initExtra = ''
+    if [[ -n ''${NVIM+x} ]]; then
+      alias vim="nvr --remote"
+      export EDITOR=nvr-edit
+    fi
+    '';
+  };
 
   # Enable home-manager and git
   programs.home-manager.enable = true;
-  programs.git.enable = true;
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";

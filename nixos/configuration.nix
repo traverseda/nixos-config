@@ -15,6 +15,7 @@
 
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware/${hostname}.nix
+    inputs.home-manager.nixosModules.home-manager
   ];
 
   nixpkgs = {
@@ -45,6 +46,7 @@
   networking.hostName = hostname; # Define your hostname.
   networking.networkmanager.enable = true;
 
+
   virtualisation.vmVariant = {
     # following configuration is added only when building VM with build-vm
     virtualisation.cores = 4;
@@ -69,9 +71,10 @@
   nix.settings = {
     # Enable flakes and new 'nix' command
     experimental-features = "nix-command flakes";
-    # Deduplicate and optimize nix store
-    auto-optimise-store = true;
   };
+  
+  #Deduplicate nix store on a timer
+  nix.optimise.automatic = true;
 
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
@@ -81,8 +84,17 @@
      pkgs.git
      pkgs.usbutils
      pkgs.pciutils
+     appimage-run
   ];
 
+  boot.binfmt.registrations.appimage = {
+    wrapInterpreterInShell = false;
+    interpreter = "${pkgs.appimage-run}/bin/appimage-run";
+    recognitionType = "magic";
+    offset = 0;
+    mask = ''\xff\xff\xff\xff\x00\x00\x00\x00\xff\xff\xff'';
+    magicOrExtension = ''\x7fELF....AI\x02'';
+  };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -111,6 +123,14 @@
     };
   };
 
+  home-manager = {
+    extraSpecialArgs = { inherit inputs outputs; };
+    backupFileExtension = ".bak";
+    users = {
+      traverseda = import ../home-manager/home.nix;
+    };
+  };
+
   # This setups a SSH server. Very important if you're setting up a headless system.
   # Feel free to remove if you don't need it.
   services.openssh = {
@@ -123,6 +143,15 @@
       AllowUsers = [ "traverseda" ];
     };
   };
+  system.autoUpgrade = {
+    enable = true;
+    flake = "git+https://codeberg.org/traverseda/nixos-config#${hostname}";
+    flags = [
+    ];
+    dates = "02:00";
+    randomizedDelaySec = "45min";
+  };
+
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.05";

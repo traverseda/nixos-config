@@ -22,6 +22,7 @@
 
   services.fprintd.enable = true;
   services.printing.enable = true;
+  programs.kdeconnect.enable = true; 
 
   environment.systemPackages = with pkgs; [
     pkgs.krfb
@@ -36,7 +37,11 @@
     pkgs.gimp
     pkgs.krita
     pkgs.nextcloud-client
+    pkgs.iw
+    pkgs.vlc
   ];
+
+programs.dconf.enable = true;
 
   programs.firefox = {
     enable = true;
@@ -55,6 +60,7 @@
         DontCheckDefaultBrowser = true;
         Preferences = {
           "widget.use-xdg-desktop-portal.file-picker" = 1;
+          "widget.use-xdg-desktop-portal.mime-handler" = 1;
         };
         ExtensionSettings = {
           "*".installation_mode = "allowed";

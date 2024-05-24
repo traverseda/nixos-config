@@ -6,15 +6,18 @@ in {
 
   networking.firewall.trustedInterfaces = privateZeroTierInterfaces; # TRUST VPN ONLY
   
-  services.avahi.enable = true;
-  #services.avahi.allowInterfaces = privateZeroTierInterfaces; # ONLY BROADCAST ON VPN
-  services.avahi.ipv6 = true;
-  services.avahi.publish.enable = true;
-  services.avahi.publish.userServices = true;
-  services.avahi.publish.addresses = true;
-  services.avahi.publish.domain = true;
-  services.avahi.nssmdns4 = true;
-  services.avahi.publish.workstation = true; # ADDED TO DESKTOP MACHINES
+  services.avahi = {
+    enable = true;
+    #allowInterfaces = privateZeroTierInterfaces; # ONLY BROADCAST ON VPN
+    ipv6 = true;
+    publish.enable = true;
+    publish.userServices = true;
+    publish.addresses = true;
+    publish.domain = true;
+    nssmdns4 = true;
+    publish.workstation = true; # ADDED TO DESKTOP MACHINES
+    cacheEntriesMax = 512;
+  };
   
   systemd.services.createDevicemap = {
     description = "Create ZeroTier devicemap file";
