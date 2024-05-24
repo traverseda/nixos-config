@@ -7,7 +7,7 @@ Ariel
 Cassiel
 Jophiel
 Zadkiel
-Raziel
+#Raziel
 Raguel
 Chamuel
 Haniel
