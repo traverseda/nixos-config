@@ -115,6 +115,19 @@
           ./nixos/zerotier.nix
         ];
       };
+      bill = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs outputs;
+          hostname = "bill";
+          mainUser = "bill";
+        };
+        modules = [
+          ./nixos/configuration.nix
+          ./nixos/kde-desktop.nix
+          ./nixos/family.nix
+          ./nixos/zerotier.nix
+        ];
+      };
     };
 
     # Standalone home-manager configuration entrypoint

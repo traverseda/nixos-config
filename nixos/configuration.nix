@@ -145,9 +145,8 @@
   };
   system.autoUpgrade = {
     enable = true;
-    flake = inputs.self.outPath;
+    flake = "git+https://codeberg.org/traverseda/nixos-config#${hostname}";
     flags = [
-      "--update-input"
       "nixpkgs"
     ];
     dates = "02:00";
