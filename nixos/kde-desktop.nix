@@ -7,6 +7,9 @@
   services.desktopManager.plasma6.enable = true;
   services.displayManager.sddm.wayland.enable = true;
   services.displayManager.defaultSession = "plasma";
+  services.displayManager = {
+    autoLogin.enable = lib.mkDefault false;
+  };
 
   services.flatpak.enable = true;
   services.packagekit.enable = true;

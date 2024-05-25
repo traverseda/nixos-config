@@ -6,6 +6,7 @@
 
   environment.systemPackages = with pkgs; [
     pkgs.qgroundcontrol
+    pkgs.zig
     pkgs.distrobox
     pkgs.element-desktop
     pkgs.act
