@@ -92,17 +92,18 @@
         ];
       };
       #Thinkpad E15 Gen 3 Laptop (ThinkPad) - Type 20YG - Model 20YG003EUS
-      raziel = nixpkgs.lib.nixosSystem {
+      ariel = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs outputs;
-          hostname = "raziel";
+          hostname = "ariel";
         };
         modules = [
           ./nixos/configuration.nix
           ./nixos/kde-desktop.nix
-          ./nixos/cad.nix
           ./nixos/zerotier.nix
           ./nixos/work.nix
+          ./nixos/cad.nix
+          ./nixos/gaming.nix
         ];
       };
       hearth = nixpkgs.lib.nixosSystem {
