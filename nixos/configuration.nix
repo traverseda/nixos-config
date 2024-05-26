@@ -133,7 +133,7 @@
     extraSpecialArgs = { inherit inputs outputs; };
     backupFileExtension = ".bak";
     users = {
-      traverseda = import ../home-manager/home.nix;
+      traverseda = import ../home-manager/traverseda/home.nix;
     };
   };
 

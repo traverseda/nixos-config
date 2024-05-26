@@ -73,6 +73,12 @@
       credential = {
         helper = "cache --timeout=3600"; # Cache credentials for 1 hour (3600 seconds)
       };
+      oh-my-zsh = {
+        "hide-dirty" = "1";
+      };
+      init = {
+        defaultBranch = "main";
+      };
     };
   };
 
@@ -128,18 +134,12 @@
     pkgs.wget
     pkgs.wl-clipboard
     pkgs.atool
+    pkgs.zig
 
     (pkgs.nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" "Hack"]; })
 
     (pkgs.writeShellScriptBin "nvr-edit" ''
       nvr --remote-wait $@
-    '')
-    (pkgs.writeShellScriptBin "nvidia-offload" ''
-      export __NV_PRIME_RENDER_OFFLOAD=1
-      export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
-      export __GLX_VENDOR_LIBRARY_NAME=nvidia
-      export __VK_LAYER_NV_optimus=NVIDIA_only
-      exec "$@"
     '')
   ];
 
