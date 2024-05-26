@@ -19,7 +19,7 @@
     #   colorScheme = "BreezeDark";
     # };
     shortcuts = {
-      "services.org.kde.konsole.desktop"."NewWindow" = "Meta+Return";
+      "services/org.kde.konsole.desktop"."_launch" = ["Meta+Return" "Ctrl+Alt+T"];
       "kwin"."Window Close" = ["Meta+Shift+C" "Alt+F4"];
       "kwin"."Cube" = "Meta+C";
     };
@@ -59,6 +59,7 @@
     configFile = {
       "kwinrc"."Desktops"."Number"."value" = 10;
       "kwinrc"."Desktops"."Rows"."value" = 2;
+      "kwinrc"."Plugins"."cubeEnabled" = true;
     };
   };
 }

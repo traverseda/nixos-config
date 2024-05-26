@@ -14,6 +14,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixvim.url = "github:nix-community/nixvim";
+
     plasma-manager = {
       url = "github:pjones/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -27,7 +29,6 @@
     # everything match nicely? Try nix-colors!
     nix-colors.url = "github:misterio77/nix-colors";
 
-    nixvim.url = "github:nix-community/nixvim";
 
   };
 
@@ -35,6 +36,7 @@
     self,
     nixpkgs,
     home-manager,
+    nixvim,
     plasma-manager,
     ros,
     agenix,
