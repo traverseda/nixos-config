@@ -82,6 +82,12 @@
     vimAlias = true;
     plugins.bufferline.enable = true;
     plugins.which-key.enable = true;
+
+    plugins.cmp-tabby = {
+      enable = true;
+      host = "localhost:8337";
+    };
+
     globals.mapleader = " ";
     keymaps = [
       {

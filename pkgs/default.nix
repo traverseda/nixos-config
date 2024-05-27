@@ -6,4 +6,5 @@
 {
   # example = pkgs.callPackage ./example { };
   creality-print = pkgs.callPackage ./creality-print { };
+  py-slvs = pkgs.callPackage ./py-slvs { };
 }

@@ -60,6 +60,7 @@
       "kwinrc"."Desktops"."Number"."value" = 10;
       "kwinrc"."Desktops"."Rows"."value" = 2;
       "kwinrc"."Plugins"."cubeEnabled" = true;
+      "kwinrc"."Windows"."FocusPolicy" = "FocusFollowsMouse";
     };
   };
 }
