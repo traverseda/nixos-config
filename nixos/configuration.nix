@@ -92,6 +92,7 @@
      pkgs.pciutils
      pkgs.atool
      pkgs.comma
+     pkgs.home-manager
      appimage-run
   ];
 
