@@ -14,6 +14,10 @@ in
       isNormalUser = true;
       extraGroups = [ "networkManager" ];
     };
+    ingrid = {
+      isNormalUser = true;
+      extraGroups = [ "networkManager" ];
+    };
     bill = {
       isNormalUser = true;
       extraGroups = [ "networkManager" ];

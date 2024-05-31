@@ -10,14 +10,7 @@
 }: {
   # You can import other home-manager modules here
   imports = [
-    # If you want to use modules your own flake exports (from modules/home-manager):
-    # outputs.homeManagerModules.example
-
-    # Or modules exported from other flakes (such as nix-colors):
-    # inputs.nix-colors.homeManagerModules.default
-
-    # You can also split up your configuration and import pieces of it here:
-    # ./nvim.nix
+    inputs.nixvim.homeManagerModules.nixvim
   ];
 
   nixpkgs = {
@@ -73,22 +66,53 @@
       credential = {
         helper = "cache --timeout=3600"; # Cache credentials for 1 hour (3600 seconds)
       };
+      oh-my-zsh = {
+        "hide-dirty" = "1";
+      };
+      init = {
+        defaultBranch = "main";
+      };
     };
   };
 
-  programs.neovim = {
+  programs.nixvim = {
     enable = true;
     defaultEditor = true; 
     viAlias = true;
     vimAlias = true;
-    vimdiffAlias = true;
-    plugins = with pkgs.vimPlugins; [
-      nvim-lspconfig
-      nvim-treesitter.withAllGrammars 
-      vim-bufferline
-      tokyonight-nvim
+    plugins.bufferline.enable = true;
+    plugins.which-key.enable = true;
+
+    plugins.cmp-tabby = {
+      enable = true;
+      host = "localhost:8337";
+    };
+
+    globals.mapleader = " ";
+    keymaps = [
       {
-        plugin = which-key-nvim;
+        mode = "n";
+        key = "<C-a>c";
+        options = { noremap = true; desc = "Open new terminal"; };
+        action = "<cmd>:term<cr>";
+      }
+      {
+        mode = "n";
+        key = "<C-a>x";
+        options = { noremap = true; desc = "Close tab"; };
+        action = "<cmd>:bd<cr>";
+      }
+      {
+        mode = "n";
+        key = "<C-a>s";
+        options = { noremap = true; desc = "Pick buffer"; };
+        action = "<cmd>:BufferLinePick<CR>";
+      }
+      {
+        mode = "t";
+        key = "<Esc><Esc>";
+        options = { noremap = true; };
+        action = "<C-\\><C-n>";
       }
     ];
   };
@@ -128,18 +152,13 @@
     pkgs.wget
     pkgs.wl-clipboard
     pkgs.atool
+    pkgs.zig
+    pkgs.comma
 
     (pkgs.nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" "Hack"]; })
 
     (pkgs.writeShellScriptBin "nvr-edit" ''
       nvr --remote-wait $@
-    '')
-    (pkgs.writeShellScriptBin "nvidia-offload" ''
-      export __NV_PRIME_RENDER_OFFLOAD=1
-      export __NV_PRIME_RENDER_OFFLOAD_PROVIDER=NVIDIA-G0
-      export __GLX_VENDOR_LIBRARY_NAME=nvidia
-      export __VK_LAYER_NV_optimus=NVIDIA_only
-      exec "$@"
     '')
   ];
 

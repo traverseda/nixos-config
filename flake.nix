@@ -9,9 +9,18 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     # Also see the 'unstable-packages' overlay at 'overlays/default.nix'.
 
-    # Home manager
-    home-manager.url = "github:nix-community/home-manager/master";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    nixvim.url = "github:nix-community/nixvim";
+
+    plasma-manager = {
+      url = "github:pjones/plasma-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
 
     ros.url = "github:lopsided98/nix-ros-overlay";
     agenix.url = "github:ryantm/agenix";
@@ -20,7 +29,6 @@
     # everything match nicely? Try nix-colors!
     nix-colors.url = "github:misterio77/nix-colors";
 
-    nixvim.url = "github:nix-community/nixvim";
 
   };
 
@@ -28,6 +36,8 @@
     self,
     nixpkgs,
     home-manager,
+    nixvim,
+    plasma-manager,
     ros,
     agenix,
     ...
@@ -91,18 +101,19 @@
           ./nixos/work.nix
         ];
       };
-      #Thinkpad E15 Gen 3 Laptop - Type 20YG - Model 20YG003EUS
-      raziel = nixpkgs.lib.nixosSystem {
+      #Thinkpad E15 Gen 3 Laptop (ThinkPad) - Type 20YG - Model 20YG003EUS
+      ariel = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs outputs;
-          hostname = "raziel";
+          hostname = "ariel";
         };
         modules = [
           ./nixos/configuration.nix
           ./nixos/kde-desktop.nix
-          ./nixos/cad.nix
           ./nixos/zerotier.nix
           ./nixos/work.nix
+          ./nixos/cad.nix
+          ./nixos/gaming.nix
         ];
       };
       hearth = nixpkgs.lib.nixosSystem {
@@ -147,12 +158,12 @@
     # Standalone home-manager configuration entrypoint
     # Available through 'home-manager --flake .#your-username@your-hostname'
     homeConfigurations = {
-      "traverseda@athame" = home-manager.lib.homeManagerConfiguration {
+      "traverseda@generic" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [
           # > Our main home-manager configuration file <
-          ./home-manager/home.nix
+          ./home-manager/traverseda/home.nix
         ];
       };
     };

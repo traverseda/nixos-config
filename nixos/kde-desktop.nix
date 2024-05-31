@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ inputs, outputs, lib, config, pkgs, hostname, specialArgs, options, ... }:
 
 {
   # Enable the KDE Desktop Environment.
@@ -7,6 +7,9 @@
   services.desktopManager.plasma6.enable = true;
   services.displayManager.sddm.wayland.enable = true;
   services.displayManager.defaultSession = "plasma";
+  services.displayManager = {
+    autoLogin.enable = lib.mkDefault false;
+  };
 
   services.flatpak.enable = true;
   services.packagekit.enable = true;
@@ -75,6 +78,14 @@ programs.dconf.enable = true;
 
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
+
+  home-manager = {
+    extraSpecialArgs = { inherit inputs outputs; };
+    backupFileExtension = ".bak";
+    users = {
+      traverseda = import ../home-manager/traverseda/kde-desktop.nix;
+    };
+  };
 
   #Enable support for my logitech bluetooth peripherals
   hardware.logitech.wireless.enable = true;
