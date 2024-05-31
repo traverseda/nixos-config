@@ -74,7 +74,7 @@
           ./nixos/kde-desktop.nix
           ./nixos/cad.nix
           ./nixos/zerotier.nix
-          ./nixos/work.nix
+          ./nixos/family.nix
         ];
       };
       #Work laptop, dell g15.
@@ -91,7 +91,7 @@
           ./nixos/work.nix
         ];
       };
-      #Thinkpad E15 Gen 3 Laptop (ThinkPad) - Type 20YG - Model 20YG003EUS
+      #Thinkpad E15 Gen 3 Laptop - Type 20YG - Model 20YG003EUS
       raziel = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs outputs;
