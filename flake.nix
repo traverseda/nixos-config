@@ -84,7 +84,7 @@
           ./nixos/kde-desktop.nix
           ./nixos/cad.nix
           ./nixos/zerotier.nix
-          ./nixos/work.nix
+          ./nixos/family.nix
         ];
       };
       #Work laptop, dell g15.

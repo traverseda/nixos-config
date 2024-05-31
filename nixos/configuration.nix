@@ -76,15 +76,23 @@
   #Deduplicate nix store on a timer
   nix.optimise.automatic = true;
 
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
+  };
+
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
-     pkgs.neovim
      pkgs.mosh
      pkgs.git
      pkgs.usbutils
      pkgs.pciutils
      pkgs.atool
+     pkgs.comma
+     pkgs.home-manager
      appimage-run
   ];
 

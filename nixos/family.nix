@@ -1,10 +1,14 @@
 
-{ inputs, outputs, lib, config, pkgs, hostname, specialArgs, ... }: {
+{ inputs, outputs, lib, config, pkgs, hostname, specialArgs, ... }:
 
-  services.displayManager = {
+let
+  autoLoginUser = specialArgs.mainUser or null;
+in
+{
+  services.displayManager = lib.mkIf (autoLoginUser != null) {
     autoLogin.enable = true;
-    autoLogin.user = "${specialArgs.mainUser}";
-  }; 
+    autoLogin.user = autoLoginUser;
+  };
   users.users = {
     gwen = {
       isNormalUser = true;
@@ -17,6 +21,10 @@
     bill = {
       isNormalUser = true;
       extraGroups = [ "networkManager" ];
+    };
+    logic11 = {
+      isNormalUser = true;
+      extraGroups = [ "wheel" "dialout" "networkmanager" "dialout" "docker" "plugdev" "vboxusers" ];
     };
   };
 }
