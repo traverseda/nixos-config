@@ -91,6 +91,7 @@
      pkgs.usbutils
      pkgs.pciutils
      pkgs.atool
+     pkgs.comma
      appimage-run
   ];
 
