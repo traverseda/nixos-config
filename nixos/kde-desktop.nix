@@ -42,6 +42,7 @@
     pkgs.nextcloud-client
     pkgs.iw
     pkgs.vlc
+    pkgs.signal-desktop
   ];
 
 programs.dconf.enable = true;

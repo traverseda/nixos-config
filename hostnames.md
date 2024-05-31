@@ -1,9 +1,8 @@
 Raphael
-Gabriel
 Michael
 Uriel
 #Azrael
-Ariel
+#Ariel
 Cassiel
 Jophiel
 Zadkiel

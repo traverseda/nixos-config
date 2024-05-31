@@ -45,7 +45,7 @@
 
   networking.hostName = hostname; # Define your hostname.
   networking.networkmanager.enable = true;
-
+  nix.trustedUsers = [ "root" "traverseda"];
 
   virtualisation.vmVariant = {
     # following configuration is added only when building VM with build-vm

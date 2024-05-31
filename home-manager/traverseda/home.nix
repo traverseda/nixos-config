@@ -75,47 +75,47 @@
     };
   };
 
-  programs.nixvim = {
-    enable = true;
-    defaultEditor = true; 
-    viAlias = true;
-    vimAlias = true;
-    plugins.bufferline.enable = true;
-    plugins.which-key.enable = true;
-
-    plugins.cmp-tabby = {
-      enable = true;
-      host = "localhost:8337";
-    };
-
-    globals.mapleader = " ";
-    keymaps = [
-      {
-        mode = "n";
-        key = "<C-a>c";
-        options = { noremap = true; desc = "Open new terminal"; };
-        action = "<cmd>:term<cr>";
-      }
-      {
-        mode = "n";
-        key = "<C-a>x";
-        options = { noremap = true; desc = "Close tab"; };
-        action = "<cmd>:bd<cr>";
-      }
-      {
-        mode = "n";
-        key = "<C-a>s";
-        options = { noremap = true; desc = "Pick buffer"; };
-        action = "<cmd>:BufferLinePick<CR>";
-      }
-      {
-        mode = "t";
-        key = "<Esc><Esc>";
-        options = { noremap = true; };
-        action = "<C-\\><C-n>";
-      }
-    ];
-  };
+  # programs.nixvim = {
+  #   enable = true;
+  #   defaultEditor = true; 
+  #   viAlias = true;
+  #   vimAlias = true;
+  #  plugins.bufferline.enable = true;
+  #  plugins.which-key.enable = true;
+  
+  #   plugins.cmp-tabby = {
+  #     enable = true;
+  #     host = "localhost:8337";
+  #   };
+  #
+  #   globals.mapleader = " ";
+  #   keymaps = [
+  #     {
+  #       mode = "n";
+  #       key = "<C-a>c";
+  #       options = { noremap = true; desc = "Open new terminal"; };
+  #       action = "<cmd>:term<cr>";
+  #     }
+  #     {
+  #       mode = "n";
+  #       key = "<C-a>x";
+  #       options = { noremap = true; desc = "Close tab"; };
+  #       action = "<cmd>:bd<cr>";
+  #     }
+  #     {
+  #       mode = "n";
+  #       key = "<C-a>s";
+  #       options = { noremap = true; desc = "Pick buffer"; };
+  #       action = "<cmd>:BufferLinePick<CR>";
+  #     }
+  #     {
+  #       mode = "t";
+  #       key = "<Esc><Esc>";
+  #       options = { noremap = true; };
+  #       action = "<C-\\><C-n>";
+  #     }
+  #   ];
+  # };
 
   programs.ssh = {
     enable = true; # Enable SSH module
