@@ -1,6 +1,9 @@
 { inputs, outputs, lib, config, pkgs, hostname, specialArgs, options, ... }:
 
 {
+  imports = [
+    ./misc/dslr-webcam.nix
+  ];
   # Enable the KDE Desktop Environment.
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
