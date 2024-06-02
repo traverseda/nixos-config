@@ -1,57 +1,34 @@
-{
-  description = "Blender CAD Sketcher";
+{ lib, blender, python3Packages, fetchFromGitHub, pkgs }:
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-  inputs.flake-utils.url = "github:numtide/flake-utils";
-  outputs = {
-    self,
-    nixpkgs,
-    flake-utils,
-  }:
-    flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
-    in {
-      devShells.default = pkgs.mkShell {
-        shellHook = ''
-        '';
-        packages = [
-          (
-            let
-              py-slvs = pythonPkgs:
-                pythonPkgs.buildPythonPackage rec {
-                  pname = "py-slvs";
-                  version = "1.0.6";
+let
+  py-slvs = python3Packages.buildPythonPackage rec {
+    pname = "py-slvs";
+    version = "1.0.6";
 
-                  src = pythonPkgs.fetchPypi {
-                    pname = "py_slvs";
-                    version = "1.0.6";
-                    sha256 = "sha256-U6T/aXy0JTC1ptL5oBmch0ytSPmIkRA8XOi31NpArnI=";
-                  };
+    src = fetchFromGitHub {
+      owner = "realthunder";
+      repo = "slvs_py";
+      rev = "v${version}";
+      sha256 = "hBuW8Guqli/jMFPygG8jq5ZLs508Ss+lmBORuW6yTxs=";
+    };
 
-                  nativeBuildInputs = with pkgs; [swig];
-                  pyproject = true;
+    nativeBuildInputs = [ pkgs.swig pkgs.cmake pkgs.ninja ];
 
-                  propagatedBuildInputs = with pythonPkgs; [
-                    cmake
-                    ninja
-                    setuptools
-                    scikit-build
-                  ];
+    cmakeFlags = [
+      "-B."
+      "-H${src}"
+    ];
 
-                  dontUseCmakeConfigure = true;
+    propagatedBuildInputs = with python3Packages; [ setuptools wheel scikit-build cmake ninja ];
 
-                  meta = with pkgs.lib; {
-                    description = "Python binding of SOLVESPACE geometry constraint solver";
-                    homepage = "https://github.com/realthunder/slvs_py";
-                    license = licenses.gpl3;
-                  };
-                };
-
-              blenderCadSketcher = pkgs.blender.withPackages (p: [(py-slvs p)]);
-            in
-              blenderCadSketcher
-          )
-        ];
-      };
-    });
-}
+    meta = {
+      description = "Python binding of SOLVESPACE geometry constraint solver";
+      homepage = "https://github.com/realthunder/slvs_py";
+      license = lib.licenses.gpl3;
+    };
+  };
+in
+  blender.overrideAttrs (oldAttrs: {
+    name = "blender-cadsketcher-${oldAttrs.version}";
+    buildInputs = oldAttrs.buildInputs ++ [ py-slvs ];
+  })

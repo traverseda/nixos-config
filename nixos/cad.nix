@@ -4,6 +4,7 @@
   environment.systemPackages = with pkgs; [
     pkgs.openscad
     pkgs.blender
+    #pkgs.blender-cadsketcher
     #pkgs.py-slvs
     pkgs.freecad
     (pkgs.appimageTools.wrapType2
