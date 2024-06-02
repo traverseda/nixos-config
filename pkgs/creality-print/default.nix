@@ -31,7 +31,7 @@ let
 in
 # Define the package
 pkgs.stdenv.mkDerivation {
-  name = "creality-print-app";
+  name = "creality-print";
   buildInputs = [ creality-print ];
 
   nativeBuildInputs = [ pkgs.makeWrapper ];
@@ -54,4 +54,3 @@ pkgs.stdenv.mkDerivation {
     platforms = platforms.linux;
   };
 }
-

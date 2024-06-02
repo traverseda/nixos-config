@@ -1,31 +1,36 @@
-{ lib, blender, python3Packages, fetchFromGitHub, pkgs }:
+{ lib, blender, python3Packages, fetchFromGitHub, pkgs, fetchurl}:
 
 let
   py-slvs = python3Packages.buildPythonPackage rec {
+
     pname = "py-slvs";
     version = "1.0.6";
-
-    src = fetchFromGitHub {
-      owner = "realthunder";
-      repo = "slvs_py";
-      rev = "v${version}";
-      sha256 = "hBuW8Guqli/jMFPygG8jq5ZLs508Ss+lmBORuW6yTxs=";
+    src = fetchurl {
+      url = "https://pypi.org/packages/source/p/py_slvs/py_slvs-1.0.6.tar.gz";
+      sha256 = "sha256-U6T/aXy0JTC1ptL5oBmch0ytSPmIkRA8XOi31NpArnI=";
     };
 
-    nativeBuildInputs = [ pkgs.swig pkgs.cmake pkgs.ninja ];
+    pyproject = true;
 
-    cmakeFlags = [
-      "-B."
-      "-H${src}"
+    nativeBuildInputs = with pkgs; [
+      swig
     ];
 
-    propagatedBuildInputs = with python3Packages; [ setuptools wheel scikit-build cmake ninja ];
+    propagatedBuildInputs = with python3Packages; [
+      cmake
+      ninja
+      setuptools
+      scikit-build
+    ];
 
-    meta = {
+    dontUseCmakeConfigure = true;
+
+    meta = with pkgs.lib; {
       description = "Python binding of SOLVESPACE geometry constraint solver";
       homepage = "https://github.com/realthunder/slvs_py";
-      license = lib.licenses.gpl3;
+      license = licenses.gpl3;
     };
+
   };
 in
   blender.overrideAttrs (oldAttrs: {

@@ -2,11 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
-    pkgs.openscad
-    pkgs.blender
-    #pkgs.blender-cadsketcher
-    #pkgs.py-slvs
-    pkgs.freecad
+    #pkgs.creality-print
     (pkgs.appimageTools.wrapType2
       {
         name = "creality-print";
@@ -15,6 +11,10 @@
           sha256 = "sha256-WUsL7UbxSY94H4F1Ww8vLsfRyeg2/DZ+V4B6eH3M6+M=";
         };
     })
+    pkgs.openscad
+    pkgs.blender-cadsketcher
+    #pkgs.py-slvs
+    pkgs.freecad
     # (pkgs.appimageTools.wrapType2
     #   {
     #     name = "orca-slicer";
