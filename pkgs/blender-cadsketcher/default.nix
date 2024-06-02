@@ -1,12 +1,13 @@
-{ lib, blender, python3Packages, fetchFromGitHub, pkgs, fetchurl}:
+{ lib, blender, python3Packages, pkgs, fetchurl }:
 
 let
   py-slvs = python3Packages.buildPythonPackage rec {
-
     pname = "py-slvs";
     version = "1.0.6";
-    src = fetchurl {
-      url = "https://pypi.org/packages/source/p/py_slvs/py_slvs-1.0.6.tar.gz";
+
+    src = python3Packages.fetchPypi {
+      pname = "py_slvs";
+      version = "1.0.6";
       sha256 = "sha256-U6T/aXy0JTC1ptL5oBmch0ytSPmIkRA8XOi31NpArnI=";
     };
 
@@ -30,10 +31,10 @@ let
       homepage = "https://github.com/realthunder/slvs_py";
       license = licenses.gpl3;
     };
-
   };
+
+  blenderWithPySlvs = blender.withPackages (p: [py-slvs]);
+
 in
-  blender.overrideAttrs (oldAttrs: {
-    name = "blender-cadsketcher-${oldAttrs.version}";
-    buildInputs = oldAttrs.buildInputs ++ [ py-slvs ];
-  })
+  blenderWithPySlvs
+
