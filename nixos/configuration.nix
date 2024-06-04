@@ -117,6 +117,7 @@
   services.automatic-timezoned.enable = true;
 
   virtualisation.docker.enable = true;
+  virtualisation.docker.liveRestore = false;
 
   #Puts fonts in /run/current-system/sw/share/X11/fonts
   fonts.fontDir.enable = true;

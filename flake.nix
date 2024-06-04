@@ -22,7 +22,12 @@
       inputs.home-manager.follows = "home-manager";
     };
 
-    ros.url = "github:lopsided98/nix-ros-overlay";
+
+    ros = {
+      url = "github:lopsided98/nix-ros-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     agenix.url = "github:ryantm/agenix";
 
     # Shameless plug: looking for a way to nixify your themes and make

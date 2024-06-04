@@ -3,6 +3,7 @@
 {
   imports = [
     ./misc/dslr-webcam.nix
+    ./misc/wifi-multiplex.nix
   ];
   # Enable the KDE Desktop Environment.
   services.xserver.enable = true;
@@ -15,6 +16,15 @@
   };
 
   services.flatpak.enable = true;
+
+  environment.etc = {
+    "flatpak/remotes.d/flathub.flatpakrepo".source = pkgs.fetchurl {
+      url = "https://dl.flathub.org/repo/flathub.flatpakrepo";
+      hash = "sha256-M3HdJQ5h2eFjNjAHP+/aFTzUQm9y9K+gwzc64uj+oDo="
+;
+    };
+  };
+
   services.packagekit.enable = true;
   services.fwupd.enable = true;
 
