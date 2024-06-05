@@ -76,6 +76,11 @@
   #Deduplicate nix store on a timer
   nix.optimise.automatic = true;
 
+  #Delete old generations
+  nix.gc.automatic = true;
+  nix.gc.dates = "weekly";
+  nix.gc.options = "--delete-older-than 30d";
+
   programs.neovim = {
     enable = true;
     defaultEditor = true;
