@@ -49,13 +49,11 @@ in
 
   systemd.services.dslr-webcam = {
     description = "DSLR Webcam Service";
-    after = [ "network.target" ];
     serviceConfig = {
       ExecStart = "${pkgs.writeScriptBin "dslr-webcam" dslrWebcamScript}/bin/dslr-webcam";
-      ExecStop = "/bin/kill -s TERM $MAINPID";
+
       Restart = "on-failure";
     };
-    wantedBy = [ "multi-user.target" ];
   };
 }
 
