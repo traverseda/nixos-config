@@ -3,7 +3,6 @@
 {
   imports = [
     ./misc/dslr-webcam.nix
-    ./misc/wifi-multiplex.nix
   ];
   # Enable the KDE Desktop Environment.
   services.xserver.enable = true;
