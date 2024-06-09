@@ -5,6 +5,16 @@
   users.extraGroups.vboxusers.members = [ "traverseda" ];
   boot.binfmt.emulatedSystems = ["aarch64-linux"];
 
+  security.wrappers = {
+    firejail = {
+      source = "${pkgs.firejail.out}/bin/firejail";
+    };
+  };
+
+  programs.firejail = {
+    enable = true;
+  };
+
   environment.systemPackages = with pkgs; [
     pkgs.qgroundcontrol
     pkgs.vscode

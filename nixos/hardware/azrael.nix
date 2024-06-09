@@ -30,17 +30,19 @@
      randomEncryption.enable = true; 
    } ];
 
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
-	hardware.nvidia.prime = {
-    offload = {
-			enable = true;
-			enableOffloadCmd = true;
-		};
 
-		# Make sure to use the correct Bus ID values for your system!
-		intelBusId = "PCI:0:0:2";
-		nvidiaBusId = "PCI:1:0:0";
-	};
+	hardware.nvidia = {
+    prime = {
+      offload = {
+        enable = true;
+        enableOffloadCmd = true;
+      };
+
+      # Make sure to use the correct Bus ID values for your system!
+      intelBusId = "PCI:0:0:2";
+      nvidiaBusId = "PCI:1:0:0";
+    };
+  };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
