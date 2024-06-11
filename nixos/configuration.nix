@@ -100,6 +100,7 @@
      pkgs.comma
      pkgs.home-manager
      appimage-run
+     pkgs.linuxPackages.usbip
   ];
 
   programs.git = {

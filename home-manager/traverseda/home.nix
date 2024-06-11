@@ -3,7 +3,7 @@
 {
   inputs,
   outputs,
-  lib,
+  # lib,
   config,
   pkgs,
   ...
@@ -11,7 +11,9 @@
   # You can import other home-manager modules here
   imports = [
     inputs.nixvim.homeManagerModules.nixvim
+    inputs.nix-index-database.hmModules.nix-index
   ];
+
 
   nixpkgs = {
     # You can add overlays here
@@ -40,7 +42,6 @@
     };
   };
 
-
   home = {
     username = "traverseda";
     homeDirectory = "/home/traverseda";
@@ -50,6 +51,7 @@
     enable = true;
     userName = "Alex Davies";
     userEmail = "traverse.da@gmail.com";
+    
     extraConfig = {
       core = {
         editor = "vim"; # Set default editor for Git
@@ -75,47 +77,87 @@
     };
   };
 
-  # programs.nixvim = {
-  #   enable = true;
-  #   defaultEditor = true; 
-  #   viAlias = true;
-  #   vimAlias = true;
-  #  plugins.bufferline.enable = true;
-  #  plugins.which-key.enable = true;
+  programs.nixvim = {
+    enable = true;
+    defaultEditor = true; 
+    viAlias = true;
+    vimAlias = true;
+    #We use bufferline for the top line
+    plugins.bufferline.enable = true;
+    #And lualine for the bottom line
+    plugins.lualine = {
+      enable = true;
+      sections = {
+        lualine_x = [
+          {name= "hostname";}
+        ];
+      };      
+    };
+
+    plugins.which-key.enable = true;
+
+    extraPlugins = with pkgs.vimPlugins; [
+      vim-suda
+    ];
+
+    plugins.cmp.enable = true;
+    plugins.cmp-treesitter.enable = true;
+    plugins.indent-blankline.enable = true;
+    plugins.lsp-format.enable = true;
+    plugins.lsp = {
+      enable = true;
+      servers = {
+        ruff.enable = true;
+        html.enable = true;
+        nixd.enable = true;
+        dockerls.enable = true;
+	yamlls.enable = true;
+      };
+    };
+
+    colorschemes.tokyonight = {
+      enable = true;
+      settings.style = "night";
+    };
+
+    extraConfigLua = ''
+      -- Automatically enter insert mode when opening a terminal
+      vim.api.nvim_create_autocmd("TermOpen", {
+        pattern = "*",
+        command = "startinsert"
+      })
+      -- Open files with sudo if needed
+      vim.g.suda_smart_edit = 1
+    '';
   
-  #   plugins.cmp-tabby = {
-  #     enable = true;
-  #     host = "localhost:8337";
-  #   };
-  #
-  #   globals.mapleader = " ";
-  #   keymaps = [
-  #     {
-  #       mode = "n";
-  #       key = "<C-a>c";
-  #       options = { noremap = true; desc = "Open new terminal"; };
-  #       action = "<cmd>:term<cr>";
-  #     }
-  #     {
-  #       mode = "n";
-  #       key = "<C-a>x";
-  #       options = { noremap = true; desc = "Close tab"; };
-  #       action = "<cmd>:bd<cr>";
-  #     }
-  #     {
-  #       mode = "n";
-  #       key = "<C-a>s";
-  #       options = { noremap = true; desc = "Pick buffer"; };
-  #       action = "<cmd>:BufferLinePick<CR>";
-  #     }
-  #     {
-  #       mode = "t";
-  #       key = "<Esc><Esc>";
-  #       options = { noremap = true; };
-  #       action = "<C-\\><C-n>";
-  #     }
-  #   ];
-  # };
+    globals.mapleader = " ";
+    keymaps = [
+      {
+        mode = "n";
+        key = "<C-a>c";
+        options = { noremap = true; desc = "Open new terminal"; };
+        action = "<cmd>:term<cr>";
+      }
+      {
+        mode = "n";
+        key = "<C-a>x";
+        options = { noremap = true; desc = "Close tab"; };
+        action = "<cmd>:bd<cr>";
+      }
+      {
+        mode = "n";
+        key = "<C-a>s";
+        options = { noremap = true; desc = "Pick buffer"; };
+        action = "<cmd>:BufferLinePick<CR>";
+      }
+      {
+        mode = "t";
+        key = "<Esc><Esc>";
+        options = { noremap = true; };
+        action = "<C-\\><C-n>";
+      }
+    ];
+  };
 
   programs.ssh = {
     enable = true; # Enable SSH module
@@ -127,12 +169,11 @@
     '';
   };
 
-  home.packages = with pkgs; [
+  home.packages = [
     pkgs.htop
     pkgs.zsh
     pkgs.xclip
     pkgs.ripgrep
-    pkgs.mosh
     pkgs.waypipe
     pkgs.pwgen
     pkgs.chezmoi
@@ -167,6 +208,7 @@
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
+    autocd = false;
 
     history.size = 10000;
     history.path = "${config.xdg.dataHome}/zsh/history";

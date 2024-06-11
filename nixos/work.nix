@@ -16,6 +16,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    pkgs.qemu
     pkgs.qgroundcontrol
     pkgs.vscode
     pkgs.stdenv
