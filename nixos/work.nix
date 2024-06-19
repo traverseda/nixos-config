@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ros, ... }:
+{
+#  config,
+  pkgs,
+#  lib,
+#  ros,
+  ... }:
 
 {
   virtualisation.virtualbox.host.enable = true;
@@ -14,8 +19,26 @@
   programs.firejail = {
     enable = true;
   };
+  programs.nix-ld = {
+    enable = true;
+    #Include libstdc++ in the nix-ld profile
+    libraries = [
+      pkgs.stdenv.cc.cc
+      pkgs.zlib
+      pkgs.fuse3
+      pkgs.icu
+      pkgs.nss
+      pkgs.openssl
+      pkgs.curl
+      pkgs.expat
+      pkgs.xorg.libX11
+      pkgs.vulkan-headers
+      pkgs.vulkan-loader
+      pkgs.vulkan-tools
+    ];
+  };
 
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = [
     pkgs.qemu
     pkgs.qgroundcontrol
     pkgs.vscode
@@ -29,6 +52,10 @@
     pkgs.element-desktop
     pkgs.act
     pkgs.logseq
+    (pkgs.writeShellScriptBin "python" ''
+      export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
+      exec ${pkgs.python3}/bin/python "$@"
+    '')
   ];
 }
 

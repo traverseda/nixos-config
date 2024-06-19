@@ -136,7 +136,6 @@
     };
     plugins.indent-blankline.enable = true;
     plugins.lsp-format.enable = true;
-    plugins.lsp-status.enable = true;
     plugins.lsp = {
       enable = true;
       servers = {

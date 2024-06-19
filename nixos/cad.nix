@@ -1,7 +1,11 @@
-{ config, pkgs, lib, ... }:
+{
+#  config,
+  pkgs,
+#  lib,
+  ... }:
 
 {
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = [
     #pkgs.creality-print
     (pkgs.appimageTools.wrapType2
       {
@@ -11,6 +15,7 @@
           sha256 = "sha256-WUsL7UbxSY94H4F1Ww8vLsfRyeg2/DZ+V4B6eH3M6+M=";
         };
     })
+    pkgs.lightburn
     pkgs.openscad
     pkgs.blender-cadsketcher
     #pkgs.py-slvs
