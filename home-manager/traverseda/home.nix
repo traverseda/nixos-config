@@ -304,14 +304,14 @@
     pkgs.waypipe
     pkgs.pwgen
     pkgs.neovim-remote
-    pkgs.pipx
+    #pkgs.pipx
     pkgs.rclone
     pkgs.pyright
     pkgs.mosh
     pkgs.jq
     pkgs.copier
     pkgs.pv
-    pkgs.poetry
+    #pkgs.poetry
     pkgs.nmap
     pkgs.dig
     pkgs.tree
@@ -322,34 +322,20 @@
     pkgs.zig
     pkgs.comma
 
+    (pkgs.writeShellScriptBin "poetry" ''
+      export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
+      exec ${pkgs.poetry}/bin/poetry "$@"
+    '')
+    (pkgs.writeShellScriptBin "pipx" ''
+      export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
+      exec ${pkgs.pipx}/bin/pipx "$@"
+    '')
+
     (pkgs.nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" "Hack"]; })
 
     (pkgs.writeShellScriptBin "nvr-edit" ''
       nvr --remote-wait $@
     '')
-    # (pkgs.writeShellScriptBin "copyfile" ''
-    #   set -e
-    #   if [ "x$1" = "x" ]; then
-    #       echo "Usage: [options] $0 file..." >&2
-    #       echo "-p Copy path information; preserve tree structure"
-    #       exit 1
-    #   fi
-    #   archive=`mktemp` || exit 1
-    #   trap 'rm -f "''${archive}"' 1 2 3 15
-    #   if [ "x$1" = "x-p" ]; then
-    #       tar cf "''${archive}" "$@"
-    #   else
-    #       flags="cf"
-    #       for file in "$@"; do
-    #           filedir=`dirname "''${file}"`
-    #           filename=`basename "''${file}"`
-    #           tar "''${flags}" "''${archive}" -C "''${filedir}" "''${filename}"
-    #           flags="rf"
-    #       done
-    #   fi
-    #   gzip -c "''${archive}" | xclip -selection clipboard -loops 1 -i
-    #   rm "''${archive}"
-    # '')
   ];
 
   programs.zsh = {

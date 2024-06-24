@@ -35,6 +35,13 @@
       pkgs.vulkan-headers
       pkgs.vulkan-loader
       pkgs.vulkan-tools
+      pkgs.kdePackages.full
+      pkgs.qt5.full
+      pkgs.libxkbcommon
+      pkgs.mesa
+      pkgs.glib
+      pkgs.fontconfig
+      pkgs.freetype
     ];
   };
 
@@ -55,6 +62,15 @@
     (pkgs.writeShellScriptBin "python" ''
       export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
       exec ${pkgs.python3}/bin/python "$@"
+    '')
+
+    (pkgs.writeShellScriptBin "poetry" ''
+      export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
+      exec ${pkgs.poetry}/bin/poetry "$@"
+    '')
+    (pkgs.writeShellScriptBin "pipx" ''
+      export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
+      exec ${pkgs.pipx}/bin/pipx "$@"
     '')
   ];
 }
