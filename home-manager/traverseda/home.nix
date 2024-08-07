@@ -130,7 +130,6 @@
           {name = "nvim_lsp";}
           {name = "buffer";}
           {name = "treesitter";}
-          {name = "copilot";}
           {name = "bash";}
         ];
       };
