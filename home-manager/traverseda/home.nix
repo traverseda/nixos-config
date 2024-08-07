@@ -130,13 +130,13 @@
           {name = "nvim_lsp";}
           {name = "buffer";}
           {name = "treesitter";}
+          {name = "copilot";}
           {name = "bash";}
         ];
       };
     };
     plugins.indent-blankline.enable = true;
     plugins.lsp-format.enable = true;
-    plugins.lsp.servers.bashls.package = "";
     plugins.lsp = {
       enable = true;
     };
