@@ -113,11 +113,11 @@
           ./nixos/work.nix
         ];
       };
-      #Thinkpad E15 Gen 3 Laptop (ThinkPad) - Type 20YG - Model 20YG003EUS
-      ariel = nixpkgs.lib.nixosSystem {
+      #Lenovo T15
+      adrial = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs outputs;
-          hostname = "ariel";
+          hostname = "adrial";
         };
         modules = [
           ./nixos/configuration.nix
