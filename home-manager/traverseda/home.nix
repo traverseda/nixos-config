@@ -126,17 +126,18 @@
           '';
         };
         sources = [
-          {name = "path";}
+          {name = "copilot";}
           {name = "nvim_lsp";}
+          {name = "path";}
           {name = "buffer";}
           {name = "treesitter";}
-          {name = "copilot";}
           {name = "bash";}
         ];
       };
     };
     plugins.indent-blankline.enable = true;
     plugins.lsp-format.enable = true;
+    plugins.commentary.enable = true;
     plugins.lsp = {
       enable = true;
     };
@@ -193,6 +194,13 @@
 
     globals.mapleader = " ";
     keymaps = [
+      {
+        #Clear the search buffer when I press esc twice
+        mode = ["n" "t"];
+        key = "<esc><esc>";
+        options = { noremap = true; desc = "Clear search"; };
+        action = ":nohlsearch<cr>";
+      }
       {
         mode = ["n" "t"];
         key = "<C-a>c";
