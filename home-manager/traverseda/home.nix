@@ -131,20 +131,15 @@
           {name = "buffer";}
           {name = "treesitter";}
           {name = "copilot";}
+          {name = "bash";}
         ];
       };
     };
     plugins.indent-blankline.enable = true;
     plugins.lsp-format.enable = true;
+    plugins.lsp.servers.bashls.package = "";
     plugins.lsp = {
       enable = true;
-      servers = {
-        ruff.enable = true;
-        html.enable = true;
-        nixd.enable = true;
-        dockerls.enable = true;
-        yamlls.enable = true;
-      };
     };
     plugins.lsp-lines.enable = true;
     plugins.lint = {
