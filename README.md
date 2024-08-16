@@ -1,4 +1,3 @@
-
 https://github.com/Misterio77/nix-starter-configs
 
 ## Notes
@@ -7,6 +6,12 @@ https://github.com/Misterio77/nix-starter-configs
 #Test specific hostname config
 nixos-rebuild build-vm --flake ./#athame
 ```
+
+```bash
+sh <(curl -L https://nixos.org/nix/install) --daemon
+home-manager switch --flake git+https://codeberg.org/traverseda/nixos-config.git?ref=main#traverseda@generic --extra-experimental-features nix-command --extra-experimental-features flakes
+```
+
 
 ## Building a LiveCD
 
