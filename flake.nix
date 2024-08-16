@@ -179,6 +179,13 @@
           ./home-manager/traverseda/home.nix
         ];
       };
+      "traverseda@aarch64" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.aarch64-linux; # Home-manager requires 'pkgs' instance
+        extraSpecialArgs = {inherit inputs outputs;};
+        modules = [
+          ./home-manager/traverseda/home.nix
+        ];
+      };      
     };
   };
 }
