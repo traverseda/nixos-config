@@ -179,9 +179,12 @@
           ./home-manager/traverseda/home.nix
         ];
       };
-      "traverseda@aarch64" = home-manager.lib.homeManagerConfiguration {
+      "spiri@generic" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.aarch64-linux; # Home-manager requires 'pkgs' instance
-        extraSpecialArgs = {inherit inputs outputs;};
+        extraSpecialArgs = {inherit inputs outputs;
+            homeUser = "spiri";
+            homeDir = "/home/spiri";
+        };
         modules = [
           ./home-manager/traverseda/home.nix
         ];

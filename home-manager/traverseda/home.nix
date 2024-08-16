@@ -6,6 +6,7 @@
   # lib,
   config,
   pkgs,
+  specialArgs,
   ...
 }: {
   # You can import other home-manager modules here
@@ -42,8 +43,8 @@
   };
 
   home = {
-    username = "traverseda";
-    homeDirectory = "/home/traverseda";
+    username = specialArgs.homeUser or "traverseda";
+    homeDirectory = specialArgs.homeDir or "/home/traverseda";
   };
 
   programs.git = {
