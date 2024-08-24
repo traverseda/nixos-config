@@ -55,6 +55,7 @@
     pkgs.iw
     pkgs.vlc
     pkgs.signal-desktop
+    pkgs.anki
   ];
 
 programs.dconf.enable = true;
