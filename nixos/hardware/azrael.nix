@@ -30,8 +30,10 @@
      randomEncryption.enable = true; 
    } ];
 
-
-	hardware.nvidia = {
+  hardware.nvidia-container-toolkit.enable = true;
+  hardware.nvidia = {
+    nvidiaPersistenced =true;
+    powerManagement.finegrained = true;
     prime = {
       offload = {
         enable = true;
@@ -42,7 +44,8 @@
       intelBusId = "PCI:0:0:2";
       nvidiaBusId = "PCI:1:0:0";
     };
-  };
+    };
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's

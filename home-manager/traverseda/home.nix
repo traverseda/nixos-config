@@ -362,6 +362,17 @@
     fi
     '';
   };
+  programs.bash = {
+    enable = true;
+    enableCompletion = true;
+
+    initExtra = ''
+    if [[ -n ''${NVIM+x} ]]; then
+      alias vim="nvr --remote"
+      export EDITOR=nvr-edit
+    fi
+    '';
+  };
 
   # Enable home-manager and git
   programs.home-manager.enable = true;
