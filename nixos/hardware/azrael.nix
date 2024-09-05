@@ -29,10 +29,8 @@
      device = "/dev/nvme0n1p3";
      randomEncryption.enable = true; 
    } ];
-
   hardware.nvidia-container-toolkit.enable = true;
   hardware.nvidia = {
-    nvidiaPersistenced =true;
     powerManagement.finegrained = true;
     prime = {
       offload = {

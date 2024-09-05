@@ -291,12 +291,8 @@
 
   programs.ssh = {
     enable = true; # Enable SSH module
-    extraConfig = ''
-      Host *
-        ControlMaster auto
-        ControlPath ~/.ssh/sockets/%r@%h-%p
-        ControlPersist 600
-    '';
+    controlMaster = "auto"; # Enable ControlMaster
+    controlPersist = "10m"; # Enable Control
   };
 
   home.packages = [
