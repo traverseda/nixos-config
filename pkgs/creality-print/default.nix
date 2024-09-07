@@ -18,32 +18,39 @@ let
     multiPkgs = pkgs: with pkgs; [ qt5.qtbase libGL libz ];
   };
 
-  # Create a desktop entry for Creality Print
-  desktopItem = pkgs.makeDesktopItem {
-    name = "creality-print";
-    exec = "${creality-print}/bin/creality-print";
-    icon = "creality-print";
-    desktopName = "Creality Print";
-    genericName = "3D Printer Software";
-    categories = [ "Graphics" ];
-  };
-
 in
 # Define the package
 pkgs.stdenv.mkDerivation {
   name = "creality-print";
-  buildInputs = [ creality-print ];
+  buildInputs = [ creality-print pkgs.bash ];
 
-  nativeBuildInputs = [ pkgs.makeWrapper ];
+  nativeBuildInputs = [ pkgs.makeWrapper pkgs.icoutils pkgs.unpacker ];
 
   # No sources to unpack
   unpackPhase = "true";
 
-  # Installation phase
+  # Extraction phase to get the icon from the AppImage
   installPhase = ''
-    mkdir -p $out/bin $out/share/applications
+    mkdir -p $out/bin $out/share/applications $out/share/icons/hicolor/256x256/apps
+
+    # Extract the AppImage content
+    appimage-extract ${creality-print}/bin/creality-print
+
+    # Find and copy the icon (typically the largest icon available)
+    cp ./squashfs-root/*.png $out/share/icons/hicolor/256x256/apps/creality-print.png || true
+
+    # Copy the binary files
     cp ${creality-print}/bin/* $out/bin
-    ln -s ${desktopItem}/share/applications/* $out/share/applications/
+
+    # Create the desktop entry with the extracted icon
+    cat > $out/share/applications/creality-print.desktop <<EOF
+    [Desktop Entry]
+    Name=Creality Print
+    Exec=$out/bin/creality-print
+    Icon=creality-print
+    Type=Application
+    Categories=Graphics;
+    EOF
   '';
 
   # Package metadata

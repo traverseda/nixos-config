@@ -291,12 +291,8 @@
 
   programs.ssh = {
     enable = true; # Enable SSH module
-    extraConfig = ''
-      Host *
-        ControlMaster auto
-        ControlPath ~/.ssh/sockets/%r@%h-%p
-        ControlPersist 600
-    '';
+    controlMaster = "auto"; # Enable ControlMaster
+    controlPersist = "10m"; # Enable Control
   };
 
   home.packages = [
@@ -356,6 +352,17 @@
       plugins = [ "git" "docker" "docker-compose"];
       theme = "robbyrussell";
     };
+    initExtra = ''
+    if [[ -n ''${NVIM+x} ]]; then
+      alias vim="nvr --remote"
+      export EDITOR=nvr-edit
+    fi
+    '';
+  };
+  programs.bash = {
+    enable = true;
+    enableCompletion = true;
+
     initExtra = ''
     if [[ -n ''${NVIM+x} ]]; then
       alias vim="nvr --remote"

@@ -5,7 +5,7 @@ let
 in {
 
   networking.firewall.trustedInterfaces = privateZeroTierInterfaces; # TRUST VPN ONLY
-  
+
   services.avahi = {
     enable = true;
     #allowInterfaces = privateZeroTierInterfaces; # ONLY BROADCAST ON VPN
@@ -18,7 +18,7 @@ in {
     publish.workstation = true; # ADDED TO DESKTOP MACHINES
     cacheEntriesMax = 512;
   };
-  
+
   systemd.services.createDevicemap = {
     description = "Create ZeroTier devicemap file";
     before = [ "zerotierone.service" ]; # Ensure ZeroTier service has started
