@@ -31,7 +31,7 @@
    } ];
   hardware.nvidia-container-toolkit.enable = true;
   hardware.nvidia = {
-    powerManagement.finegrained = true;
+    powerManagement.finegrained = false;
     prime = {
       offload = {
         enable = true;
