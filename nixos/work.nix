@@ -19,6 +19,7 @@
   programs.firejail = {
     enable = true;
   };
+
   programs.nix-ld = {
     enable = true;
     #Include libstdc++ in the nix-ld profile
@@ -55,10 +56,11 @@
     pkgs.cargo
     pkgs.zig
     pkgs.kompare
-    pkgs.distrobox
+    pkgs.unstable.distrobox
     pkgs.element-desktop
     pkgs.act
-    pkgs.logseq
+
+    # pkgs.logseq
     (pkgs.writeShellScriptBin "python" ''
       export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
       exec ${pkgs.python3}/bin/python "$@"
