@@ -14,7 +14,7 @@ Jeremiel
 #Metatron
 Sandalphon
 Sariel
-Selaphiel
+#Selaphiel
 Barachiel
 Zaphkiel
 Gadreel

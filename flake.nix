@@ -85,7 +85,7 @@
 
     # NixOS configuration entrypoint
     nixosConfigurations = {
-      #Personal laptop, thinkpad t490
+      #Traverse's laptop, thinkpad t490
       athame = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs outputs;
@@ -138,6 +138,21 @@
           ./nixos/configuration.nix
           ./nixos/home-assistant.nix
           ./nixos/zerotier.nix
+        ];
+      };
+      selaphiel = nixpkgs.lib.nixosSystem {
+        #Ingrid thinkpad t480
+        specialArgs = {
+          inherit inputs outputs;
+          hostname = "Selaphiel";
+          mainUser = "ingrid";
+        };
+        modules = [
+          ./nixos/configuration.nix
+          ./nixos/kde-desktop.nix
+          ./nixos/family.nix
+          ./nixos/zerotier.nix
+          ./nixos/gaming.nix
         ];
       };
       gwen = nixpkgs.lib.nixosSystem {
