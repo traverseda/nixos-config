@@ -144,7 +144,7 @@
         #Ingrid thinkpad t480
         specialArgs = {
           inherit inputs outputs;
-          hostname = "Selaphiel";
+          hostname = "selaphiel";
           mainUser = "ingrid";
         };
         modules = [
