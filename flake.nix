@@ -155,11 +155,10 @@
           ./nixos/gaming.nix
         ];
       };
-      gwen = nixpkgs.lib.nixosSystem {
+      chamuel = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs outputs;
-          hostname = "gwen";
-          mainUser = "gwen";
+          hostname = "chamuel";
         };
         modules = [
           ./nixos/configuration.nix
