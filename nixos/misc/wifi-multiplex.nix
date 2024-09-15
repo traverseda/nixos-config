@@ -1,10 +1,8 @@
-
 { pkgs, lib, ... }:
 
 let
   wifiUdevRule = ''
-    ACTION=="add", SUBSYSTEM=="net", ENV{DEVTYPE}=="wlan",  ENV{ID_NET_NAME_MAC}=="", RUN+="/bin/sh -c '${pkgs.iw}/bin/iw dev %k interface add %k_ap type station'"
-
+    ACTION=="add", SUBSYSTEM=="net", ENV{DEVTYPE}=="wlan", KERNEL!="virt_", RUN+="${pkgs.iw}/bin/iw dev %k interface add virt_%k_ap type station"
   '';
 in
 {
