@@ -12,15 +12,15 @@ in
   users.users = {
     gwen = {
       isNormalUser = true;
-      extraGroups = [ "networkManager" ];
+      extraGroups = [ "networkManager" "lpadmin" ];
     };
     ingrid = {
       isNormalUser = true;
-      extraGroups = [ "networkManager" ];
+      extraGroups = [ "networkManager" "lpadmin" ];
     };
     bill = {
       isNormalUser = true;
-      extraGroups = [ "networkManager" ];
+      extraGroups = [ "networkManager" "lpadmin" ];
     };
     logic11 = {
       isNormalUser = true;

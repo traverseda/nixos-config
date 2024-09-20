@@ -186,6 +186,14 @@
   programs.nix-ld.libraries = with pkgs; [
   ];
 
+  #Create ldpadmin group for printer access
+  services.printing.extraFilesConf = ''
+    SystemGroup root wheel lpadmin
+  '';
+  users.groups = {
+    lpadmin = { };
+  };
+
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.05";
 }

@@ -311,6 +311,7 @@
     pkgs.copier
     pkgs.pv
     #pkgs.poetry
+    pkgs.lazydocker
     pkgs.nmap
     pkgs.dig
     pkgs.tree
