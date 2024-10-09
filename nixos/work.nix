@@ -7,6 +7,8 @@
 
 {
   virtualisation.virtualbox.host.enable = true;
+  virtualisation.spiceUSBRedirection.enable = true;
+
   users.extraGroups.vboxusers.members = [ "traverseda" ];
   boot.binfmt.emulatedSystems = ["aarch64-linux"];
 
