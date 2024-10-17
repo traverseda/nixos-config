@@ -16,14 +16,6 @@
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
-      "traverseda@minimal" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
-        extraSpecialArgs = {inherit inputs outputs;};
-        modules = [
-          # > Our minimal home-manager configuration file <
-          ./home-manager/traverseda/home-minimal.nix
-        ];
-      };
     };
 
     nixvim = {
@@ -210,7 +202,15 @@
         modules = [
           ./home-manager/traverseda/home.nix
         ];
-      };      
+      };
+      "traverseda@minimal" = home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
+        extraSpecialArgs = {inherit inputs outputs;};
+        modules = [
+          # > Our minimal home-manager configuration file <
+          ./home-manager/traverseda/home-minimal.nix
+        ];
+      };
     };
   };
 }

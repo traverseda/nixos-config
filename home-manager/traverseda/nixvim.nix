@@ -71,10 +71,10 @@
     };
     plugins.nix.enable = true;
 
-    plugins.clipboard-image = {
-      enable = true;
-      clipboardPackage = lib.mkDefault pkgs.xclip;
-    };
+    # plugins.clipboard-image = {
+    #   enable = true;
+    #   clipboardPackage = pkgs.xclip;
+    # };
 
     colorschemes.tokyonight = {
       enable = true;
