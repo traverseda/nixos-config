@@ -38,7 +38,6 @@
   };
 
   home.packages = [
-    pkgs.zsh
     pkgs.xclip
     pkgs.ripgrep
     pkgs.jq
@@ -47,12 +46,6 @@
     pkgs.wget
   ];
 
-  programs.zsh = {
-    enable = true;
-    enableCompletion = true;
-    history.size = 1000;
-    history.path = "${config.xdg.dataHome}/zsh/history";
-  };
 
   programs.bash = {
     enable = true;
