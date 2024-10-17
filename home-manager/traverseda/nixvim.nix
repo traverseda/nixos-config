@@ -73,7 +73,7 @@
 
     plugins.clipboard-image = {
       enable = true;
-      clipboardPackage = pkgs.xclip;
+      clipboardPackage = lib.mkDefault pkgs.xclip;
     };
 
     colorschemes.tokyonight = {
