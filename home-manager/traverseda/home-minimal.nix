@@ -30,13 +30,6 @@
     userEmail = "traverse.da@gmail.com";
   };
 
-  programs.nixvim = {
-    enable = true;
-    defaultEditor = true;
-    viAlias = true;
-    vimAlias = true;
-  };
-
   home.packages = [
     pkgs.xclip
     pkgs.ripgrep

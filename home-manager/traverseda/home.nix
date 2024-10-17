@@ -14,7 +14,7 @@
     ./home-minimal.nix
     inputs.nixvim.homeManagerModules.nixvim
     inputs.nix-index-database.hmModules.nix-index
-    (import ./nixvim.nix { inherit pkgs; })
+    # (import ./nixvim.nix { inherit pkgs; })
   ];
 
   nixpkgs = {
