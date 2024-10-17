@@ -71,7 +71,10 @@
     };
     plugins.nix.enable = true;
 
-    plugins.clipboard-image.enable = true;
+    plugins.clipboard-image = {
+      enable = true;
+      clipboardPackage = pkgs.xclip;
+    };
 
     colorschemes.tokyonight = {
       enable = true;
