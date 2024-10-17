@@ -35,7 +35,6 @@
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
-    plugins.clipboard-image.enable = true;
   };
 
   home.packages = [
