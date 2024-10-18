@@ -12,10 +12,7 @@ let
       url = appimageUrl;
       sha256 = appimageSha256;
     };
-    profile = ''
-      export LC_ALL=C.UTF-8
-    '';
-    multiPkgs = pkgs: with pkgs; [ qt5.qtbase libGL libz ];
+    extraPkgs = pkgs: with pkgs; [ qt5.qtbase libGL libz ];
   };
 
 in
@@ -34,10 +31,10 @@ pkgs.stdenv.mkDerivation {
     mkdir -p $out/bin $out/share/applications $out/share/icons/hicolor/256x256/apps
 
     # Extract the AppImage content
-    appimage-extract ${creality-print}/bin/creality-print
+    appimage-extract-and-run ${creality-print}/bin/creality-print
 
     # Find and copy the icon (typically the largest icon available)
-    cp ./squashfs-root/*.png $out/share/icons/hicolor/256x256/apps/creality-print.png || true
+    cp ./squashfs-root/usr/share/icons/hicolor/256x256/apps/*.png $out/share/icons/hicolor/256x256/apps/creality-print.png || true
 
     # Copy the binary files
     cp ${creality-print}/bin/* $out/bin
