@@ -41,13 +41,13 @@ pkgs.stdenv.mkDerivation {
 
     # Create the desktop entry with the extracted icon
     cat > $out/share/applications/creality-print.desktop <<EOF
-    [Desktop Entry]
-    Name=Creality Print
-    Exec=$out/bin/creality-print
-    Icon=creality-print
-    Type=Application
-    Categories=Graphics;
-    EOF
+[Desktop Entry]
+Name=Creality Print
+Exec=$out/bin/creality-print
+Icon=$out/share/icons/hicolor/256x256/apps/creality-print.png
+Type=Application
+Categories=Graphics;
+EOF
   '';
 
   # Package metadata
