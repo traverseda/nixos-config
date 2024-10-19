@@ -44,7 +44,7 @@
             {
               type = "homeassistant";
             }
-          ];      
+          ];
         };
         automation = "!include automations.yaml";
         scene = "!include scenes.yaml";
