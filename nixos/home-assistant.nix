@@ -44,7 +44,7 @@
             {
               type = "homeassistant";
             }
-          ];      
+          ];
         };
         automation = "!include automations.yaml";
         scene = "!include scenes.yaml";
@@ -58,6 +58,12 @@
 
   networking.firewall.allowedTCPPorts = [ 8123 ];
 
+  services.node-red = {
+      enable = true;
+      withNpmAndGcc = true;
+      openFirewall = true;
+  };
+
   #Break touchscreen support
   #${pkgs.wlr-randr}/bin/wlr-randr --output eDP-1 --transform 90 # Adjust command as needed
   services.cage = {
@@ -70,7 +76,7 @@
       exec ${pkgs.chromium}/bin/chromium  --force-dark-mode --kiosk http://127.0.0.1:8123
       ''}/bin/start-cage-app";
   };
-   users.users.kiosk = {
+  users.users.kiosk = {
     isNormalUser = true;
   };
 

@@ -8,25 +8,25 @@
 
   #Enable lightdm with networkmanger management in our login screen
   services.xserver.enable = true;
-  services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.displayManager.lightdm.greeters.gtk.enable = true;
-  services.xserver.displayManager.lightdm.greeters.gtk.indicators = [ 
-    "~host" "~spacer" "~clock" "~spacer" 
-    "${pkgs.networkmanagerapplet}/bin/nm-applet"
-    "~session"
-    # "~language"
-    "~a11y" "~power"
-  ];
-  users.users.lightdm = {
-    isSystemUser = true;
-    extraGroups = [ "networkmanager" ];
-  };
+  # services.xserver.displayManager.lightdm.enable = true;
+  # services.xserver.displayManager.lightdm.greeters.gtk.enable = true;
+  # services.xserver.displayManager.lightdm.greeters.gtk.indicators = [ 
+  #   "~host" "~spacer" "~clock" "~spacer" 
+  #   "${pkgs.networkmanagerapplet}/bin/nm-applet"
+  #   "~session"
+  #   # "~language"
+  #   "~a11y" "~power"
+  # ];
+  # users.users.lightdm = {
+  #   isSystemUser = true;
+  #   extraGroups = [ "networkmanager" ];
+  # };
 
 
   # Enable the KDE Desktop Environment.
   services.desktopManager.plasma6.enable = true;
-  # services.displayManager.sddm.enable = true;
-  # services.displayManager.sddm.wayland.enable = true;
+  services.displayManager.sddm.enable = true;
+  services.displayManager.sddm.wayland.enable = true;
   services.displayManager.defaultSession = "plasma";
   services.displayManager = {
     autoLogin.enable = lib.mkDefault false;
