@@ -72,10 +72,6 @@
       export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
       exec ${pkgs.poetry}/bin/poetry "$@"
     '')
-    (pkgs.writeShellScriptBin "pipx" ''
-      export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
-      exec ${pkgs.pipx}/bin/pipx "$@"
-    '')
   ];
 }
 
