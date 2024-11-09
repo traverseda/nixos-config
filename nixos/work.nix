@@ -50,7 +50,7 @@
 
   environment.systemPackages = [
     pkgs.qemu
-    pkgs.qgroundcontrol
+    pkgs.unstable.qgroundcontrol
     pkgs.vscode
     pkgs.stdenv
     pkgs.gcc
