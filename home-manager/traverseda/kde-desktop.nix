@@ -18,6 +18,9 @@
     #   theme = "breeze-dark";
     #   colorScheme = "BreezeDark";
     # };
+    kscreenlocker.appearance.wallpaperSlideShow.path = "${builtins.path { path = ../../wallpapers; }}";
+    workspace.wallpaperSlideShow.path = "${builtins.path { path = ../../wallpapers; }}";
+
     shortcuts = {
       "services/org.kde.konsole.desktop"."_launch" = ["Meta+Return" "Ctrl+Alt+T"];
       "kwin"."Window Close" = ["Meta+Shift+C" "Alt+F4"];
