@@ -87,6 +87,7 @@
     pkgs.waypipe
     pkgs.pwgen
     pkgs.neovim-remote
+    pkgs.eza
     #pkgs.pipx
     pkgs.rclone
     pkgs.pyright
