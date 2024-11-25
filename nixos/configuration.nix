@@ -82,11 +82,6 @@
   #Deduplicate nix store on a timer
   nix.optimise.automatic = true;
 
-  #Delete old generations
-  nix.gc.automatic = true;
-  nix.gc.dates = "weekly";
-  nix.gc.options = "--delete-older-than 30d";
-
   programs.neovim = {
     enable = true;
     defaultEditor = true;
@@ -175,6 +170,14 @@
       AllowUsers = [ "traverseda" ];
     };
   };
+
+  programs.nh = {
+    enable = true;
+    clean.enable = true;
+    clean.extraArgs = "--keep-since 4d --keep 3";
+    flake = "/home/traverseda/nixos-config/";
+  };
+
   system.autoUpgrade = {
     enable = true;
     flake = "git+https://codeberg.org/traverseda/nixos-config#${hostname}";
