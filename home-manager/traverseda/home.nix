@@ -108,6 +108,7 @@
     pkgs.comma
     pkgs.docker-compose
     pkgs.netcat-gnu
+
     pkgs.unstable.aider-chat
 
     (pkgs.writeShellScriptBin "poetry" ''
