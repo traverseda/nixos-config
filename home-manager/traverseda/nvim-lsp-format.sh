@@ -18,6 +18,10 @@ find "$DIRECTORY" -type f | while read -r file; do
     echo "Formatting $file"
     nvim --headless -c "edit $file" -c "lua vim.lsp.buf.format()" -c "write" -c "quit"
   else
-    echo "Skipping $file (not tracked or modified)"
+    if ! git ls-files --error-unmatch "$file" > /dev/null 2>&1; then
+      echo "Skipping $file (untracked)"
+    elif ! git diff --quiet "$file"; then
+      echo "Skipping $file (modified)"
+    fi
   fi
 done
