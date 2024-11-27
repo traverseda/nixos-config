@@ -66,6 +66,12 @@
       enable = true;
       servers = {
         ruff-lsp.enable = true;
+        html.enable = true;
+        dockerls.enable = true;
+        yamlls = {
+          enable = true;
+          filetypes = [ "yaml" ];
+        };
         nixd = {
           enable = true;
 
