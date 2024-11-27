@@ -209,16 +209,16 @@
         action = "<cmd>lua vim.lsp.buf.format()<cr>";
       }
       {
-        mode = [ "n" ];
-        key = "<leader>ws";
-        options = { noremap = true; desc = "+splits"; };
-        action = "+splits";
-      }
-      {
         mode = [ "v" ];
         key = "<leader>f";
         options = { noremap = true; desc = "Format Selection"; };
         action = "<cmd>lua vim.lsp.buf.range_formatting()<cr>";
+      }
+      {
+        mode = [ "n" ];
+        key = "<leader>ws";
+        options = { noremap = true; desc = "+splits"; };
+        action = "+splits";
       }
       {
         mode = [ "n" ];
