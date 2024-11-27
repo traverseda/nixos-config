@@ -125,6 +125,17 @@
       vim.opt.listchars:append({ tab = '>-', trail = 'x' })
       -- Enable undofile support
       vim.o.undofile = true
+
+      function FormatFunction()
+        vim.lsp.buf.format({
+          async = true,
+          range = {
+            ["start"] = vim.api.nvim_buf_get_mark(0, "<"),
+            ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
+          }
+        })
+      end
+
     '';
 
     globals.mapleader = " ";
