@@ -73,9 +73,9 @@
         jsonls.enable = true;
         rust_analyzer.enable = true;
         bashls.enable = true;
-        jinja_lsp = { 
+        jinja_lsp = {
           enable = true;
-          filetypes = [ "jinja" , "jinja2" ];
+          filetypes = [ "jinja" "jinja2" ];
         };
 
         yamlls = {
