@@ -223,7 +223,7 @@
         mode = [ "v" ];
         key = "<leader>f";
         options = { noremap = true; desc = "Format Selection"; };
-        action = "<cmd>lua vim.lsp.buf.range_formatting()<cr>";
+        action = "<cmd>lua FormatFunction()<cr>";
       }
       {
         mode = [ "n" ];
