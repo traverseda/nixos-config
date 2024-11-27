@@ -215,6 +215,12 @@
         action = "+splits";
       }
       {
+        mode = [ "v" ];
+        key = "<leader>f";
+        options = { noremap = true; desc = "Format Selection"; };
+        action = "<cmd>lua vim.lsp.buf.range_formatting()<cr>";
+      }
+      {
         mode = [ "n" ];
         key = "<leader>wsh";
         options = { noremap = true; desc = "Horizontal Split"; };
