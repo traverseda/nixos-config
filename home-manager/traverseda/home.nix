@@ -108,6 +108,7 @@
     pkgs.comma
     pkgs.docker-compose
     pkgs.netcat-gnu
+    (pkgs.writeShellScriptBin "nvim-lsp-format" ./home-manager/traverseda/nvim-lsp-format.sh)
     pkgs.nvim-lsp-format
 
     pkgs.unstable.aider-chat
