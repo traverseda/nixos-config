@@ -204,6 +204,12 @@
       }
       {
         mode = [ "n" ];
+        key = "<leader>f";
+        options = { noremap = true; desc = "Format Document"; };
+        action = "<cmd>lua vim.lsp.buf.format()<cr>";
+      }
+      {
+        mode = [ "n" ];
         key = "<leader>ws";
         options = { noremap = true; desc = "+splits"; };
         action = "+splits";
