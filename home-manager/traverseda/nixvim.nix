@@ -12,9 +12,9 @@
     plugins.lualine = {
       enable = true;
       sections = {
-        lualine_c = [ "os.date('%X')"];
+        lualine_c = [ "os.date('%X')" ];
         lualine_x = [
-          {name= "hostname";}
+          { name = "hostname"; }
         ];
       };
     };
@@ -50,12 +50,12 @@
           '';
         };
         sources = [
-          {name = "copilot";}
-          {name = "nvim_lsp";}
-          {name = "path";}
-          {name = "buffer";}
-          {name = "treesitter";}
-          {name = "bash";}
+          { name = "copilot"; }
+          { name = "nvim_lsp"; }
+          { name = "path"; }
+          { name = "buffer"; }
+          { name = "treesitter"; }
+          { name = "bash"; }
         ];
       };
     };
@@ -64,11 +64,22 @@
     plugins.commentary.enable = true;
     plugins.lsp = {
       enable = true;
+      servers = {
+        ruff-lsp.enable = true;
+        nixd = {
+          enable = true;
+
+          settings = {
+            formatting.command = [ "nixpkgs-fmt" ];
+            nixpkgs.expr = "import <nixpkgs> {}";
+          };
+        };
+      };
     };
     plugins.lsp-lines.enable = true;
-    plugins.lint = {
-      enable = true;
-    };
+    # plugins.lint = {
+    #   enable = true;
+    # };
     plugins.nix.enable = true;
 
     # plugins.clipboard-image = {
@@ -118,126 +129,97 @@
 
     globals.mapleader = " ";
     keymaps = [
-      # Clear the search buffer with <esc><esc> in normal and terminal modes
       {
-        mode = ["n", "t"];
+        # Clear the search buffer when I press esc twice
+        mode = [ "n" "t" ];
         key = "<esc><esc>";
         options = { noremap = true; desc = "Clear search"; };
         action = ":nohlsearch<cr>";
-      },
-
-      # Exit terminal mode with <esc><esc>
+      }
       {
         mode = "t";
-        key = "<esc><esc>";
+        key = "<Esc><Esc>";
         options = { noremap = true; };
         action = "<C-\\><C-n>";
-      },
-
-      # Open a new terminal with <C-a>c in normal and terminal modes
+      }
       {
-        mode = ["n", "t"];
+        mode = [ "n" "t" ];
         key = "<C-a>c";
         options = { noremap = true; desc = "Open new terminal"; };
         action = "<cmd>:term<cr>";
-      },
-
-      # Close the current buffer with <C-a>x in normal mode
+      }
       {
-        mode = ["n"];
+        mode = [ "n" ];
         key = "<C-a>x";
         options = { noremap = true; desc = "Close tab"; };
         action = "<cmd>:bd<cr>";
-      },
-
-      # Force close the current buffer with <C-a>x in terminal mode
+      }
       {
-        mode = ["t"];
+        mode = [ "t" ];
         key = "<C-a>x";
         options = { noremap = true; desc = "Close tab"; };
         action = "<cmd>:bd!<cr>";
-      },
-
-      # Pick a buffer to switch to using <C-a>s in normal and terminal modes
+      }
       {
-        mode = ["n", "t"];
+        mode = [ "n" "t" ];
         key = "<C-a>s";
         options = { noremap = true; desc = "Pick buffer"; };
         action = "<cmd>:BufferLinePick<CR>";
-      },
-
-      # Window management keybindings under <leader>w
+      }
       {
-        mode = ["n"];
+        mode = [ "n" ];
         key = "<leader>w";
         options = { noremap = true; desc = "+windows"; };
-        action = "+windows"; # Placeholder for window-related operations
-      },
-
-      # Move to the left window with <leader>w<Left>
+        action = "+windows";
+      }
       {
-        mode = ["n"];
+        mode = [ "n" ];
         key = "<leader>w<Left>";
         options = { noremap = true; desc = "Move Left"; };
         action = "<C-w>h";
-      },
-
-      # Move to the right window with <leader>w<Right>
+      }
       {
-        mode = ["n"];
+        mode = [ "n" ];
         key = "<leader>w<Right>";
         options = { noremap = true; desc = "Move Right"; };
         action = "<C-w>l";
-      },
-
-      # Move to the upper window with <leader>w<Up>
+      }
       {
-        mode = ["n"];
+        mode = [ "n" ];
         key = "<leader>w<Up>";
         options = { noremap = true; desc = "Move Up"; };
         action = "<C-w>k";
-      },
-
-      # Move to the lower window with <leader>w<Down>
+      }
       {
-        mode = ["n"];
+        mode = [ "n" ];
         key = "<leader>w<Down>";
         options = { noremap = true; desc = "Move Down"; };
         action = "<C-w>j";
-      },
-
-      # Close the current window with <leader>wx
+      }
       {
-        mode = ["n"];
+        mode = [ "n" ];
         key = "<leader>wx";
         options = { noremap = true; desc = "Close Window"; };
         action = "<cmd>:close<cr>";
-      },
-
-      # Split management keybindings under <leader>ws
+      }
       {
-        mode = ["n"];
+        mode = [ "n" ];
         key = "<leader>ws";
         options = { noremap = true; desc = "+splits"; };
-        action = "+splits"; # Placeholder for split-related operations
-      },
-
-      # Open a horizontal split with <leader>wsh
+        action = "+splits";
+      }
       {
-        mode = ["n"];
+        mode = [ "n" ];
         key = "<leader>wsh";
         options = { noremap = true; desc = "Horizontal Split"; };
         action = "<cmd>:split<cr>";
-      },
-
-      # Open a vertical split with <leader>wsv
+      }
       {
-        mode = ["n"];
+        mode = [ "n" ];
         key = "<leader>wsv";
         options = { noremap = true; desc = "Vertical Split"; };
         action = "<cmd>:vsplit<cr>";
       }
     ];
-
   };
 }
