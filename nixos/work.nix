@@ -51,7 +51,9 @@
   environment.systemPackages = [
     pkgs.qemu
     pkgs.unstable.qgroundcontrol
+    pkgs.networkmanager-iodine
     pkgs.vscode
+    pkgs.obsidian
     pkgs.stdenv
     pkgs.gcc
     pkgs.rustc

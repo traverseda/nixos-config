@@ -37,6 +37,8 @@
     pkgs.tree
     pkgs.curl
     pkgs.wget
+    pkgs.mosh
+    pkgs.sshuttle
   ];
 
 
