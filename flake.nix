@@ -3,7 +3,7 @@
 
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
 
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
@@ -14,12 +14,13 @@
     # Also see the 'unstable-packages' overlay at 'overlays/default.nix'.
 
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url =  "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";
+      # url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-24.05";
+      url = "github:nix-community/nixvim/nixos-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -48,10 +49,10 @@
     self,
     nixpkgs,
     home-manager,
-    nixvim,
-    plasma-manager,
-    ros,
-    agenix,
+    # nixvim,
+    # plasma-manager,
+    # ros,
+    # agenix,
     ...
   } @ inputs: let
     inherit (self) outputs;

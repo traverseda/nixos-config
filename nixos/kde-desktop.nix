@@ -40,7 +40,7 @@
     "flatpak/remotes.d/flathub.flatpakrepo".source = pkgs.fetchurl {
       url = "https://dl.flathub.org/repo/flathub.flatpakrepo";
       hash = "sha256-M3HdJQ5h2eFjNjAHP+/aFTzUQm9y9K+gwzc64uj+oDo="
-;
+      ;
     };
   };
 
@@ -49,15 +49,15 @@
 
   boot.plymouth = {
     enable = true;
-    themePackages = with pkgs; [ (adi1090x-plymouth-themes.override {selected_themes = [ "rings" ]; }) ];
+    themePackages = with pkgs; [ (adi1090x-plymouth-themes.override { selected_themes = [ "rings" ]; }) ];
     theme = "rings";
   };
 
-  hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
 
   services.fprintd.enable = true;
   services.printing.enable = true;
-  programs.kdeconnect.enable = true; 
+  programs.kdeconnect.enable = true;
 
   #Enable flatpak repo by default for all users
   systemd.services.flatpak-repo = {
@@ -70,7 +70,7 @@
 
   programs.partition-manager.enable = true;
 
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = [
     pkgs.krfb
     pkgs.krdc
     pkgs.discover
@@ -89,35 +89,35 @@
     pkgs.anki
   ];
 
-programs.dconf.enable = true;
+  programs.dconf.enable = true;
 
   programs.firefox = {
     enable = true;
     policies = {
-        DisableTelemetry = true;
-        DisableFirefoxStudies = true;
-        EnableTrackingProtection = {
-          Value= true;
-          Locked = true;
-          Cryptomining = true;
-          Fingerprinting = true;
+      DisableTelemetry = true;
+      DisableFirefoxStudies = true;
+      EnableTrackingProtection = {
+        Value = true;
+        Locked = true;
+        Cryptomining = true;
+        Fingerprinting = true;
+      };
+      DisablePocket = true;
+      OverrideFirstRunPage = "";
+      OverridePostUpdatePage = "";
+      DontCheckDefaultBrowser = true;
+      Preferences = {
+        "widget.use-xdg-desktop-portal.file-picker" = 1;
+        "widget.use-xdg-desktop-portal.mime-handler" = 1;
+      };
+      ExtensionSettings = {
+        "*".installation_mode = "allowed";
+        # uBlock Origin:
+        "uBlock0@raymondhill.net" = {
+          install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
+          installation_mode = "normal_installed";
         };
-        DisablePocket = true;
-        OverrideFirstRunPage = "";
-        OverridePostUpdatePage = "";
-        DontCheckDefaultBrowser = true;
-        Preferences = {
-          "widget.use-xdg-desktop-portal.file-picker" = 1;
-          "widget.use-xdg-desktop-portal.mime-handler" = 1;
-        };
-        ExtensionSettings = {
-          "*".installation_mode = "allowed";
-          # uBlock Origin:
-          "uBlock0@raymondhill.net" = {
-            install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
-            installation_mode = "normal_installed";
-          };
-        };
+      };
     };
   };
 
@@ -136,7 +136,6 @@ programs.dconf.enable = true;
   hardware.logitech.wireless.enable = true;
   hardware.logitech.wireless.enableGraphical = true;
 
-  sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {

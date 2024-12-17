@@ -62,10 +62,12 @@
     plugins.indent-blankline.enable = true;
     # plugins.lsp-format.enable = true;
     plugins.commentary.enable = true;
+    plugins.web-devicons.enable = true;
+
     plugins.lsp = {
       enable = true;
       servers = {
-        ruff-lsp.enable = true;
+        ruff.enable = true;
         html.enable = true;
         htmx.enable = true;
         dockerls.enable = true;
