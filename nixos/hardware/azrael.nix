@@ -5,33 +5,40 @@
 
 {
   imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
+    [
+      (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
+  boot.extraModulePackages = [ 
+    config.boot.kernelPackages.rtl8188eus-aircrack
+    config.boot.kernelPackages.rtl88xxau-aircrack
+  ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/6638ca69-8a70-4f82-afd6-02c0d61f4d9f";
+    {
+      device = "/dev/disk/by-uuid/6638ca69-8a70-4f82-afd6-02c0d61f4d9f";
       fsType = "ext4";
     };
 
   boot.initrd.luks.devices."luks-2f7b0c1c-5d7f-403f-b4fd-fc0f423e83ee".device = "/dev/disk/by-uuid/2f7b0c1c-5d7f-403f-b4fd-fc0f423e83ee";
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/B01C-E401";
+    {
+      device = "/dev/disk/by-uuid/B01C-E401";
       fsType = "vfat";
     };
 
-  swapDevices = [ {
-     device = "/dev/nvme0n1p3";
-     randomEncryption.enable = true; 
-   } ];
+  swapDevices = [{
+    device = "/dev/nvme0n1p3";
+    randomEncryption.enable = true;
+  }];
   hardware.nvidia-container-toolkit.enable = true;
   hardware.nvidia = {
     powerManagement.finegrained = false;
+    open = true;
     prime = {
       offload = {
         enable = true;
@@ -42,7 +49,7 @@
       intelBusId = "PCI:0:0:2";
       nvidiaBusId = "PCI:1:0:0";
     };
-    };
+  };
   services.xserver.videoDrivers = [ "nvidia" ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking

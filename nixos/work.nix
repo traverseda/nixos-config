@@ -1,16 +1,17 @@
 {
-#  config,
-  pkgs,
-#  lib,
-#  ros,
-  ... }:
+  #  config,
+  pkgs
+, #  lib,
+  #  ros,
+  ...
+}:
 
 {
   virtualisation.virtualbox.host.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
 
   users.extraGroups.vboxusers.members = [ "traverseda" ];
-  boot.binfmt.emulatedSystems = ["aarch64-linux"];
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
   security.wrappers = {
     firejail = {
@@ -63,6 +64,7 @@
     pkgs.unstable.distrobox
     pkgs.element-desktop
     pkgs.act
+    pkgs.uv
 
     # pkgs.logseq
     (pkgs.writeShellScriptBin "python" ''
