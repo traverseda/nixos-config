@@ -1,6 +1,8 @@
 { inputs, outputs, lib, config, pkgs, hostname, specialArgs, ... }:
 {
   networking.firewall.enable = false;
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
 
   services.home-assistant = {
     enable = false;
