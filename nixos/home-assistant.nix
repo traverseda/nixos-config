@@ -59,7 +59,7 @@
   networking.firewall.allowedTCPPorts = [ 8123 ];
 
   services.node-red = {
-      enable = true;
+      enable = false;
       withNpmAndGcc = true;
       openFirewall = true;
   };
