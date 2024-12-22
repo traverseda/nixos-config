@@ -2,7 +2,7 @@
 {
 
   services.home-assistant = {
-    enable = true;
+    enable = false;
     extraComponents = [
        "default_config"
        "tplink"
