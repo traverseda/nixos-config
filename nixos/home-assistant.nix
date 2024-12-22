@@ -1,5 +1,6 @@
 { inputs, outputs, lib, config, pkgs, hostname, specialArgs, ... }:
 {
+  networking.firewall.enable = false;
 
   services.home-assistant = {
     enable = false;
