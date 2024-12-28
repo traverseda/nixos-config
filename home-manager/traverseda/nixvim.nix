@@ -25,6 +25,9 @@
     extraPlugins = with pkgs.vimPlugins; [
       vim-suda
     ];
+    plugins.chadtree = {
+      enable = true;
+    };
 
     # Enable autocomplete
     plugins.cmp = {
@@ -159,6 +162,11 @@
 
     globals.mapleader = " ";
     keymaps = [
+      { mode = [ "n" ]; 
+        key = "<leader>v"; 
+        options = { noremap = true; desc = "Open CHADTree"; }; 
+        action = "<cmd>CHADopen<cr>"; 
+      }
       {
         # Clear the search buffer when I press esc twice
         mode = [ "n" "t" ];

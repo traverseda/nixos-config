@@ -46,7 +46,9 @@
 
   networking.hostName = hostname; # Define your hostname.
   networking.networkmanager.enable = true;
-  nix.settings.trusted-users = [ "root" "traverseda" "logic11"];
+  nix.settings.trusted-users = [ "root" "traverseda" "logic11" ];
+
+  services.davfs2.enable = true;
 
   virtualisation.vmVariant = {
     # following configuration is added only when building VM with build-vm
@@ -61,24 +63,24 @@
 
   # This will add each flake input as a registry
   # To make nix3 commands consistent with your flake
-  nix.registry = (lib.mapAttrs (_: flake: {inherit flake;})) ((lib.filterAttrs (_: lib.isType "flake")) inputs);
+  nix.registry = (lib.mapAttrs (_: flake: { inherit flake; })) ((lib.filterAttrs (_: lib.isType "flake")) inputs);
 
   # This will additionally add your inputs to the system's legacy channels
   # Making legacy nix commands consistent as well, awesome!
-  nix.nixPath = ["/etc/nix/path"];
+  nix.nixPath = [ "/etc/nix/path" ];
   environment.etc =
     lib.mapAttrs'
-    (name: value: {
-      name = "nix/path/${name}";
-      value.source = value.flake;
-    })
-    config.nix.registry;
+      (name: value: {
+        name = "nix/path/${name}";
+        value.source = value.flake;
+      })
+      config.nix.registry;
 
   nix.settings = {
     # Enable flakes and new 'nix' command
     experimental-features = "nix-command flakes";
   };
-  
+
   #Deduplicate nix store on a timer
   nix.optimise.automatic = true;
 
@@ -90,22 +92,23 @@
   };
 
   environment.systemPackages = [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-  #  wget
-     pkgs.exfat
-     pkgs.exfatprogs
-     pkgs.mosh
-     pkgs.htop
-     pkgs.git
-     pkgs.usbutils
-     pkgs.pciutils
-     pkgs.lsof
-     pkgs.p7zip
-     pkgs.atool
-     pkgs.comma
-     pkgs.home-manager
-     pkgs.appimage-run
-     pkgs.linuxPackages.usbip
+    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    #  wget
+    pkgs.exfat
+    pkgs.exfatprogs
+    pkgs.mosh
+    pkgs.htop
+    pkgs.git
+    pkgs.usbutils
+    pkgs.pciutils
+    pkgs.lsof
+    pkgs.p7zip
+    pkgs.atool
+    pkgs.comma
+    pkgs.home-manager
+    pkgs.cifs-utils
+    pkgs.appimage-run
+    pkgs.linuxPackages.usbip
   ];
 
   programs.git = {
@@ -187,9 +190,9 @@
     randomizedDelaySec = "45min";
   };
 
-  programs.nix-ld.enable = true;
-  programs.nix-ld.libraries = with pkgs; [
-  ];
+  # programs.nix-ld.enable = true;
+  # programs.nix-ld.libraries = with pkgs; [
+  # ];
 
   #Create ldpadmin group for printer access
   services.printing.extraFilesConf = ''

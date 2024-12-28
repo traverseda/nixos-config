@@ -1,8 +1,11 @@
 { inputs, outputs, lib, config, pkgs, hostname, specialArgs, ... }:
 {
+  networking.firewall.enable = false;
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
 
   services.home-assistant = {
-    enable = true;
+    enable = false;
     extraComponents = [
        "default_config"
        "tplink"
@@ -59,7 +62,7 @@
   networking.firewall.allowedTCPPorts = [ 8123 ];
 
   services.node-red = {
-      enable = true;
+      enable = false;
       withNpmAndGcc = true;
       openFirewall = true;
   };
