@@ -47,6 +47,7 @@
   networking.hostName = hostname; # Define your hostname.
   networking.networkmanager.enable = true;
   nix.settings.trusted-users = [ "root" "traverseda" "logic11" ];
+  boot.tmp.cleanOnBoot = true;
 
   services.davfs2.enable = true;
 
