@@ -4,7 +4,7 @@
   inputs = {
     # Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-    stylix.url = "github:danth/stylix";
+
 
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
@@ -19,6 +19,7 @@
       # url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    stylix.url = "github:danth/stylix/release-24.11";
 
     nixvim = {
       url = "github:nix-community/nixvim/nixos-24.11";
@@ -84,6 +85,7 @@
     # Reusable home-manager modules you might want to export
     # These are usually stuff you would upstream into home-manager
     homeManagerModules = import ./modules/home-manager;
+    stylix = import ./modules/stylix;
 
     # NixOS configuration entrypoint
     nixosConfigurations = {

@@ -29,6 +29,11 @@
       enable = true;
     };
 
+    # plugins.colorizer = {
+    #   enable = true;
+    #   autoLoad = true;
+    # };
+
     # Enable autocomplete
     plugins.cmp = {
       enable = true;

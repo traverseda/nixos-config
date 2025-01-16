@@ -87,6 +87,7 @@
     pkgs.vlc
     pkgs.signal-desktop
     pkgs.anki
+    pkgs.kitty
   ];
 
   programs.dconf.enable = true;

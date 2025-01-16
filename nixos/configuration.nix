@@ -50,6 +50,7 @@
   boot.tmp.cleanOnBoot = true;
 
   services.davfs2.enable = true;
+  zramSwap.enable = true;
 
   virtualisation.vmVariant = {
     # following configuration is added only when building VM with build-vm
