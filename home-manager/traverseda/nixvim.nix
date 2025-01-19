@@ -67,6 +67,7 @@
         ];
       };
     };
+    plugins.telescope.enable = true;
     plugins.indent-blankline.enable = true;
     # plugins.lsp-format.enable = true;
     plugins.commentary.enable = true;
