@@ -5,72 +5,38 @@
 
 {
   imports =
-    [
-      (modulesPath + "/installer/scan/not-detected.nix")
-    ];
-
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ 
-    config.boot.kernelPackages.rtl8188eus-aircrack
-    config.boot.kernelPackages.rtl88xxau-aircrack
+    [ (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "thunderbolt" "usbhid" "usb_storage" "sd_mod" ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ "kvm-amd" ];
+  boot.extraModulePackages = [ ];
+
   fileSystems."/" =
-    {
-      device = "/dev/disk/by-uuid/6638ca69-8a70-4f82-afd6-02c0d61f4d9f";
+    { device = "/dev/disk/by-uuid/6638ca69-8a70-4f82-afd6-02c0d61f4d9f";
       fsType = "ext4";
     };
 
-  boot.initrd.luks.devices."luks-2f7b0c1c-5d7f-403f-b4fd-fc0f423e83ee".device = "/dev/disk/by-uuid/2f7b0c1c-5d7f-403f-b4fd-fc0f423e83ee";
+  boot.initrd.luks.devices."cryptroot".device = "/dev/disk/by-uuid/2f7b0c1c-5d7f-403f-b4fd-fc0f423e83ee";
 
   fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-uuid/B01C-E401";
+    { device = "/dev/disk/by-uuid/B01C-E401";
       fsType = "vfat";
+      options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  swapDevices = [{
-    device = "/dev/nvme0n1p3";
-    randomEncryption.enable = true;
-  }];
-  # hardware.nvidia-container-toolkit.enable = true;
-  # hardware.nvidia = {
-  #   powerManagement.finegrained = false;
-  #   open = true;
-  #   prime = {
-  #     offload = {
-  #       enable = true;
-  #       enableOffloadCmd = true;
-  #     };
-
-  #     # Make sure to use the correct Bus ID values for your system!
-  #     intelBusId = "PCI:0:0:2";
-  #     nvidiaBusId = "PCI:1:0:0";
-  #   };
-  # };
-  # services.xserver.videoDrivers = [ "nvidia" ];
+  swapDevices = [ ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.br-22d2b0b3a5fd.useDHCP = lib.mkDefault true;
-  # networking.interfaces.br-6cab41b5b767.useDHCP = lib.mkDefault true;
-  # networking.interfaces.br-b13218a11bcd.useDHCP = lib.mkDefault true;
-  # networking.interfaces.docker0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp3s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.veth00fe74b.useDHCP = lib.mkDefault true;
-  # networking.interfaces.veth059d5b8.useDHCP = lib.mkDefault true;
-  # networking.interfaces.veth565651d.useDHCP = lib.mkDefault true;
-  # networking.interfaces.veth588a8d1.useDHCP = lib.mkDefault true;
-  # networking.interfaces.vetha6a79f7.useDHCP = lib.mkDefault true;
-  # networking.interfaces.vethb8d496e.useDHCP = lib.mkDefault true;
-  # networking.interfaces.vethec49f9a.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlp0s20f3.useDHCP = lib.mkDefault true;
+  # networking.interfaces.wlp194s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 }

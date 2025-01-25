@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./misc/dslr-webcam.nix
+#    ./misc/dslr-webcam.nix
     ./misc/wifi-multiplex.nix
   ];
 
