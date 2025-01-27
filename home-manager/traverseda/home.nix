@@ -129,6 +129,20 @@
     '')
   ];
 
+  home.sessionVariables = {
+    OLLAMA_API_BASE = "http://localhost:11434";
+  };
+
+  home.file.".aider.conf.yml" = {
+    text = ''
+    dark-mode: true
+    read:
+      - CONVENTIONS.md
+    model: ollama_chat/deepseek-r1:14b
+
+    '';
+  };
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;

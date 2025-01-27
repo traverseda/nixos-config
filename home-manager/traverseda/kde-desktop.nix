@@ -12,14 +12,14 @@
     inputs.plasma-manager.homeManagerModules.plasma-manager
     inputs.stylix.homeManagerModules.stylix
   ];
-  stylix = {
-    enable = true;
-    base16Scheme = "${builtins.path {path = ./themes/blue_and_gold.yaml; }}";
-    # base16Scheme = "${pkgs.base16-schemes}/share/themes/atelier-estuary.yaml";
-    # base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-city-dark.yaml";
-    image = "${builtins.path { path = ../../wallpapers/halifax_waterfront_night_rain.jpg; }}";
-    # targets.firefox.firefoxGnomeTheme.enable = false;
-  };
+  # stylix = {
+  #   enable = true;
+  #   base16Scheme = "${builtins.path {path = ./themes/blue_and_gold.yaml; }}";
+  #   # base16Scheme = "${pkgs.base16-schemes}/share/themes/atelier-estuary.yaml";
+  #   # base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-city-dark.yaml";
+  #   image = "${builtins.path { path = ../../wallpapers/halifax_waterfront_night_rain.jpg; }}";
+  #   # targets.firefox.firefoxGnomeTheme.enable = false;
+  # };
 
   programs.plasma = {
     enable = true;

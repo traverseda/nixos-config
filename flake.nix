@@ -115,6 +115,8 @@
           ./nixos/cad.nix
           ./nixos/zerotier.nix
           ./nixos/work.nix
+          ./nixos/gaming.nix
+          ./nixos/ollama.nix
         ];
       };
       #Lenovo T15

@@ -9,6 +9,7 @@
   ];
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  nixpkgs.config.rocmSupport = true;
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "thunderbolt" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
