@@ -140,9 +140,10 @@
   home.file.".aider.conf.yml" = {
     text = ''
     dark-mode: true
-    read:
-      - CONVENTIONS.md
+    read: CONVENTIONS.md
     model: ollama_chat/deepseek-r1:14b
+    watch-files: true
+
     '';
   };
 
@@ -161,6 +162,7 @@
       theme = "robbyrussell";
     };
     initExtra = ''
+    source ~/.profile
     if [[ -n ''${NVIM+x} ]]; then
       alias vim="nvr --remote"
       export EDITOR=nvr-edit
@@ -172,6 +174,7 @@
     enableCompletion = true;
 
     initExtra = ''
+    source ~/.profile
     if [[ -n ''${NVIM+x} ]]; then
       alias vim="nvr --remote"
       export EDITOR=nvr-edit
