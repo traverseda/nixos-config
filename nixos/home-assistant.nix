@@ -65,7 +65,28 @@
       enable = false;
       withNpmAndGcc = true;
       openFirewall = true;
-  };
+    };
+
+  services.nginx = {
+      enable = true;
+      recommendedProxySettings = true;
+      recommendedTlsSettings = false;
+      # other Nginx options
+      virtualHosts."hearth.local" =  {
+        enableACME = false;
+        forceSSL = false;
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8123";
+          proxyWebsockets = true; # needed if you need to use WebSocket
+          # extraConfig =
+          #   # required when the target is also TLS server with multiple hosts
+          #   # "proxy_ssl_server_name on;" +
+          #   # required when the server wants to use HTTP Authentication
+          #   "proxy_pass_header Authorization;"
+          #   ;
+        };
+      };
+    };
 
   services.cron.enable = true;
 
@@ -80,7 +101,11 @@
       export CHROMIUM_FLAGS="--touch-devices=10 --enable-pinch" 
       exec ${pkgs.chromium}/bin/chromium  --force-dark-mode --kiosk http://127.0.0.1:8123
       ''}/bin/start-cage-app";
+    };
+  systemd.services."cage-tty1".serviceConfig = {
+    Restart = "always";
   };
+
   users.users.kiosk = {
     isNormalUser = true;
   };
