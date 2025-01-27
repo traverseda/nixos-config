@@ -7,7 +7,21 @@
     viAlias = true;
     vimAlias = true;
     # We use bufferline for the top line
-    plugins.bufferline.enable = true;
+    plugins.bufferline = {
+      enable = true;
+      settings = {
+        options = {
+          offsets = [
+            {
+              filetype = "CHADTree";
+              highlight = "Directory";
+              text = "File Explorer";
+              text_align = "Left";
+            }
+          ];
+        };
+      };
+    };
     # And lualine for the bottom line
     plugins.lualine = {
       enable = true;
@@ -168,10 +182,11 @@
 
     globals.mapleader = " ";
     keymaps = [
-      { mode = [ "n" ]; 
-        key = "<leader>v"; 
-        options = { noremap = true; desc = "Open CHADTree"; }; 
-        action = "<cmd>CHADopen<cr>"; 
+      {
+        mode = [ "n" ];
+        key = "<leader>v";
+        options = { noremap = true; desc = "Open CHADTree"; };
+        action = "<cmd>CHADopen<cr>";
       }
       {
         # Clear the search buffer when I press esc twice
