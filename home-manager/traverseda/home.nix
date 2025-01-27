@@ -127,6 +127,10 @@
     (pkgs.writeShellScriptBin "nvr-edit" ''
       nvr --remote-wait $@
     '')
+    (pkgs.writeShellScriptBin "autocommit" ''
+      aider --commit --model ollama_chat/llama3.2
+    ''
+    )
   ];
 
   home.sessionVariables = {
@@ -139,7 +143,6 @@
     read:
       - CONVENTIONS.md
     model: ollama_chat/deepseek-r1:14b
-
     '';
   };
 
