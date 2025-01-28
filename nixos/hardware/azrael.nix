@@ -15,6 +15,8 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
+  #Hack for virtualbox on 6.12+ kernels
+  boot.kernelParams = [ "kvm.enable_virt_at_load=0" ];
 
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/6638ca69-8a70-4f82-afd6-02c0d61f4d9f";
