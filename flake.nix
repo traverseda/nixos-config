@@ -117,6 +117,7 @@
           ./nixos/work.nix
           ./nixos/gaming.nix
           ./nixos/ollama.nix
+          ./nixos/misc/dslr-webcam.nix
         ];
       };
       #Lenovo T15

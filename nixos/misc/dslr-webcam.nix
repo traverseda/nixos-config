@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, config, lib, ... }:
 
 let
   dslrWebcamConfContent = ''
@@ -34,8 +34,7 @@ in
 {
   # Ensure your system configuration includes these options:
 
-  boot.extraModulePackages = [ pkgs.linuxPackages.v4l2loopback ];
-
+  boot.extraModulePackages = [ config.boot.kernelPackages.v4l2loopback ];
   # Load v4l2loopback module with the required options
   boot.extraModprobeConfig = dslrWebcamConfContent;
 
