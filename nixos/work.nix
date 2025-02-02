@@ -23,6 +23,7 @@
   programs.firejail = {
     enable = true;
   };
+  programs.sniffnet.enable = true;
 
   programs.nix-ld = {
     enable = true;

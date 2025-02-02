@@ -141,7 +141,7 @@
     text = ''
     dark-mode: true
     read: CONVENTIONS.md
-    model: ollama_chat/deepseek-coder-v2:14b
+    model: ollama_chat/deepseek-coder-v2
     watch-files: true
 
     '';
