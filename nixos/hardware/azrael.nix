@@ -5,8 +5,9 @@
 
 {
   imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
-  ];
+    [
+      (modulesPath + "/installer/scan/not-detected.nix")
+    ];
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
   nixpkgs.config.rocmSupport = true;
@@ -19,19 +20,26 @@
   boot.kernelParams = [ "kvm.enable_virt_at_load=0" ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/6638ca69-8a70-4f82-afd6-02c0d61f4d9f";
+    {
+      device = "/dev/disk/by-uuid/6638ca69-8a70-4f82-afd6-02c0d61f4d9f";
       fsType = "ext4";
     };
 
   boot.initrd.luks.devices."cryptroot".device = "/dev/disk/by-uuid/2f7b0c1c-5d7f-403f-b4fd-fc0f423e83ee";
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/B01C-E401";
+    {
+      device = "/dev/disk/by-uuid/B01C-E401";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
-  swapDevices = [ ];
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 64 * 1024; # 16GB
+    }
+  ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
