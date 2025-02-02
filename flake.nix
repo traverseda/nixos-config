@@ -187,6 +187,17 @@
           ./nixos/zerotier.nix
         ];
       };
+      installer = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs outputs;
+          hostname = "installer";
+        };
+        modules = [
+          ./nixos/configuration.nix
+          ./nixos/kde-desktop.nix
+          ./nixos/installer.nix
+        ];
+      };
     };
 
     # Standalone home-manager configuration entrypoint
