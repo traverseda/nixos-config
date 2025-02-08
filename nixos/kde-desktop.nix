@@ -73,6 +73,8 @@
   environment.systemPackages = [
     pkgs.krfb
     pkgs.krdc
+    pkgs.kdePackages.kio-fuse
+    pkgs.kdePackages.kio-extras
     pkgs.discover
     pkgs.libreoffice-qt
     pkgs.filelight
