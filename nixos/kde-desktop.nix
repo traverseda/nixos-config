@@ -81,6 +81,7 @@
     pkgs.hunspell
     pkgs.hunspellDicts.en_CA
     pkgs.hunspellDicts.en_US
+    pkgs.thunderbird
     pkgs.inkscape
     pkgs.gimp
     pkgs.krita
