@@ -96,7 +96,7 @@
         dockerls.enable = true;
         cssls.enable = true;
         jsonls.enable = true;
-        # render-markdown.enable = true;
+        marksman.enable = true;
         # rust_analyzer.enable = true;
         bashls.enable = true;
         # jinja_lsp = {
