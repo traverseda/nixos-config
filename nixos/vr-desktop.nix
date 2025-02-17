@@ -27,8 +27,24 @@ in
   ];
   environment.systemPackages = [
     pkgs.wlx-overlay-s
-    # simula
+    pkgs.stardust-xr-server
+    pkgs.stardust-xr-protostar
+    pkgs.stardust-xr-flatland
+    pkgs.stardust-xr-atmosphere
+
+    (pkgs.writeShellScriptBin "stardust_startup" ''
+      ${pkgs.xwayland-satellite}/bin/xwayland-satellite :10 &
+      export DISPLAY=:10 &
+      sleep 0.1;
+
+      ${pkgs.stardust-xr-flatland}/bin/flatland &
+      ${pkgs.stardust-xr-gravity}/bin/gravity -- 0 0.0 -0.5 hexagon_launcher &
+    '')
+    (pkgs.writeShellScriptBin "stardust" ''
+      ${pkgs.stardust-xr-server}/bin/stardust-xr-server -o 1 -e stardust_startup "$@"
+    '')
   ];
+
 
   home-manager = {
     extraSpecialArgs = { inherit inputs outputs; };

@@ -21,7 +21,7 @@
   #   # targets.firefox.firefoxGnomeTheme.enable = false;
   # };
   home.sessionVariables = {
-    LC_ALL = "en_CA.UTF-8";
+    LC_ALL = "en_US.UTF-8";
   };
 
   programs.plasma = {
