@@ -48,7 +48,7 @@ in
     defaultRuntime = true;
 
     # Run WiVRn as a systemd service on startup
-    autoStart = true;
+    autoStart = false;
 
     # Config for WiVRn (https://github.com/WiVRn/WiVRn/blob/master/docs/configuration.md)
     config = {

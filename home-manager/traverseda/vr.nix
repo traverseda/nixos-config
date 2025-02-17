@@ -6,6 +6,9 @@
 , specialArgs
 , ...
 }: {
+  home.sessionVariables = {
+    PRESSURE_VESSEL_FILESYSTEMS_RW = "$XDG_RUNTIME_DIR/wivrn/comp_ipc";
+  };
 
   # For WiVRn:
   xdg.configFile."openxr/1/active_runtime.json".source = "${pkgs.wivrn}/share/openxr/1/openxr_wivrn.json";
