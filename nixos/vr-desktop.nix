@@ -73,8 +73,8 @@ in
     };
   };
 
-  programs.envision = {
-    enable = true;
-    openFirewall = true; # This is set true by default
-  };
+  # programs.envision = {
+  #   enable = true;
+  #   openFirewall = true; # This is set true by default
+  # };
 }
