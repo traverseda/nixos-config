@@ -31,6 +31,7 @@ in
     pkgs.stardust-xr-protostar
     pkgs.stardust-xr-flatland
     pkgs.stardust-xr-atmosphere
+    pkgs.android-tools
 
     (pkgs.writeShellScriptBin "stardust_startup" ''
       ${pkgs.xwayland-satellite}/bin/xwayland-satellite :10 &
@@ -38,7 +39,7 @@ in
       sleep 0.1;
 
       ${pkgs.stardust-xr-flatland}/bin/flatland &
-      ${pkgs.stardust-xr-gravity}/bin/gravity -- 0 0.0 -0.5 hexagon_launcher &
+      ${pkgs.stardust-xr-gravity}/bin/gravity -- 0 0.0 -0.5 ${pkgs.stardust-xr-protostar}/bin/hexagon_launcher &
     '')
     (pkgs.writeShellScriptBin "stardust" ''
       ${pkgs.stardust-xr-server}/bin/stardust-xr-server -o 1 -e stardust_startup "$@"
@@ -57,6 +58,7 @@ in
   services.wivrn = {
     enable = true;
     openFirewall = true;
+    package = pkgs.unstable.wivrn;
 
     # Write information to /etc/xdg/openxr/1/active_runtime.json, VR applications
     # will automatically read this and work with WiVRn (Note: This does not currently
