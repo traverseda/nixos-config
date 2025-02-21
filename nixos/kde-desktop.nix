@@ -2,7 +2,7 @@
 
 {
   imports = [
-#    ./misc/dslr-webcam.nix
+    #    ./misc/dslr-webcam.nix
     ./misc/wifi-multiplex.nix
   ];
 
@@ -91,6 +91,10 @@
     pkgs.signal-desktop
     pkgs.anki
     pkgs.kitty
+  ];
+
+  fonts.packages = [
+    pkgs.noto-fonts-cjk-sans
   ];
 
   programs.dconf.enable = true;

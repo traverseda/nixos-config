@@ -44,6 +44,9 @@ in
     (pkgs.writeShellScriptBin "stardust" ''
       ${pkgs.stardust-xr-server}/bin/stardust-xr-server -o 1 -e stardust_startup "$@"
     '')
+    (pkgs.writeShellScriptBin "stream-quest2" ''
+      ${pkgs.scrcpy}/bin/scrcpy -b 25M -c 1440:1540:60:60 "$@"
+    '')
   ];
 
 
