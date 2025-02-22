@@ -2,7 +2,7 @@
 
 {
   imports = [
-#    ./misc/dslr-webcam.nix
+    #    ./misc/dslr-webcam.nix
     ./misc/wifi-multiplex.nix
   ];
 
@@ -73,12 +73,15 @@
   environment.systemPackages = [
     pkgs.krfb
     pkgs.krdc
+    pkgs.kdePackages.kio-fuse
+    pkgs.kdePackages.kio-extras
     pkgs.discover
     pkgs.libreoffice-qt
     pkgs.filelight
     pkgs.hunspell
     pkgs.hunspellDicts.en_CA
     pkgs.hunspellDicts.en_US
+    pkgs.thunderbird
     pkgs.inkscape
     pkgs.gimp
     pkgs.krita
@@ -88,6 +91,10 @@
     pkgs.signal-desktop
     pkgs.anki
     pkgs.kitty
+  ];
+
+  fonts.packages = [
+    pkgs.noto-fonts-cjk-sans
   ];
 
   programs.dconf.enable = true;

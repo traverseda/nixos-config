@@ -117,6 +117,8 @@
           ./nixos/work.nix
           ./nixos/gaming.nix
           ./nixos/ollama.nix
+          ./nixos/misc/dslr-webcam.nix
+          ./nixos/vr-desktop.nix
         ];
       };
       #Lenovo T15
@@ -184,6 +186,17 @@
           ./nixos/kde-desktop.nix
           ./nixos/family.nix
           ./nixos/zerotier.nix
+        ];
+      };
+      installer = nixpkgs.lib.nixosSystem {
+        specialArgs = {
+          inherit inputs outputs;
+          hostname = "installer";
+        };
+        modules = [
+          ./nixos/configuration.nix
+          ./nixos/kde-desktop.nix
+          ./nixos/installer.nix
         ];
       };
     };

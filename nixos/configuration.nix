@@ -50,7 +50,7 @@
   boot.tmp.cleanOnBoot = true;
 
   services.davfs2.enable = true;
-  zramSwap.enable = true;
+  # zramSwap.enable = true;
 
   virtualisation.vmVariant = {
     # following configuration is added only when building VM with build-vm
@@ -62,6 +62,13 @@
   services.udev.packages = [
     pkgs.android-udev-rules
   ];
+
+
+  i18n.supportedLocales = [
+    "C.UTF-8/UTF-8"
+    "en_US.UTF-8/UTF-8"
+  ];
+  i18n.defaultLocale = "en_US.UTF-8";
 
   # This will add each flake input as a registry
   # To make nix3 commands consistent with your flake
@@ -97,6 +104,7 @@
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     #  wget
     pkgs.exfat
+    pkgs.glibcLocales
     pkgs.exfatprogs
     pkgs.mosh
     pkgs.htop

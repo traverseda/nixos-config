@@ -20,6 +20,9 @@
   #   image = "${builtins.path { path = ../../wallpapers/halifax_waterfront_night_rain.jpg; }}";
   #   # targets.firefox.firefoxGnomeTheme.enable = false;
   # };
+  home.sessionVariables = {
+    LC_ALL = "en_US.UTF-8";
+  };
 
   programs.plasma = {
     enable = true;

@@ -18,6 +18,7 @@
     pkgs.lightburn
     pkgs.openscad
     pkgs.orca-slicer
+    # pkgs.unstable.orca-slicer
     pkgs.blender-cadsketcher
     #pkgs.py-slvs
     pkgs.freecad

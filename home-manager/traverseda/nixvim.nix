@@ -96,7 +96,7 @@
         dockerls.enable = true;
         cssls.enable = true;
         jsonls.enable = true;
-        # render-markdown.enable = true;
+        marksman.enable = true;
         # rust_analyzer.enable = true;
         bashls.enable = true;
         # jinja_lsp = {
@@ -290,6 +290,34 @@
         key = "<leader>wsv";
         options = { noremap = true; desc = "Vertical Split"; };
         action = "<cmd>:vsplit<cr>";
+      }
+      #Spell checking shortcuts
+      {
+        mode = [ "n" ];
+        key = "<leader>zs";
+        options = { noremap = true; desc = "Spell check"; };
+        action = ":setlocal spell!<CR>";
+      }
+      {
+        # mark as good
+        mode = [ "n" ];
+        key = "<leader>zg";
+        options = { noremap = true; desc = "Mark as good"; };
+        action = "zg";
+      }
+      {
+        #Mark as bad
+        mode = [ "n" ];
+        key = "<leader>zw";
+        options = { noremap = true; desc = "Mark as bad"; };
+        action = "zw";
+      }
+      {
+        #suggest
+        mode = [ "n" ];
+        key = "<leader>z=";
+        options = { noremap = true; desc = "Suggest"; };
+        action = "z=";
       }
     ];
   };

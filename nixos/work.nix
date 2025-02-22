@@ -12,6 +12,7 @@
 
   users.extraGroups.vboxusers.members = [ "traverseda" ];
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  boot.binfmt.preferStaticEmulators = true;
 
   security.wrappers = {
     firejail = {
@@ -22,6 +23,7 @@
   programs.firejail = {
     enable = true;
   };
+  programs.sniffnet.enable = true;
 
   programs.nix-ld = {
     enable = true;

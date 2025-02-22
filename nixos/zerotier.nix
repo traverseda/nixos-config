@@ -36,5 +36,5 @@ in {
   services.zerotierone.enable = true;
 
   #Don't join zerotier if I'm testing in a VM
-  services.zerotierone.joinNetworks = lib.optionals (!options.virtualisation ? qemu) [ "e04fa485ed2a4dc4" ];
+  services.zerotierone.joinNetworks = lib.optionals (!options.virtualisation ? qemu) [ "e5cd7a9e1cf4cb82" ];
 }
