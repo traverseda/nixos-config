@@ -92,6 +92,7 @@
 
   #Break touchscreen support
   #${pkgs.wlr-randr}/bin/wlr-randr --output eDP-1 --transform 90 # Adjust command as needed
+  
   services.cage = {
       enable = true;
       user = "kiosk";
@@ -104,9 +105,7 @@
     };
   systemd.services."cage-tty1".serviceConfig = {
     Restart = "always";
-    RestartSec="5s";
-    StartLimitBurst="5";
-    StartLimitInterval="30s";
+    SuccessExitStatus = "";
   };
 
   users.users.kiosk = {
