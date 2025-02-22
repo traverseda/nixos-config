@@ -104,6 +104,10 @@
     };
   systemd.services."cage-tty1".serviceConfig = {
     Restart = "always";
+    RestartSec="5s";
+    StartLimitBurst="5";
+    StartLimitIntervalSec="30";
+    WatchdogSec="10";
   };
 
   users.users.kiosk = {
