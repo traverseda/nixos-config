@@ -106,8 +106,7 @@
     Restart = "always";
     RestartSec="5s";
     StartLimitBurst="5";
-    StartLimitIntervalSec="30";
-    WatchdogSec="10";
+    StartLimitInterval="30s";
   };
 
   users.users.kiosk = {
