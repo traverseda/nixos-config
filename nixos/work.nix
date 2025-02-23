@@ -29,6 +29,7 @@
     enable = true;
     #Include libstdc++ in the nix-ld profile
     libraries = [
+      pkgs.unstable.openterface-qt
       pkgs.stdenv.cc.cc
       pkgs.zlib
       pkgs.fuse3
