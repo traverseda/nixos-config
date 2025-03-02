@@ -108,6 +108,9 @@
     Restart = "always";
     SuccessExitStatus = "";
     RestartPreventExitStatus = "";
+    RestartSec = "5s"; # Delay before restarting
+    StartLimitIntervalSec = "10min";
+    StartLimitBurst = "5";
   };
 
   users.users.kiosk = {
