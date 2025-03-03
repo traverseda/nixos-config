@@ -52,13 +52,18 @@
       pkgs.freetype
     ];
   };
+  services.envfs = {
+    enable = true;
+  };
 
   environment.systemPackages = [
     pkgs.qemu
     pkgs.unstable.qgroundcontrol
     pkgs.networkmanager-iodine
+    pkgs.squashfsTools
+    pkgs.parted
     pkgs.vscode
-    pkgs.obsidian
+    pkgs.sshfs
     pkgs.stdenv
     pkgs.gcc
     pkgs.rustc
