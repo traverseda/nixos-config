@@ -93,15 +93,13 @@
     extraArguments = [ "-d" "-s" ];
     program = "${pkgs.writeScriptBin "start-cage-app" ''
       #!/usr/bin/env bash
-      export CHROMIUM_FLAGS="--touch-devices=10 --enable-pinch" 
+      export CHROMIUM_FLAGS="--touch-devices=10 --enable-pinch"
       exec ${pkgs.chromium}/bin/chromium  --force-dark-mode --kiosk http://127.0.0.1:8123
       ''}/bin/start-cage-app";
   };
-  systemd.services."cage-tty1".stopIfChanged = false;
   systemd.services."cage-tty1".serviceConfig = {
     Restart = "always";
-    SuccessExitStatus = "";
-    RestartPreventExitStatus = "";
+    ExecStopPost = ''${pkgs.runtimeShell} -c '[ "$EXIT_CODE" != "exited" ]' '';
   };
 
   users.users.kiosk = {
