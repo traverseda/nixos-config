@@ -98,6 +98,7 @@
         marksman.enable = true;
         # rust_analyzer.enable = true;
         bashls.enable = true;
+        beancount.enable = true;
         # jinja_lsp = {
         #   enable = true;
         #   filetypes = [ "jinja" "jinja2" ];
