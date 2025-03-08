@@ -5,6 +5,7 @@
     # Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
 
+    impermanence.url = "github:nix-community/impermanence";
 
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
@@ -55,6 +56,7 @@
     self,
     nixpkgs,
     home-manager,
+    impermanence,
     # winapps,
     # nixvim,
     # plasma-manager,
@@ -104,6 +106,7 @@
           ./nixos/configuration.nix
           ./nixos/kde-desktop.nix
           ./nixos/cad.nix
+          impermanence.nixosModules.impermanence
           ./nixos/zerotier.nix
           ./nixos/family.nix
         ];
