@@ -90,7 +90,6 @@
     plugins.lsp = {
       enable = true;
       servers = {
-        ruff.enable = true;
         html.enable = true;
         htmx.enable = true;
         dockerls.enable = true;
@@ -103,6 +102,12 @@
         #   enable = true;
         #   filetypes = [ "jinja" "jinja2" ];
         # };
+        ruff = {
+          enable = true;
+          settings = {
+            line-length = 120;
+          };
+        };
 
         yamlls = {
           enable = true;

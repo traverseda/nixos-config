@@ -1,7 +1,7 @@
 {
-  #  config,
-  pkgs
-, #  lib,
+  config,
+  pkgs,
+  #  lib,
   #  ros,
   ...
 }:
@@ -23,7 +23,14 @@
   programs.firejail = {
     enable = true;
   };
-  programs.sniffnet.enable = true;
+  # programs.sniffnet.enable = true;
+
+  # services.kubo = {
+  #   enable = true;
+  #   autoMount = true;
+  #   localDiscovery = true;
+  # };
+  # users.users.traverseda.extraGroups = [ config.services.kubo.group ];
 
   programs.nix-ld = {
     enable = true;
