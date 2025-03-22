@@ -32,17 +32,21 @@
       inputs.home-manager.follows = "home-manager";
     };
 
+    # winapps = {
+    #   url = "github:winapps-org/winapps";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
-    ros = {
-      url = "github:lopsided98/nix-ros-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # ros = {
+    #   url = "github:lopsided98/nix-ros-overlay";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
-    agenix.url = "github:ryantm/agenix";
+    # agenix.url = "github:ryantm/agenix";
 
     # Shameless plug: looking for a way to nixify your themes and make
     # everything match nicely? Try nix-colors!
-    nix-colors.url = "github:misterio77/nix-colors";
+    # nix-colors.url = "github:misterio77/nix-colors";
 
 
   };
@@ -51,6 +55,7 @@
     self,
     nixpkgs,
     home-manager,
+    # winapps,
     # nixvim,
     # plasma-manager,
     # ros,

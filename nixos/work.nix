@@ -1,6 +1,8 @@
 {
   config,
   pkgs,
+  # system,
+  inputs,
   #  lib,
   #  ros,
   ...
@@ -8,7 +10,6 @@
 
 {
   virtualisation.virtualbox.host.enable = true;
-  virtualisation.spiceUSBRedirection.enable = true;
 
   users.extraGroups.vboxusers.members = [ "traverseda" ];
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
@@ -24,6 +25,10 @@
     enable = true;
   };
   # programs.sniffnet.enable = true;
+  promrams.fcast-receiver = {
+    enable = true;
+    openFirewall = true;
+  };
 
   # services.kubo = {
   #   enable = true;
@@ -63,8 +68,14 @@
     enable = true;
   };
 
+  users.groups.libvirtd.members = ["traverseda"];
+
+  virtualisation.libvirtd.enable = true;
+  virtualisation.spiceUSBRedirection.enable = true;
+
   environment.systemPackages = [
     pkgs.qemu
+    # pkgs.virt-manager-qt
     pkgs.unstable.qgroundcontrol
     pkgs.networkmanager-iodine
     pkgs.squashfsTools
@@ -81,6 +92,10 @@
     pkgs.element-desktop
     pkgs.act
     pkgs.uv
+
+    pkgs.freerdp3
+    # inputs.winapps.packages.x86_64-linux.winapps
+    # inputs.winapps.packages.x86_64-linux.winapps-launcher
 
     # pkgs.logseq
     (pkgs.writeShellScriptBin "python" ''
