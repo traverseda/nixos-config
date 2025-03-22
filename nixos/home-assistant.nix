@@ -99,7 +99,9 @@
   };
   systemd.services."cage-tty1".serviceConfig = {
     Restart = "always";
-    ExecStopPost = ''${pkgs.runtimeShell} -c '[ "$EXIT_CODE" != "exited" ]' '';
+    RestartSec="5";
+    StartLimitIntervalSec="0";
+    RestartForceExitStatus="0 SIGTERM SIGINT SIGUSR1 SIGUSR2";
   };
 
   users.users.kiosk = {
