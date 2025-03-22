@@ -61,6 +61,10 @@
 
   networking.firewall.allowedTCPPorts = [ 8123 ];
 
+  system.autoUpgrade = {
+    operation = "boot";
+  };
+
   services.node-red = {
     enable = false;
     withNpmAndGcc = true;
@@ -84,6 +88,11 @@
 
   services.cron.enable = true;
 
+  programs.fcast-receiver = {
+    enable = true;
+    openFirewall = true;
+  };
+
   #Break touchscreen support
   #${pkgs.wlr-randr}/bin/wlr-randr --output eDP-1 --transform 90 # Adjust command as needed
 
@@ -93,6 +102,7 @@
     extraArguments = [ "-d" "-s" ];
     program = "${pkgs.writeScriptBin "start-cage-app" ''
       #!/usr/bin/env bash
+      exec ${pkgs.fcast-receiver}/bin/fcast-receiver --enable-features=UseOzonePlatform --ozone-platform=wayland --no-main-window &
       export CHROMIUM_FLAGS="--touch-devices=10 --enable-pinch"
       exec ${pkgs.chromium}/bin/chromium  --force-dark-mode --kiosk http://127.0.0.1:8123
       ''}/bin/start-cage-app";
