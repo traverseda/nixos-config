@@ -25,7 +25,7 @@
     enable = true;
   };
   # programs.sniffnet.enable = true;
-  promrams.fcast-receiver = {
+  programs.fcast-receiver = {
     enable = true;
     openFirewall = true;
   };
