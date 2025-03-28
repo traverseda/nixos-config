@@ -71,20 +71,20 @@
     openFirewall = true;
   };
 
-  services.nginx = {
-    enable = true;
-    recommendedProxySettings = true;
-    recommendedTlsSettings = false;
-    # other Nginx options
-    virtualHosts."hearth.local" = {
-      enableACME = false;
-      forceSSL = false;
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:8123";
-        proxyWebsockets = true; # needed if you need to use WebSocket
-      };
-    };
-  };
+  # services.nginx = {
+  #   enable = true;
+  #   recommendedProxySettings = true;
+  #   recommendedTlsSettings = false;
+  #   # other Nginx options
+  #   virtualHosts."hearth.local" = {
+  #     enableACME = false;
+  #     forceSSL = false;
+  #     locations."/" = {
+  #       proxyPass = "http://127.0.0.1:8123";
+  #       proxyWebsockets = true; # needed if you need to use WebSocket
+  #     };
+  #   };
+  # };
 
   services.cron.enable = true;
 
