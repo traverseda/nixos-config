@@ -110,6 +110,7 @@
     pkgs.mosh
     pkgs.htop
     pkgs.git
+    pkgs.git-lfs
     pkgs.usbutils
     pkgs.pciutils
     pkgs.lsof
