@@ -19,6 +19,11 @@
   #Hack for virtualbox on 6.12+ kernels
   boot.kernelParams = [ "kvm.enable_virt_at_load=0" ];
 
+  system.autoUpgrade = {
+    enable = false;
+  };
+
+
   hardware.opengl.extraPackages = with pkgs; [
     rocmPackages.clr.icd
   ];

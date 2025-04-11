@@ -194,7 +194,7 @@
   };
 
   system.autoUpgrade = {
-    enable = true;
+    enable = lib.mkDefault true;
     flake = "git+https://codeberg.org/traverseda/nixos-config#${hostname}";
     flags = [
     ];
