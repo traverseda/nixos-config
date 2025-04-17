@@ -111,10 +111,10 @@
 
     (pkgs.writeShellScriptBin "nvim-lsp-format" ./nvim-lsp-format.sh)
 
-    (pkgs.unstable.aider-chat.override {
-      python3 = pkgs.python3.withPackages (ps: with ps; [
-        flake8
-      ]);
+    (pkgs.unstable.aider-chat.overridePythonAttrs (old: {
+      propagatedBuildInputs = (old.propagatedBuildInputs or []) ++ [
+        pkgs.python3Packages.flake8
+      ];
     })
 
     (pkgs.writeShellScriptBin "poetry" ''
