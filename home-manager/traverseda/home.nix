@@ -114,6 +114,7 @@
     (pkgs.unstable.aider-chat.overridePythonAttrs (old: {
       propagatedBuildInputs = (old.propagatedBuildInputs or []) ++ [
         pkgs.unstable.python3Packages.flake8
+        pkgs.unstable.python3Packages.playwright
       ];
     }))
 
