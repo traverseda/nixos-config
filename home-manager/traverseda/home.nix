@@ -132,7 +132,7 @@
       nvr --remote-wait $@
     '')
     (pkgs.writeShellScriptBin "autocommit" ''
-      aider --commit --model ollama_chat/llama3.2
+      aider --commit
     ''
     )
   ];
@@ -145,7 +145,7 @@
     text = ''
     dark-mode: true
     read: CONVENTIONS.md
-    model: ollama_chat/deepseek-coder-v2
+    model: deepseek/deepseek-chat
     watch-files: true
 
     '';
