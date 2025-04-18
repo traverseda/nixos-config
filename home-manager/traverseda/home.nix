@@ -116,16 +116,16 @@
       set -euo pipefail
 
       # Check if kwallet is available and running
-      if command -v kwallet-query >/dev/null && \
-         kwallet-query -l -f "env_vars" kdewallet >/dev/null 2>&1; then
+      if ${pkgs.libsForQt5.kwallet}/bin/kwallet-query --help >/dev/null 2>&1 && \
+         ${pkgs.libsForQt5.kwallet}/bin/kwallet-query -l -f "env_vars" kdewallet >/dev/null 2>&1; then
         # Get and process all keys
-        kwallet-query -l -f "env_vars" kdewallet 2>/dev/null | while IFS= read -r key; do
-          key=$(echo "$key" | xargs)  # Trim whitespace
+        ${pkgs.libsForQt5.kwallet}/bin/kwallet-query -l -f "env_vars" kdewallet 2>/dev/null | while IFS= read -r key; do
+          key=$(${pkgs.coreutils}/bin/echo "$key" | ${pkgs.coreutils}/bin/xargs)  # Trim whitespace
           [[ -z "$key" ]] && continue
 
           # Get and output each value
-          value=$(kwallet-query -r "$key" -f "env_vars" kdewallet 2>/dev/null | xargs)
-          [[ -n "$value" ]] && printf 'export %s="%s"\n' "$key" "$value"
+          value=$(${pkgs.libsForQt5.kwallet}/bin/kwallet-query -r "$key" -f "env_vars" kdewallet 2>/dev/null | ${pkgs.coreutils}/bin/xargs)
+          [[ -n "$value" ]] && ${pkgs.coreutils}/bin/printf 'export %s="%s"\n' "$key" "$value"
         done
       fi
     '')
