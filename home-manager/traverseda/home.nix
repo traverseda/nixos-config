@@ -108,8 +108,30 @@
     pkgs.comma
     pkgs.docker-compose
     pkgs.netcat-gnu
+    pkgs.libsForQt5.kwallet
 
     (pkgs.writeShellScriptBin "nvim-lsp-format" ./nvim-lsp-format.sh)
+    (pkgs.writeShellScriptBin "load-kwallet-env" ''
+      # Load environment variables from kwallet
+      if ! command -v kwallet-query >/dev/null; then
+        echo "[kwallet-env] kwallet-query not found, skipping" >&2
+        return 0
+      fi
+
+      if ! kwallet-query -l -f "env_vars" kdewallet >/dev/null 2>&1; then
+        echo "[kwallet-env] Failed to access kwallet (is kwallet running?)" >&2
+        return 0
+      fi
+
+      echo "[kwallet-env] Loading environment variables from kwallet..." >&2
+      while IFS= read -r line; do
+        if [[ -n "$line" ]]; then
+          echo "[kwallet-env] Setting: $line" >&2
+          export "$line"
+        fi
+      done < <(kwallet-query -l -f "env_vars" kdewallet 2>/dev/null)
+      echo "[kwallet-env] Done loading environment variables" >&2
+    '')
 
     pkgs.unstable.aider-chat
 
@@ -163,6 +185,7 @@
     };
     initExtra = ''
     source ~/.profile
+    load-kwallet-env
     if [[ -n ''${NVIM+x} ]]; then
       alias vim="nvr --remote"
       export EDITOR=nvr-edit
@@ -175,6 +198,7 @@
 
     initExtra = ''
     source ~/.profile
+    load-kwallet-env
     if [[ -n ''${NVIM+x} ]]; then
       alias vim="nvr --remote"
       export EDITOR=nvr-edit
