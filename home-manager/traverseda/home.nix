@@ -115,49 +115,19 @@
       # Generate export commands for environment variables from kwallet
       set -euo pipefail
 
-      log() {
-        echo "[kwallet-env] $*" >&2
-      }
+      # Check if kwallet is available and running
+      if command -v kwallet-query >/dev/null && \
+         kwallet-query -l -f "env_vars" kdewallet >/dev/null 2>&1; then
+        # Get and process all keys
+        kwallet-query -l -f "env_vars" kdewallet 2>/dev/null | while IFS= read -r key; do
+          key=$(echo "$key" | xargs)  # Trim whitespace
+          [[ -z "$key" ]] && continue
 
-      # Check if kwallet is available
-      if ! command -v kwallet-query >/dev/null; then
-        log "kwallet-query not found, skipping"
-        return 0
+          # Get and output each value
+          value=$(kwallet-query -r "$key" -f "env_vars" kdewallet 2>/dev/null | xargs)
+          [[ -n "$value" ]] && printf 'export %s="%s"\n' "$key" "$value"
+        done
       fi
-
-      # Check if kwallet is running
-      if ! kwallet-query -l -f "env_vars" kdewallet >/dev/null 2>&1; then
-        log "Failed to access kwallet (is kwallet running?)"
-        return 0
-      fi
-
-      # Get list of keys
-      keys=$(kwallet-query -l -f "env_vars" kdewallet 2>/dev/null || true)
-      if [[ -z "$keys" ]]; then
-        log "No environment variables found in kwallet"
-        return 0
-      fi
-
-      log "Generating environment variables from kwallet..." >&2
-      count=0
-      while IFS= read -r key; do
-        key=$(echo "$key" | xargs)  # Trim whitespace
-        [[ -z "$key" ]] && continue
-
-        # Get value and trim whitespace
-        value=$(kwallet-query -r "$key" -f "env_vars" kdewallet 2>/dev/null || true)
-        value=$(echo "$value" | xargs)
-
-        if [[ -n "$value" ]]; then
-          # Output the export command to stdout (not stderr)
-          printf 'export %s="%s"\n' "$key" "$value"
-          ((count++))
-        else
-          log "Warning: Empty value for key '$key'"
-        fi
-      done <<< "$keys"
-
-      log "Generated $count environment variables" >&2
     '')
 
     pkgs.unstable.aider-chat
