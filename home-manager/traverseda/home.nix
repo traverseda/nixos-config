@@ -113,21 +113,13 @@
     (pkgs.writeShellScriptBin "nvim-lsp-format" ./nvim-lsp-format.sh)
     (pkgs.writeShellScriptBin "load-kwallet-env" ''
       # Generate export commands for environment variables from kwallet
-      set -euo pipefail
-
-      # Check if kwallet is available and running
-      if ${pkgs.libsForQt5.kwallet}/bin/kwallet-query --help >/dev/null 2>&1 && \
-         ${pkgs.libsForQt5.kwallet}/bin/kwallet-query -l -f "env_vars" kdewallet >/dev/null 2>&1; then
-        # Get and process all keys
-        ${pkgs.libsForQt5.kwallet}/bin/kwallet-query -l -f "env_vars" kdewallet 2>/dev/null | while IFS= read -r key; do
-          key=$(${pkgs.coreutils}/bin/echo "$key" | ${pkgs.coreutils}/bin/xargs)  # Trim whitespace
-          [[ -z "$key" ]] && continue
-
-          # Get and output each value
-          value=$(${pkgs.libsForQt5.kwallet}/bin/kwallet-query -r "$key" -f "env_vars" kdewallet 2>/dev/null | ${pkgs.coreutils}/bin/xargs)
-          [[ -n "$value" ]] && ${pkgs.coreutils}/bin/printf 'export %s="%s"\n' "$key" "$value"
-        done
-      fi
+      ${pkgs.libsForQt5.kwallet}/bin/kwallet-query -l -f "env_vars" kdewallet 2>/dev/null | \
+      while IFS= read -r key; do
+        key=$(${pkgs.coreutils}/bin/echo "$key" | ${pkgs.coreutils}/bin/xargs)
+        [[ -z "$key" ]] && continue
+        value=$(${pkgs.libsForQt5.kwallet}/bin/kwallet-query -r "$key" -f "env_vars" kdewallet 2>/dev/null | ${pkgs.coreutils}/bin/xargs)
+        [[ -n "$value" ]] && printf 'export %s="%s"\n' "$key" "$value"
+      done
     '')
 
     pkgs.unstable.aider-chat
