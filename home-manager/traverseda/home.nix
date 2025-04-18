@@ -124,10 +124,13 @@
       fi
 
       echo "[kwallet-env] Loading environment variables from kwallet..." >&2
-      while IFS= read -r line; do
-        if [[ -n "$line" ]]; then
-          echo "[kwallet-env] Setting: $line" >&2
-          export "$line"
+      while IFS= read -r key; do
+        if [[ -n "$key" ]]; then
+          value=$(kwallet-query -r -f "env_vars" kdewallet "$key" 2>/dev/null)
+          if [[ -n "$value" ]]; then
+            echo "[kwallet-env] Setting: $key" >&2
+            export "$key"="$value"
+          fi
         fi
       done < <(kwallet-query -l -f "env_vars" kdewallet 2>/dev/null)
       echo "[kwallet-env] Done loading environment variables" >&2
