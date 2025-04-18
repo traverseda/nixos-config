@@ -113,27 +113,51 @@
     (pkgs.writeShellScriptBin "nvim-lsp-format" ./nvim-lsp-format.sh)
     (pkgs.writeShellScriptBin "load-kwallet-env" ''
       # Load environment variables from kwallet
+      set -euo pipefail
+
+      log() {
+        echo "[kwallet-env] $*" >&2
+      }
+
+      # Check if kwallet is available
       if ! command -v kwallet-query >/dev/null; then
-        echo "[kwallet-env] kwallet-query not found, skipping" >&2
+        log "kwallet-query not found, skipping"
         return 0
       fi
 
+      # Check if kwallet is running
       if ! kwallet-query -l -f "env_vars" kdewallet >/dev/null 2>&1; then
-        echo "[kwallet-env] Failed to access kwallet (is kwallet running?)" >&2
+        log "Failed to access kwallet (is kwallet running?)"
         return 0
       fi
 
-      echo "[kwallet-env] Loading environment variables from kwallet..." >&2
+      # Get list of keys
+      keys=$(kwallet-query -l -f "env_vars" kdewallet 2>/dev/null || true)
+      if [[ -z "$keys" ]]; then
+        log "No environment variables found in kwallet"
+        return 0
+      fi
+
+      log "Loading environment variables from kwallet..."
+      count=0
       while IFS= read -r key; do
-        if [[ -n "$key" ]]; then
-          value=$(kwallet-query -r "$key" -f "env_vars" kdewallet 2>/dev/null)
-          if [[ -n "$value" ]]; then
-            echo "[kwallet-env] Setting: $key" >&2
-            export "$key"="$value"
-          fi
+        key=$(echo "$key" | xargs)  # Trim whitespace
+        [[ -z "$key" ]] && continue
+
+        # Get value and trim whitespace
+        value=$(kwallet-query -r "$key" -f "env_vars" kdewallet 2>/dev/null || true)
+        value=$(echo "$value" | xargs)
+
+        if [[ -n "$value" ]]; then
+          log "Setting: $key"
+          export "$key"="$value"
+          ((count++))
+        else
+          log "Warning: Empty value for key '$key'"
         fi
-      done < <(kwallet-query -l -f "env_vars" kdewallet 2>/dev/null)
-      echo "[kwallet-env] Done loading environment variables" >&2
+      done <<< "$keys"
+
+      log "Loaded $count environment variables"
     '')
 
     pkgs.unstable.aider-chat
