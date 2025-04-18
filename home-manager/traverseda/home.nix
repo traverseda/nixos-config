@@ -112,7 +112,7 @@
 
     (pkgs.writeShellScriptBin "nvim-lsp-format" ./nvim-lsp-format.sh)
     (pkgs.writeShellScriptBin "load-kwallet-env" ''
-      # Load environment variables from kwallet
+      # Generate export commands for environment variables from kwallet
       set -euo pipefail
 
       log() {
@@ -138,7 +138,7 @@
         return 0
       fi
 
-      log "Loading environment variables from kwallet..."
+      log "Generating environment variables from kwallet..." >&2
       count=0
       while IFS= read -r key; do
         key=$(echo "$key" | xargs)  # Trim whitespace
@@ -149,15 +149,15 @@
         value=$(echo "$value" | xargs)
 
         if [[ -n "$value" ]]; then
-          log "Setting: $key"
-          export "$key"="$value"
+          # Output the export command to stdout (not stderr)
+          printf 'export %s="%s"\n' "$key" "$value"
           ((count++))
         else
           log "Warning: Empty value for key '$key'"
         fi
       done <<< "$keys"
 
-      log "Loaded $count environment variables"
+      log "Generated $count environment variables" >&2
     '')
 
     pkgs.unstable.aider-chat
@@ -212,7 +212,7 @@
     };
     initExtra = ''
     source ~/.profile
-    load-kwallet-env
+    eval "$(load-kwallet-env)"
     if [[ -n ''${NVIM+x} ]]; then
       alias vim="nvr --remote"
       export EDITOR=nvr-edit
@@ -225,7 +225,7 @@
 
     initExtra = ''
     source ~/.profile
-    load-kwallet-env
+    eval "$(load-kwallet-env)"
     if [[ -n ''${NVIM+x} ]]; then
       alias vim="nvr --remote"
       export EDITOR=nvr-edit
