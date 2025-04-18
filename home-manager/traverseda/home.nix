@@ -111,12 +111,7 @@
 
     (pkgs.writeShellScriptBin "nvim-lsp-format" ./nvim-lsp-format.sh)
 
-    (pkgs.unstable.aider-chat.overridePythonAttrs (old: {
-      propagatedBuildInputs = (old.propagatedBuildInputs or []) ++ [
-        pkgs.unstable.python3Packages.flake8
-        pkgs.unstable.python3Packages.playwright
-      ];
-    }))
+    pkgs.unstable.aider-chat
 
     (pkgs.writeShellScriptBin "poetry" ''
       export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
