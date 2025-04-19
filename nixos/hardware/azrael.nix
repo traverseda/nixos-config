@@ -28,6 +28,14 @@
     rocmPackages.clr.icd
   ];
 
+  services.tlp = {
+    enable = true;
+    settings = {
+      START_CHARGE_THRESH_BAT0 = 75;  # Start charging at 75%
+      STOP_CHARGE_THRESH_BAT0 = 80;   # Stop charging at 80%
+    };
+  };  
+
   fileSystems."/" =
     {
       device = "/dev/disk/by-uuid/6638ca69-8a70-4f82-afd6-02c0d61f4d9f";
