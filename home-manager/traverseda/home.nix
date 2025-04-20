@@ -115,9 +115,9 @@
       # Generate export commands for environment variables from kwallet
       ${pkgs.libsForQt5.kwallet}/bin/kwallet-query -l -f "env_vars" kdewallet 2>/dev/null | \
       while IFS= read -r key; do
-        key=$(${pkgs.coreutils}/bin/echo "$key" | ${pkgs.coreutils}/bin/xargs)
+        key=$(echo "$key" | xargs)
         [[ -z "$key" ]] && continue
-        value=$(${pkgs.libsForQt5.kwallet}/bin/kwallet-query -r "$key" -f "env_vars" kdewallet 2>/dev/null | ${pkgs.coreutils}/bin/xargs)
+        value=$(${pkgs.libsForQt5.kwallet}/bin/kwallet-query -r "$key" -f "env_vars" kdewallet 2>/dev/null | xargs)
         [[ -n "$value" ]] && printf 'export %s="%s"\n' "$key" "$value"
       done
     '')
