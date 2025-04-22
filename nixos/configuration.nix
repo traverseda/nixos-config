@@ -88,6 +88,8 @@
   nix.settings = {
     # Enable flakes and new 'nix' command
     experimental-features = "nix-command flakes";
+    # Enable cross-compilation to aarch64-linux
+    extra-platforms = "aarch64-linux";
   };
 
   #Deduplicate nix store on a timer
