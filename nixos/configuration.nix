@@ -89,7 +89,7 @@
     # Enable flakes and new 'nix' command
     experimental-features = "nix-command flakes";
     # Enable cross-compilation to aarch64-linux (using mkDefault to avoid conflict with binfmt)
-    extra-platforms = lib.mkDefault "aarch64-linux";
+    extra-platforms = config.boot.binfmt.emulatedSystems;
   };
 
   #Deduplicate nix store on a timer
