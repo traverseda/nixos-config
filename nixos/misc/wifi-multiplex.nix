@@ -1,18 +1,5 @@
 { pkgs, lib, ... }:
-
-let
-  # Udev rule to trigger the systemd service when a WiFi device is added
-  wifiUdevRule = ''
-    ACTION=="add", SUBSYSTEM=="net", ENV{DEVTYPE}=="wlan", KERNEL!="*_ap", \
-    TAG+="systemd", ENV{SYSTEMD_WANTS}="add-virt-interface@%k.service"
-  '';
-in
 {
-  environment.systemPackages = with pkgs; [ iw ];
-
-  services.udev.extraRules = ''
-    ${wifiUdevRule}
-  '';
 
   systemd.services."add-virt-interface@" = {
     description = "Add virtual AP interface for %i";

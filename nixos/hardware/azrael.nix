@@ -28,15 +28,7 @@
     rocmPackages.clr.icd
   ];
 
-  services.tlp = {
-    enable = true;
-    settings = {
-      START_CHARGE_THRESH_BAT0 = 75;  # Start charging at 75%
-      STOP_CHARGE_THRESH_BAT0 = 80;   # Stop charging at 80%
-    };
-  };
-
-  services.power-profiles-daemon.enable = false;
+  services.power-profiles-daemon.enable = true;
 
   fileSystems."/" =
     {
