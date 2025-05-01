@@ -123,7 +123,7 @@
           ./nixos/gaming.nix
           ./nixos/ollama.nix
           ./nixos/misc/dslr-webcam.nix
-          ./nixos/vr-desktop.nix
+          # ./nixos/vr-desktop.nix
         ];
       };
       #Lenovo T15
@@ -137,7 +137,7 @@
           ./nixos/kde-desktop.nix
           ./nixos/zerotier.nix
           ./nixos/work.nix
-          ./nixos/vr-desktop.nix
+          # ./nixos/vr-desktop.nix
           ./nixos/cad.nix
           ./nixos/gaming.nix
         ];
