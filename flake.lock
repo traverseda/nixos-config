@@ -384,6 +384,19 @@
         "type": "github"
       }
     },
+    "impermanence": {
+      "locked": {
+        "lastModified": 1737831083,
+        "narHash": "sha256-LJggUHbpyeDvNagTUrdhe/pRVp4pnS6wVKALS782gRI=",
+        "path": "/nix/store/hbzxmzg3n7z0kdmahpcr0qwgp66ym8f7-source",
+        "rev": "4b3e914cdf97a5b536a889e939fb2fd2b043a170",
+        "type": "path"
+      },
+      "original": {
+        "id": "impermanence",
+        "type": "indirect"
+      }
+    },
     "ixx": {
       "inputs": {
         "flake-utils": [
@@ -580,6 +593,7 @@
     "root": {
       "inputs": {
         "home-manager": "home-manager",
+        "impermanence": "impermanence",
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",

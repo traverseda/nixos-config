@@ -5,7 +5,7 @@
     # Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
 
-    impermanence.url = "github:nix-community/impermanence";
+    # impermanence.url = "github:nix-community/impermanence";
 
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
@@ -106,7 +106,6 @@
           ./nixos/configuration.nix
           ./nixos/kde-desktop.nix
           ./nixos/cad.nix
-          impermanence.nixosModules.impermanence
           ./nixos/zerotier.nix
           ./nixos/family.nix
         ];
@@ -126,7 +125,6 @@
           ./nixos/gaming.nix
           ./nixos/ollama.nix
           ./nixos/misc/dslr-webcam.nix
-          impermanence.nixosModules.impermanence
           # ./nixos/vr-desktop.nix
         ];
       };
