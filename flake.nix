@@ -126,6 +126,7 @@
           ./nixos/gaming.nix
           ./nixos/ollama.nix
           ./nixos/misc/dslr-webcam.nix
+          impermanence.nixosModules.impermanence
           # ./nixos/vr-desktop.nix
         ];
       };
