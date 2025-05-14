@@ -16,6 +16,7 @@
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware/${hostname}.nix
     inputs.home-manager.nixosModules.home-manager
+    ./misc/openinterface-udev.nix
   ];
 
   nixpkgs = {
