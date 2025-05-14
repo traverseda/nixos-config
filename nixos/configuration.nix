@@ -103,10 +103,12 @@
     vimAlias = true;
   };
 
-  environment.systemPackages = [
+  environment.systemPackages = with pkgs; [
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     #  wget
-    pkgs.exfat
+    qt6.qtmultimedia
+    qt6.full
+    exfat
     pkgs.duc
     pkgs.glibcLocales
     pkgs.exfatprogs

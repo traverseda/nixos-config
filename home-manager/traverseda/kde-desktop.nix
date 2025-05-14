@@ -1,12 +1,7 @@
 
-{
-  inputs,
-  outputs,
-  lib,
-  config,
-  pkgs,
-  ...
-}: 
+{ inputs, outputs, lib, config, pkgs, ... }: let
+  qt6Pkgs = pkgs.qt6;
+in
 {
   imports = [
     inputs.plasma-manager.homeManagerModules.plasma-manager
@@ -26,6 +21,10 @@
 
   programs.plasma = {
     enable = true;
+    extraPackages = with pkgs; [
+      qt6.qtmultimedia
+      qt6.qtmultimedia.backend.ffmpeg
+    ];
     kscreenlocker.appearance.wallpaperSlideShow.path = "${builtins.path { path = ../../wallpapers; }}";
     workspace.wallpaperSlideShow.path = "${builtins.path { path = ../../wallpapers; }}";
 
