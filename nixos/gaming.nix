@@ -39,10 +39,10 @@
       )
       mangoVars=(
           MANGOHUD=1
-          MANGOHUD_CONFIG="$(IFS=,; echo "${mangoConfig[*]}")"
+          MANGOHUD_CONFIG="''$(IFS=,; echo "''${mangoConfig[*]}")"
       )
 
-      export "${mangoVars[@]}"
+      export "''${mangoVars[@]}"
       exec gamescope "''${gamescopeArgs[@]}" -- steam "''${steamArgs[@]}"
     '')
   ];
