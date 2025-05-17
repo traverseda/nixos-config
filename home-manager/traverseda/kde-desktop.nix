@@ -21,10 +21,6 @@ in
 
   programs.plasma = {
     enable = true;
-    extraPackages = with pkgs; [
-      qt6.qtmultimedia
-      qt6.qtmultimedia.backend.ffmpeg
-    ];
     kscreenlocker.appearance.wallpaperSlideShow.path = "${builtins.path { path = ../../wallpapers; }}";
     workspace.wallpaperSlideShow.path = "${builtins.path { path = ../../wallpapers; }}";
 

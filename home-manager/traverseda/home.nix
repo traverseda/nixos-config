@@ -110,6 +110,9 @@
     pkgs.netcat-gnu
     pkgs.libsForQt5.kwallet
 
+    pkgs.python3Packages.flake8
+    pkgs.unstable.aider-chat
+
     (pkgs.writeShellScriptBin "nvim-lsp-format" ./nvim-lsp-format.sh)
     (pkgs.writeShellScriptBin "load-kwallet-env" ''
       # Generate export commands for environment variables from kwallet
@@ -122,7 +125,6 @@
       done
     '')
 
-    pkgs.unstable.aider-chat
 
     (pkgs.writeShellScriptBin "poetry" ''
       export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
