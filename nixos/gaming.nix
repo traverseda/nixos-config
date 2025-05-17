@@ -16,6 +16,7 @@
   environment.systemPackages = with pkgs; [
     discord
     heroic
+    mangohud
     (writeShellScriptBin "steam-big-picture" ''
       #!/usr/bin/env bash
       set -xeuo pipefail
@@ -23,7 +24,6 @@
       gamescopeArgs=(
           --adaptive-sync # VRR support
           --hdr-enabled
-          --mangoapp # performance overlay
           --rt
           --steam
       )
