@@ -8,6 +8,7 @@
     # impermanence.url = "github:nix-community/impermanence";
 
     nix-index-database.url = "github:nix-community/nix-index-database";
+    jovian-nixos.url = "github:Jovian-Experiments/Jovian-NixOS";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
     
     # You can access packages and modules from different nixpkgs revs
@@ -57,6 +58,7 @@
     nixpkgs,
     home-manager,
     impermanence,
+    jovian-nixos,
     # winapps,
     # nixvim,
     # plasma-manager,
