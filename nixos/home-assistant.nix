@@ -1,6 +1,7 @@
 { inputs, outputs, lib, config, pkgs, hostname, specialArgs, ... }:
 {
   networking.firewall.enable = false;
+  virtualisation.lxd.enable = true;
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
 
