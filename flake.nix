@@ -57,8 +57,6 @@
     self,
     nixpkgs,
     home-manager,
-    impermanence,
-    jovian-nixos,
     # winapps,
     # nixvim,
     # plasma-manager,
