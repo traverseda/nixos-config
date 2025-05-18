@@ -8,6 +8,13 @@ nixos-rebuild build-vm --flake ./#athame
 ```
 
 ```bash
+#build local, push to remote
+nixos-rebuild switch --flake .#hearth --target-host hearth.local
+
+```
+
+```bash
+#Install home manager on other linux
 sh <(curl -L https://nixos.org/nix/install) --daemon
 nix-shell -p home-manager
 home-manager switch --flake git+https://codeberg.org/traverseda/nixos-config.git?ref=main#traverseda@generic --extra-experimental-features nix-command --extra-experimental-features flakes
