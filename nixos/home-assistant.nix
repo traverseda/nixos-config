@@ -2,6 +2,10 @@
 {
   networking.firewall.enable = false;
   virtualisation.lxd.enable = true;
+  users.users.traverseda = {
+    extraGroups = [ "lxd" ];
+  };
+
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
 

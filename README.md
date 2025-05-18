@@ -9,7 +9,7 @@ nixos-rebuild build-vm --flake ./#athame
 
 ```bash
 #build local, push to remote
-nixos-rebuild switch --flake .#hearth --target-host hearth.local
+nixos-rebuild switch --flake .#hearth --target-host hearth.local --use-remote-sudo
 
 ```
 
