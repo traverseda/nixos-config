@@ -49,8 +49,8 @@
 
   boot.plymouth = {
     enable = true;
-    themePackages = with pkgs; [ (adi1090x-plymouth-themes.override { selected_themes = [ "rings" ]; }) ];
-    theme = "rings";
+    themePackages = with pkgs; [ (adi1090x-plymouth-themes.override { selected_themes = [ "hexagon_2" ]; }) ];
+    theme = "hexagon_2";
   };
 
   hardware.graphics.enable = true;
