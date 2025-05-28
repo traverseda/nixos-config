@@ -28,6 +28,11 @@
     enable = true;
     userName = "Alex Davies";
     userEmail = "traverse.da@gmail.com";
+    extraConfig = {
+      push = {
+        autoSetupRemote = true; # Automatically set upstream when pushing
+      };
+    };
   };
 
   home.packages = [

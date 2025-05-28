@@ -58,6 +58,7 @@
     };
     push = {
       default = "simple"; # Default push behavior to 'simple'
+      autoSetupRemote = true; # Automatically set upstream when pushing
     };
     pull = {
       rebase = "false"; # Avoid rebasing by default on pull
