@@ -151,6 +151,9 @@
   virtualisation.docker.enable = true;
   virtualisation.docker.liveRestore = false;
 
+  # virtualisation.incus.enable = true;
+  # networking.nftables.enable = true;
+
   #Puts fonts in /run/current-system/sw/share/X11/fonts
   fonts.fontDir.enable = true;
 
@@ -167,7 +170,7 @@
       isNormalUser = true;
       openssh.authorizedKeys.keys = [
       ];
-      extraGroups = [ "wheel" "dialout" "networkmanager" "dialout" "docker" "plugdev" "vboxusers" ];
+      extraGroups = [ "wheel" "dialout" "networkmanager" "dialout" "docker" "plugdev" "vboxusers" "incus-admin" ];
     };
   };
 

@@ -93,6 +93,9 @@
     pkgs.act
     pkgs.uv
 
+    pkgs.opencpn # boats charts
+    pkgs.gsettings-desktop-schemas
+
     pkgs.freerdp3
     # inputs.winapps.packages.x86_64-linux.winapps
     # inputs.winapps.packages.x86_64-linux.winapps-launcher
