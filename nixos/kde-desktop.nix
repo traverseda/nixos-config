@@ -91,6 +91,7 @@
     pkgs.signal-desktop
     pkgs.anki
     pkgs.kitty
+    pkgs.koreader
   ];
 
   fonts.packages = [
