@@ -123,7 +123,7 @@
           ./nixos/zerotier.nix
           ./nixos/work.nix
           ./nixos/gaming.nix
-          ./nixos/ollama.nix
+          # ./nixos/ollama.nix
           ./nixos/misc/dslr-webcam.nix
           # ./nixos/vr-desktop.nix
         ];
