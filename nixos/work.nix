@@ -62,6 +62,8 @@
       pkgs.glib
       pkgs.fontconfig
       pkgs.freetype
+      #Github cli
+      pkgs.gh
     ];
   };
   services.envfs = {
