@@ -37,39 +37,6 @@
   # };
   # users.users.traverseda.extraGroups = [ config.services.kubo.group ];
 
-  programs.nix-ld = {
-    enable = true;
-    #Include libstdc++ in the nix-ld profile
-    libraries = [
-      pkgs.unstable.openterface-qt
-      pkgs.stdenv.cc.cc
-      pkgs.zlib
-      pkgs.fuse3
-      pkgs.icu
-      pkgs.nss
-      pkgs.openssl
-      pkgs.curl
-      pkgs.expat
-      pkgs.devenv
-      pkgs.xorg.libX11
-      pkgs.vulkan-headers
-      pkgs.vulkan-loader
-      pkgs.vulkan-tools
-      pkgs.kdePackages.full
-      pkgs.qt5.full
-      pkgs.libxkbcommon
-      pkgs.mesa
-      pkgs.glib
-      pkgs.fontconfig
-      pkgs.freetype
-      #Github cli
-      pkgs.gh
-    ];
-  };
-  services.envfs = {
-    enable = true;
-  };
-
   users.groups.libvirtd.members = ["traverseda"];
 
   virtualisation.libvirtd.enable = true;
@@ -99,6 +66,8 @@
     pkgs.gsettings-desktop-schemas
 
     pkgs.freerdp3
+    #Github cli
+    pkgs.gh
     # inputs.winapps.packages.x86_64-linux.winapps
     # inputs.winapps.packages.x86_64-linux.winapps-launcher
 
@@ -113,5 +82,36 @@
       exec ${pkgs.poetry}/bin/poetry "$@"
     '')
   ];
-}
 
+
+  programs.nix-ld = {
+    enable = true;
+    #Include libstdc++ in the nix-ld profile
+    libraries = [
+      pkgs.unstable.openterface-qt
+      pkgs.stdenv.cc.cc
+      pkgs.zlib
+      pkgs.fuse3
+      pkgs.icu
+      pkgs.nss
+      pkgs.openssl
+      pkgs.curl
+      pkgs.expat
+      pkgs.devenv
+      pkgs.xorg.libX11
+      pkgs.vulkan-headers
+      pkgs.vulkan-loader
+      pkgs.vulkan-tools
+      pkgs.kdePackages.full
+      pkgs.qt5.full
+      pkgs.libxkbcommon
+      pkgs.mesa
+      pkgs.glib
+      pkgs.fontconfig
+      pkgs.freetype
+    ];
+  };
+  services.envfs = {
+    enable = true;
+  };
+}
