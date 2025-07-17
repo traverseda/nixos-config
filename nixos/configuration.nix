@@ -146,7 +146,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   services.automatic-timezoned.enable = true;
-  services.power-profiles-daemon.enable = false;
+  # services.power-profiles-daemon.enable = false;
 
   virtualisation.docker.enable = true;
   virtualisation.docker.liveRestore = false;
