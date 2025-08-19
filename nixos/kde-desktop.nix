@@ -77,7 +77,7 @@
     pkgs.kdePackages.kio-extras
     pkgs.kdePackages.discover
     pkgs.libreoffice-qt
-    pkgs.filelight
+    pkgs.kdePackages.filelight
     pkgs.hunspell
     pkgs.hunspellDicts.en_CA
     pkgs.hunspellDicts.en_US
