@@ -97,7 +97,6 @@
       pkgs.openssl
       pkgs.curl
       pkgs.expat
-      pkgs.devenv
       pkgs.xorg.libX11
       pkgs.vulkan-headers
       pkgs.vulkan-loader
