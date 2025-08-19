@@ -75,7 +75,7 @@
     pkgs.kdePackages.krdc
     pkgs.kdePackages.kio-fuse
     pkgs.kdePackages.kio-extras
-    pkgs.discover
+    pkgs.kdePackages.discover
     pkgs.libreoffice-qt
     pkgs.filelight
     pkgs.hunspell
