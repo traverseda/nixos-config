@@ -88,7 +88,7 @@
     pkgs.nextcloud-client
     pkgs.iw
     pkgs.vlc
-    pkgs.signal-desktop
+    pkgs.unstable.signal-desktop
     pkgs.anki
     pkgs.kitty
     pkgs.koreader
