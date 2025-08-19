@@ -3,7 +3,7 @@
 
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
 
     # impermanence.url = "github:nix-community/impermanence";
 
@@ -17,14 +17,14 @@
     # Also see the 'unstable-packages' overlay at 'overlays/default.nix'.
 
     home-manager = {
-      url =  "https://github.com/nix-community/home-manager/archive/release-24.11.tar.gz";
+      url =  "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
       # url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    stylix.url = "github:danth/stylix/release-24.11";
+    stylix.url = "github:danth/stylix/release-25.05";
 
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-24.11";
+      url = "github:nix-community/nixvim/nixos-25.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

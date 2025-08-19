@@ -5,6 +5,6 @@
 
 {
   # example = pkgs.callPackage ./example { };
-  creality-print = pkgs.callPackage ./creality-print { };
+  # creality-print = pkgs.callPackage ./creality-print { };
   blender-cadsketcher = pkgs.callPackage ./blender-cadsketcher { };
 }

@@ -7,14 +7,14 @@
 {
   environment.systemPackages = [
     #pkgs.creality-print
-    (pkgs.appimageTools.wrapType2
-      {
-        name = "creality-print";
-        src = pkgs.fetchurl {
-          url = "https://file2-cdn.creality.com/file/05a4538e0c7222ce547eb8d58ef0251e/Creality_Print-v4.3.7.6627-x86_64-Release.AppImage";
-          sha256 = "sha256-WUsL7UbxSY94H4F1Ww8vLsfRyeg2/DZ+V4B6eH3M6+M=";
-        };
-    })
+    # (pkgs.appimageTools.wrapType2
+    #   {
+    #     name = "creality-print";
+    #     src = pkgs.fetchurl {
+    #       url = "https://file2-cdn.creality.com/file/05a4538e0c7222ce547eb8d58ef0251e/Creality_Print-v4.3.7.6627-x86_64-Release.AppImage";
+    #       sha256 = "sha256-WUsL7UbxSY94H4F1Ww8vLsfRyeg2/DZ+V4B6eH3M6+M=";
+    #     };
+    # })
     pkgs.lightburn
     pkgs.openscad
     pkgs.orca-slicer

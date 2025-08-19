@@ -9,7 +9,7 @@
       (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.kernelPackages = pkgs.linuxPackages_6_13;
+  # boot.kernelPackages = pkgs.linuxPackages_6_13;
   nixpkgs.config.rocmSupport = true;
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "thunderbolt" "usbhid" "usb_storage" "sd_mod" ];
