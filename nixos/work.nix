@@ -56,7 +56,7 @@
     pkgs.rustc
     pkgs.cargo
     pkgs.zig
-    pkgs.kompare
+    pkgs.kdePackages.kompare
     pkgs.unstable.distrobox
     pkgs.element-desktop
     pkgs.act
