@@ -155,7 +155,7 @@
     text = ''
     dark-mode: true
     read: CONVENTIONS.md
-    model: gemini/gemini-2.5-pro-exp-03-25
+    model: gemini/gemini-2.5-pro
     watch-files: true
 
     '';
