@@ -71,8 +71,8 @@
   programs.partition-manager.enable = true;
 
   environment.systemPackages = [
-    pkgs.krfb
-    pkgs.krdc
+    pkgs.kdePackages.krfb
+    pkgs.kdePackages.krdc
     pkgs.kdePackages.kio-fuse
     pkgs.kdePackages.kio-extras
     pkgs.discover
