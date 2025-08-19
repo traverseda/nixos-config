@@ -136,7 +136,9 @@
       exec ${pkgs.pipx}/bin/pipx "$@"
     '')
 
-    (pkgs.nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" "Hack"]; })
+    pkgs.nerd-fonts.fira-code
+    pkgs.nerd-fonts.droid-sans-mono
+    pkgs.nerd-fonts.hack
 
     (pkgs.writeShellScriptBin "nvr-edit" ''
       nvr --remote-wait $@
