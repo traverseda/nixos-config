@@ -17,14 +17,19 @@
     # Also see the 'unstable-packages' overlay at 'overlays/default.nix'.
 
     home-manager = {
-      url =  "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
-      # url = "github:nix-community/home-manager";
+      # url =  "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    stylix.url = "github:danth/stylix/release-25.05";
+
+    stylix = {
+      url = "github:danth/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-25.05";
+      # url = "github:nix-community/nixvim/nixos-25.05";
+      url = "github:nix-community/nixvim/";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
