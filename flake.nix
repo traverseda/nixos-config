@@ -11,13 +11,9 @@
     jovian-nixos.url = "github:Jovian-Experiments/Jovian-NixOS";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
     
-    # You can access packages and modules from different nixpkgs revs
-    # at the same time. Here's an working example:
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    # Also see the 'unstable-packages' overlay at 'overlays/default.nix'.
 
     home-manager = {
-      # url =  "https://github.com/nix-community/home-manager/archive/release-25.05.tar.gz";
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
@@ -28,7 +24,6 @@
     };
 
     nixvim = {
-      # url = "github:nix-community/nixvim/nixos-25.05";
       url = "github:nix-community/nixvim/";
       inputs.nixpkgs.follows = "nixpkgs";
     };
