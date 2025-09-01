@@ -109,7 +109,7 @@
       #!/usr/bin/env bash
       exec ${pkgs.fcast-receiver}/bin/fcast-receiver --enable-features=UseOzonePlatform --ozone-platform=wayland --no-main-window &
       export CHROMIUM_FLAGS="--touch-devices=10 --enable-pinch"
-      exec ${pkgs.chromium}/bin/chromium  --force-dark-mode --kiosk http://127.0.0.1:8123
+      exec ${pkgs.chromium}/bin/chromium  --force-dark-mode --kiosk http://192.168.0.11:8123
       ''}/bin/start-cage-app";
   };
   systemd.services."cage-tty1".serviceConfig = {

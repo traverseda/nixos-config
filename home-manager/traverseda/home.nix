@@ -80,6 +80,7 @@
     controlPersist = "10m"; # Enable Control
   };
 
+
   home.packages = [
     pkgs.htop
     pkgs.zsh
@@ -136,9 +137,7 @@
       exec ${pkgs.pipx}/bin/pipx "$@"
     '')
 
-    pkgs.nerd-fonts.fira-code
-    pkgs.nerd-fonts.droid-sans-mono
-    pkgs.nerd-fonts.hack
+    pkgs.nerd-fonts.hack #Don't forget to fc-cache -r
 
     (pkgs.writeShellScriptBin "nvr-edit" ''
       nvr --remote-wait $@
