@@ -108,7 +108,7 @@
     program = "${pkgs.writeScriptBin "start-cage-app" ''
       #!/usr/bin/env bash
       exec ${pkgs.fcast-receiver}/bin/fcast-receiver --enable-features=UseOzonePlatform --ozone-platform=wayland --no-main-window &
-      export CHROMIUM_FLAGS="--touch-devices=10 --enable-pinch"
+      export CHROMIUM_FLAGS="--touch-devices=10"
       exec ${pkgs.chromium}/bin/chromium  --force-dark-mode --kiosk http://192.168.0.11:8123
       ''}/bin/start-cage-app";
   };
