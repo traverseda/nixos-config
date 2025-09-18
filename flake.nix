@@ -8,7 +8,6 @@
     # impermanence.url = "github:nix-community/impermanence";
 
     nix-index-database.url = "github:nix-community/nix-index-database";
-    jovian-nixos.url = "github:Jovian-Experiments/Jovian-NixOS";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
     
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -23,8 +22,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # nixvim = {
+    #   url = "github:nix-community/nixvim/";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     nixvim = {
-      url = "github:nix-community/nixvim/";
+      url = "github:traverseda/nixvim/";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
