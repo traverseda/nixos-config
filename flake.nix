@@ -22,13 +22,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # nixvim = {
-    #   url = "github:nix-community/nixvim/";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
     nixvim = {
-      url = "github:traverseda/nixvim/";
-      inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:nix-community/nixvim/";
     };
 
     plasma-manager = {
