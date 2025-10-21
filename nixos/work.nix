@@ -50,6 +50,7 @@
     pkgs.squashfsTools
     pkgs.parted
     pkgs.vscode
+    pkgs.openterface-qt
     pkgs.sshfs
     pkgs.stdenv
     pkgs.gcc

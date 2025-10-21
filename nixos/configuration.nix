@@ -51,6 +51,7 @@
   boot.tmp.cleanOnBoot = true;
 
   services.davfs2.enable = true;
+  services.hardware.bolt.enable = true;
   # zramSwap.enable = true;
 
   virtualisation.vmVariant = {

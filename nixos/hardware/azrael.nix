@@ -17,7 +17,7 @@
   boot.kernelModules = [ "kvm-amd" "amdgpu" ];
   boot.extraModulePackages = [ ];
   #Hack for virtualbox on 6.12+ kernels
-  boot.kernelParams = [ "kvm.enable_virt_at_load=0" ];
+  # boot.kernelParams = [ "kvm.enable_virt_at_load=0" "amd_pstate=active" ];
 
   system.autoUpgrade = {
     enable = false;

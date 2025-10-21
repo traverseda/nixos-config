@@ -25,12 +25,12 @@
     # And lualine for the bottom line
     plugins.lualine = {
       enable = true;
-      sections = {
-        lualine_c = [ "os.date('%X')" ];
-        lualine_x = [
-          { name = "hostname"; }
-        ];
-      };
+      # sections = {
+      #   lualine_c = [ "os.date('%X')" ];
+      #   lualine_x = [
+      #     { name = "hostname"; }
+      #   ];
+      # };
     };
 
     # Enable which key
