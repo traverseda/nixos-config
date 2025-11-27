@@ -122,6 +122,7 @@
           ./nixos/work.nix
           ./nixos/gaming.nix
           ./nixos/android.nix
+          # ./nixos/incus_vm.nix
           # ./nixos/ollama.nix
           ./nixos/misc/dslr-webcam.nix
           # ./nixos/vr-desktop.nix

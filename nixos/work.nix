@@ -66,6 +66,9 @@
     pkgs.opencpn # boats charts
     pkgs.gsettings-desktop-schemas
 
+    pkgs.libdrm
+
+
     pkgs.freerdp3
     #Github cli
     pkgs.gh
@@ -73,23 +76,19 @@
     # inputs.winapps.packages.x86_64-linux.winapps-launcher
 
     # pkgs.logseq
-    (pkgs.writeShellScriptBin "python" ''
-      export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
-      exec ${pkgs.python3}/bin/python "$@"
-    '')
-
-    (pkgs.writeShellScriptBin "poetry" ''
-      export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
-      exec ${pkgs.poetry}/bin/poetry "$@"
-    '')
   ];
+
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
+
 
 
   programs.nix-ld = {
     enable = true;
     #Include libstdc++ in the nix-ld profile
     libraries = [
-      pkgs.unstable.openterface-qt
       pkgs.stdenv.cc.cc
       pkgs.zlib
       pkgs.fuse3

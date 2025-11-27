@@ -65,6 +65,8 @@
     pkgs.android-udev-rules
   ];
 
+  programs.fuse.userAllowOther = true;
+
 
   i18n.supportedLocales = [
     "C.UTF-8/UTF-8"
@@ -126,7 +128,6 @@
     pkgs.home-manager
     pkgs.cifs-utils
     pkgs.appimage-run
-    pkgs.linuxPackages.usbip
   ];
 
   programs.git = {

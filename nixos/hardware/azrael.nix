@@ -9,7 +9,7 @@
       (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.kernelPackages = pkgs.linuxPackages_6_16;
+  boot.kernelPackages = pkgs.linuxPackages_6_17;
   nixpkgs.config.rocmSupport = true;
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "thunderbolt" "usbhid" "usb_storage" "sd_mod" ];
@@ -24,8 +24,23 @@
   };
 
 
-  hardware.opengl.extraPackages = with pkgs; [
-    rocmPackages.clr.icd
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      rocmPackages.clr.icd       # ROCm OpenCL
+      rocmPackages.clr           # ROCm runtime
+      rocmPackages.rocm-runtime  # Additional runtime
+    ];
+  };
+
+
+  services.xserver.videoDrivers = [ "amdgpu" ];
+
+
+  # Required for OpenCL ICD loader
+  environment.systemPackages = with pkgs; [
+    clinfo
+    rocmPackages.rocminfo
   ];
 
   services.tlp = {
@@ -59,6 +74,18 @@
       size = 64 * 1024; # 16GB
     }
   ];
+
+  fileSystems."/mnt/hekate" = {
+    device = "traverseda@10.147.17.213:/main/subvol-100-disk-0";
+    fsType = "sshfs";
+    options = [
+      "nodev"
+      "noatime"
+      "allow_other"
+      "IdentityFile=/home/traverseda/.ssh/id_ed25519"
+      # "IdentityFile=/root/.ssh/id_ed25519"
+    ];
+  };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
