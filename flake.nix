@@ -118,14 +118,12 @@
           ./nixos/configuration.nix
           ./nixos/kde-desktop.nix
           ./nixos/cad.nix
+          ./nixos/amd.nix
           ./nixos/zerotier.nix
           ./nixos/work.nix
           ./nixos/gaming.nix
           ./nixos/android.nix
-          # ./nixos/incus_vm.nix
-          # ./nixos/ollama.nix
           ./nixos/misc/dslr-webcam.nix
-          # ./nixos/vr-desktop.nix
         ];
       };
       #Lenovo T15
@@ -139,7 +137,6 @@
           ./nixos/kde-desktop.nix
           ./nixos/zerotier.nix
           ./nixos/work.nix
-          # ./nixos/vr-desktop.nix
           ./nixos/cad.nix
           ./nixos/gaming.nix
         ];

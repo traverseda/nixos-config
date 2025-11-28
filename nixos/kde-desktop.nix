@@ -96,7 +96,10 @@
 
   fonts.packages = [
     pkgs.noto-fonts-cjk-sans
+    pkgs.noto-fonts-emoji
   ];
+
+  fonts.fontconfig.enable = true;
 
   programs.dconf.enable = true;
 
