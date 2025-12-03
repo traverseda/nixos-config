@@ -14,6 +14,7 @@
   programs.gamemode.enable = true;
   environment.systemPackages = [
     pkgs.mangohud
+    pkgs.moonlight-qt
   ];
 
 }

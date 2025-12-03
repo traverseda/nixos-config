@@ -19,7 +19,7 @@
     pkgs.openscad
     pkgs.orca-slicer
     # pkgs.unstable.orca-slicer
-    pkgs.blender-cadsketcher
+    #pkgs.blender-cadsketcher
     #pkgs.py-slvs
     pkgs.freecad
     # (pkgs.appimageTools.wrapType2

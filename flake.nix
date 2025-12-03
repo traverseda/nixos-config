@@ -3,12 +3,15 @@
 
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
 
     # impermanence.url = "github:nix-community/impermanence";
 
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+
+    #Use the catchyos kernel
+    chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
     
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -55,6 +58,7 @@
     self,
     nixpkgs,
     home-manager,
+    chaotic,
     # winapps,
     # nixvim,
     # plasma-manager,
@@ -124,6 +128,7 @@
           ./nixos/gaming.nix
           ./nixos/android.nix
           ./nixos/misc/dslr-webcam.nix
+          ./nixos/traverseda.nix
         ];
       };
       #Lenovo T15

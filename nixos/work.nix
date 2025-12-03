@@ -44,7 +44,6 @@
 
   environment.systemPackages = [
     pkgs.qemu
-    # pkgs.virt-manager-qt
     pkgs.unstable.qgroundcontrol
     pkgs.networkmanager-iodine
     pkgs.squashfsTools
@@ -63,19 +62,12 @@
     pkgs.act
     pkgs.uv
 
-    pkgs.opencpn # boats charts
     pkgs.gsettings-desktop-schemas
 
-    pkgs.libdrm
-
-
-    pkgs.freerdp3
+    pkgs.freerdp
     #Github cli
     pkgs.gh
-    # inputs.winapps.packages.x86_64-linux.winapps
-    # inputs.winapps.packages.x86_64-linux.winapps-launcher
 
-    # pkgs.logseq
   ];
 
   programs.direnv = {
@@ -89,25 +81,23 @@
     enable = true;
     #Include libstdc++ in the nix-ld profile
     libraries = [
-      pkgs.stdenv.cc.cc
-      pkgs.zlib
-      pkgs.fuse3
-      pkgs.icu
-      pkgs.nss
-      pkgs.openssl
-      pkgs.curl
-      pkgs.expat
-      pkgs.xorg.libX11
-      pkgs.vulkan-headers
-      pkgs.vulkan-loader
-      pkgs.vulkan-tools
-      pkgs.kdePackages.full
-      pkgs.qt5.full
-      pkgs.libxkbcommon
-      pkgs.mesa
-      pkgs.glib
-      pkgs.fontconfig
-      pkgs.freetype
+      # pkgs.stdenv.cc.cc
+      # pkgs.zlib
+      # pkgs.fuse3
+      # pkgs.icu
+      # pkgs.nss
+      # pkgs.openssl
+      # pkgs.curl
+      # pkgs.expat
+      # pkgs.xorg.libX11
+      # pkgs.vulkan-headers
+      # pkgs.vulkan-loader
+      # pkgs.vulkan-tools
+      # pkgs.libxkbcommon
+      # pkgs.mesa
+      # pkgs.glib
+      # pkgs.fontconfig
+      # pkgs.freetype
     ];
   };
   services.envfs = {

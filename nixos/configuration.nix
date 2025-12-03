@@ -60,10 +60,6 @@
     virtualisation.memorySize = 4096;
   };
 
-  #Fix various minor ADB issues
-  services.udev.packages = [
-    pkgs.android-udev-rules
-  ];
 
   programs.fuse.userAllowOther = true;
 
@@ -99,6 +95,7 @@
   #Deduplicate nix store on a timer
   nix.optimise.automatic = true;
 
+
   programs.neovim = {
     enable = true;
     defaultEditor = true;
@@ -108,9 +105,7 @@
 
   environment.systemPackages = with pkgs; [
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-    #  wget
     qt6.qtmultimedia
-    qt6.full
     exfat
     pkgs.duc
     pkgs.glibcLocales
