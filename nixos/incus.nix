@@ -36,7 +36,7 @@ in
 
   virtualisation.incus = {
     enable = true;
-    ui.enable = true;  # Enable the web UI
+    ui.enable = true;
     preseed = {
       config = {
         "core.https_address" = "127.0.0.1:8443";
@@ -77,6 +77,10 @@ in
     };
   };
 
+  environment.systemPackages = [
+    pkgs.incus
+  ];
+
   systemd.services.incus-proxy-cert = {
     description = "Generate Incus proxy client certificate";
     wantedBy = [ "multi-user.target" ];
@@ -89,7 +93,6 @@ in
     script = ''
       mkdir -p /var/lib/incus-proxy-certs
 
-      # Wait for Incus to be ready
       for i in {1..30}; do
         if ${pkgs.incus}/bin/incus info >/dev/null 2>&1; then
           break
@@ -152,7 +155,12 @@ in
     recommendedProxySettings = true;
     recommendedTlsSettings = true;
 
-    virtualHosts."incus.${hostname}" = {
+    virtualHosts."incus" = {
+      default = true;
+      listen = [
+        { addr = "0.0.0.0"; port = 80; }
+      ];
+
       locations."/" = {
         proxyPass = "https://127.0.0.1:8443";
         proxyWebsockets = true;

@@ -153,7 +153,7 @@
         };
         modules = [
           ./nixos/configuration.nix
-          ./nixos/home-assistant.nix
+          ./nixos/kiosk.nix
           ./nixos/incus.nix
           ./nixos/zerotier.nix
         ];

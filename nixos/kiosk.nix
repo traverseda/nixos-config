@@ -4,7 +4,7 @@ let
   kioskUrl = specialArgs.kioskUrl or "http://192.168.0.11:8123";
   enableDarkMode = specialArgs.enableDarkMode or true;
   dailyRestart = specialArgs.dailyRestart or true;
-  dimTimeout = specialArgs.dimTimeout or 300; # seconds before dimming
+  dimTimeout = specialArgs.dimTimeout or 300;
   dimBrightness = specialArgs.dimBrightness or "10%";
 in
 {
@@ -22,22 +22,18 @@ in
     operation = "boot";
   };
 
-  # Sway configuration
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true;
   };
 
-  # Kiosk user
   users.users.kiosk = {
     isNormalUser = true;
     extraGroups = [ "video" "networkmanager" ];
   };
 
-  # Enable NetworkManager for WiFi
   networking.networkmanager.enable = true;
 
-  # Auto-login and start Sway
   services.greetd = {
     enable = true;
     settings = {
@@ -52,7 +48,6 @@ in
     };
   };
 
-  # Install useful packages for kiosk
   environment.systemPackages = with pkgs; [
     networkmanagerapplet
     pavucontrol
@@ -63,35 +58,41 @@ in
     swayidle
   ];
 
-  # Sway config for kiosk user
   environment.etc."sway/config.d/kiosk.conf".text = ''
-    # Output configuration with rotation
-    output eDP-1 transform 90
-
-    # Keep window decorations for flexibility
+    output eDP-1 transform 0
     default_border pixel 2
 
-    # Start waybar
     exec ${pkgs.waybar}/bin/waybar
-
-    # Start applications
     exec ${pkgs.networkmanagerapplet}/bin/nm-applet --indicator
-    exec ${pkgs.chromium}/bin/chromium ${lib.optionalString enableDarkMode "--force-dark-mode --enable-features=WebUIDarkMode"} --start-fullscreen --enable-features=UseOzonePlatform --ozone-platform=wayland ${kioskUrl}
 
-    # Idle management with dimming
+    # Improved Chrome flags for kiosk-like experience
+    exec ${pkgs.chromium}/bin/chromium \
+      --app=${kioskUrl} \
+      ${lib.optionalString enableDarkMode "--force-dark-mode --enable-features=WebUIDarkMode"} \
+      --enable-features=UseOzonePlatform \
+      --ozone-platform=wayland \
+      --disable-infobars \
+      --disable-session-crashed-bubble \
+      --disable-restore-session-state \
+      --disable-features=TranslateUI \
+      --disable-component-update \
+      --no-first-run \
+      --noerrdialogs \
+      --disable-pinch \
+      --overscroll-history-navigation=0 \
+      --disable-features=OverlayScrollbar
+
     exec ${pkgs.swayidle}/bin/swayidle -w \
       timeout ${toString dimTimeout} '${pkgs.brightnessctl}/bin/brightnessctl set ${dimBrightness}' \
       resume '${pkgs.brightnessctl}/bin/brightnessctl set 100%' \
       timeout ${toString (dimTimeout + 60)} 'swaymsg "output * dpms off"' \
       resume 'swaymsg "output * dpms on"'
 
-    # Touch device configuration
     input type:touch {
       events enabled
     }
   '';
 
-  # Waybar configuration
   environment.etc."xdg/waybar/config".text = ''
     {
       "layer": "top",
@@ -125,7 +126,6 @@ in
     }
   '';
 
-  # Waybar styling
   environment.etc."xdg/waybar/style.css".text = ''
     * {
       font-family: monospace;
@@ -155,7 +155,6 @@ in
     }
   '';
 
-  # Systemd service to restart Sway daily (optional)
   systemd.services.restart-sway-kiosk = lib.mkIf dailyRestart {
     description = "Restart Sway kiosk session";
     serviceConfig = {
