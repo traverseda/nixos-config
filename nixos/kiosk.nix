@@ -1,21 +1,15 @@
 { inputs, outputs, lib, config, pkgs, hostname, specialArgs, ... }:
 
 let
-  kioskUrl = specialArgs.kioskUrl or "http://192.168.0.11:8123";
+  kioskUrl = specialArgs.kioskUrl or "http://localhost:8123";
   enableDarkMode = specialArgs.enableDarkMode or true;
   dailyRestart = specialArgs.dailyRestart or true;
   dimTimeout = specialArgs.dimTimeout or 300;
   dimBrightness = specialArgs.dimBrightness or "10%";
 in
 {
-  networking.firewall.enable = false;
-
-  users.users.traverseda = {
-    extraGroups = [ ];
-  };
-
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
+  hardware.bluetooth.enable = false;
+  hardware.bluetooth.powerOnBoot = false;
   hardware.graphics.enable = true;
 
   system.autoUpgrade = {

@@ -26,11 +26,15 @@ let
   };
 in
 {
-  networking.firewall.enable = false;
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 8123 ];
+  };
 
   users.users.traverseda = {
     extraGroups = [ "incus-admin" "incus-users" ];
   };
+  networking.nftables.enable = true;
 
   users.groups.incus-users = {};
 
@@ -79,6 +83,7 @@ in
 
   environment.systemPackages = [
     pkgs.incus
+    pkgs.qemu-utils
   ];
 
   systemd.services.incus-proxy-cert = {
@@ -174,6 +179,17 @@ in
           proxy_ssl_verify off;
           proxy_ssl_server_name on;
         '';
+      };
+    };
+
+    virtualHosts."homeassistant" = {
+      listen = [
+        { addr = "0.0.0.0"; port = 8123; }
+      ];
+
+      locations."/" = {
+        proxyPass = "http://10.0.100.73:8123";
+        proxyWebsockets = true;
       };
     };
   };
