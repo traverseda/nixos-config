@@ -119,6 +119,14 @@
     RestartForceExitStatus="0 SIGTERM SIGINT SIGUSR1 SIGUSR2";
   };
 
+  services.cron = {
+    enable = true;
+    systemCronJobs = [
+      "0 0 * * * root ${pkgs.systemd}/bin/systemctl restart cage-tty1"
+    ];
+  };
+
+
   users.users.kiosk = {
     isNormalUser = true;
   };
