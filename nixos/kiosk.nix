@@ -6,15 +6,57 @@ let
   dailyRestart = specialArgs.dailyRestart or true;
   dimTimeout = specialArgs.dimTimeout or 300;
   dimBrightness = specialArgs.dimBrightness or "10%";
+
+  chromiumKiosk = pkgs.writeShellScript "chromium-kiosk" ''
+    exec ${pkgs.chromium}/bin/chromium \
+      --app=${kioskUrl} \
+      ${lib.optionalString enableDarkMode "--force-dark-mode --enable-features=WebUIDarkMode"} \
+      --enable-features=UseOzonePlatform \
+      --ozone-platform=wayland \
+      --disable-infobars \
+      --disable-session-crashed-bubble \
+      --disable-restore-session-state \
+      --disable-features=TranslateUI \
+      --disable-component-update \
+      --no-first-run \
+      --noerrdialogs \
+      --disable-pinch \
+      --overscroll-history-navigation=0 \
+      --disable-features=OverlayScrollbar
+  '';
+
+  swayIdleCmd = pkgs.writeShellScript "swayidle-kiosk" ''
+    exec ${pkgs.swayidle}/bin/swayidle -w \
+      timeout ${toString dimTimeout} '${pkgs.brightnessctl}/bin/brightnessctl set ${dimBrightness}' \
+      resume '${pkgs.brightnessctl}/bin/brightnessctl set 100%' \
+      timeout ${toString (dimTimeout + 60)} 'swaymsg "output * dpms off"' \
+      resume 'swaymsg "output * dpms on"'
+  '';
+
+  swayConfig = pkgs.writeText "sway-kiosk-config" ''
+    output eDP-1 transform 0
+    default_border pixel 2
+
+    exec ${pkgs.waybar}/bin/waybar
+    exec ${pkgs.networkmanagerapplet}/bin/nm-applet --indicator
+    exec ${swayIdleCmd}
+    exec ${chromiumKiosk}
+
+    for_window [app_id="chromium-browser"] move to workspace 1
+    bindsym Ctrl+Shift+r exec ${pkgs.procps}/bin/pkill -u kiosk chromium
+  '';
+
+  browserRestartScript = pkgs.writeShellScript "restart-browser" ''
+    ${pkgs.procps}/bin/pkill -u kiosk chromium || true
+  '';
+
 in
 {
   hardware.bluetooth.enable = false;
   hardware.bluetooth.powerOnBoot = false;
   hardware.graphics.enable = true;
 
-  system.autoUpgrade = {
-    operation = "boot";
-  };
+  system.autoUpgrade.operation = "boot";
 
   programs.sway = {
     enable = true;
@@ -32,11 +74,7 @@ in
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd ${pkgs.sway}/bin/sway";
-        user = "kiosk";
-      };
-      initial_session = {
-        command = "${pkgs.sway}/bin/sway";
+        command = "${pkgs.sway}/bin/sway --config ${swayConfig}";
         user = "kiosk";
       };
     };
@@ -52,73 +90,36 @@ in
     swayidle
   ];
 
-  environment.etc."sway/config.d/kiosk.conf".text = ''
-    output eDP-1 transform 0
-    default_border pixel 2
+  environment.etc."xdg/waybar/config".text = builtins.toJSON {
+    layer = "top";
+    position = "bottom";
+    height = 40;
+    modules-left = [ "custom/launcher" ];
+    modules-center = [];
+    modules-right = [ "network" "pulseaudio" "clock" ];
 
-    exec ${pkgs.waybar}/bin/waybar
-    exec ${pkgs.networkmanagerapplet}/bin/nm-applet --indicator
+    "custom/launcher" = {
+      format = " Apps";
+      on-click = "${pkgs.wofi}/bin/wofi --show drun";
+      tooltip = false;
+    };
 
-    # Improved Chrome flags for kiosk-like experience
-    exec ${pkgs.chromium}/bin/chromium \
-      --app=${kioskUrl} \
-      ${lib.optionalString enableDarkMode "--force-dark-mode --enable-features=WebUIDarkMode"} \
-      --enable-features=UseOzonePlatform \
-      --ozone-platform=wayland \
-      --disable-infobars \
-      --disable-session-crashed-bubble \
-      --disable-restore-session-state \
-      --disable-features=TranslateUI \
-      --disable-component-update \
-      --no-first-run \
-      --noerrdialogs \
-      --disable-pinch \
-      --overscroll-history-navigation=0 \
-      --disable-features=OverlayScrollbar
+    network = {
+      format-wifi = " {essid}";
+      format-disconnected = "⚠ Disconnected";
+      on-click = "${pkgs.networkmanagerapplet}/bin/nm-connection-editor";
+    };
 
-    exec ${pkgs.swayidle}/bin/swayidle -w \
-      timeout ${toString dimTimeout} '${pkgs.brightnessctl}/bin/brightnessctl set ${dimBrightness}' \
-      resume '${pkgs.brightnessctl}/bin/brightnessctl set 100%' \
-      timeout ${toString (dimTimeout + 60)} 'swaymsg "output * dpms off"' \
-      resume 'swaymsg "output * dpms on"'
+    pulseaudio = {
+      format = "{icon} {volume}%";
+      format-icons = [ "" "" "" ];
+      on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
+    };
 
-    input type:touch {
-      events enabled
-    }
-  '';
-
-  environment.etc."xdg/waybar/config".text = ''
-    {
-      "layer": "top",
-      "position": "bottom",
-      "height": 40,
-      "modules-left": ["custom/launcher"],
-      "modules-center": [],
-      "modules-right": ["network", "pulseaudio", "clock"],
-
-      "custom/launcher": {
-        "format": " Apps",
-        "on-click": "${pkgs.wofi}/bin/wofi --show drun",
-        "tooltip": false
-      },
-
-      "network": {
-        "format-wifi": " {essid}",
-        "format-disconnected": "⚠ Disconnected",
-        "on-click": "${pkgs.networkmanagerapplet}/bin/nm-connection-editor"
-      },
-
-      "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-icons": ["", "", ""],
-        "on-click": "${pkgs.pavucontrol}/bin/pavucontrol"
-      },
-
-      "clock": {
-        "format": "{:%H:%M}"
-      }
-    }
-  '';
+    clock = {
+      format = "{:%H:%M}";
+    };
+  };
 
   environment.etc."xdg/waybar/style.css".text = ''
     * {
@@ -149,20 +150,40 @@ in
     }
   '';
 
-  systemd.services.restart-sway-kiosk = lib.mkIf dailyRestart {
-    description = "Restart Sway kiosk session";
+  systemd.user.services.kiosk-browser = {
+    description = "Kiosk Chromium browser";
+    wantedBy = [ "sway-session.target" ];
+    after = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+
     serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.systemd}/bin/loginctl terminate-user kiosk";
+      Type = "simple";
+      ExecStart = chromiumKiosk;
+      Restart = "always";
+      RestartSec = "3s";
+      TimeoutStartSec = "30s";
+    };
+
+    environment = {
+      WAYLAND_DISPLAY = "wayland-1";
+      XDG_RUNTIME_DIR = "/run/user/1000";
     };
   };
 
-  systemd.timers.restart-sway-kiosk = lib.mkIf dailyRestart {
-    description = "Daily restart of Sway kiosk";
+  systemd.timers.restart-kiosk-browser = lib.mkIf dailyRestart {
+    description = "Daily restart of kiosk browser";
     wantedBy = [ "timers.target" ];
     timerConfig = {
-      OnCalendar = "daily";
+      OnCalendar = "*-*-* 03:00:00";
       Persistent = true;
+    };
+  };
+
+  systemd.services.restart-kiosk-browser = lib.mkIf dailyRestart {
+    description = "Restart kiosk browser";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = browserRestartScript;
     };
   };
 }

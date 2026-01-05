@@ -48,7 +48,6 @@
     pkgs.networkmanager-iodine
     pkgs.squashfsTools
     pkgs.parted
-    pkgs.vscode
     pkgs.openterface-qt
     pkgs.sshfs
     pkgs.stdenv
@@ -67,6 +66,11 @@
     pkgs.freerdp
     #Github cli
     pkgs.gh
+
+
+    (pkgs.vscode.fhsWithPackages (ps: with ps; [
+      stdenv.cc.cc.lib
+    ]))
 
   ];
 

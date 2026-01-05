@@ -24,17 +24,107 @@ let
       description = "A proxy helper to run PAM auth requests through pam_exec";
     };
   };
+
+  errorPage502 = pkgs.writeText "502.html" ''
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>502 Bad Gateway</title>
+      <meta http-equiv="refresh" content="3">
+      <style>
+        body {
+          background-color: #1a1a1a;
+          color: #e0e0e0;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          margin: 0;
+        }
+        .container {
+          text-align: center;
+          padding: 2rem;
+        }
+        h1 {
+          font-size: 3rem;
+          margin: 0 0 1rem 0;
+          color: #ff6b6b;
+        }
+        p {
+          font-size: 1.2rem;
+          margin: 0.5rem 0;
+        }
+        .retry {
+          color: #4dabf7;
+          margin-top: 1rem;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>502 Bad Gateway</h1>
+        <p>The server is temporarily unavailable.</p>
+        <p class="retry">Retrying in 3 seconds...</p>
+      </div>
+    </body>
+    </html>
+  '';
+
+  errorPage503 = pkgs.writeText "503.html" ''
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <title>503 Service Unavailable</title>
+      <meta http-equiv="refresh" content="3">
+      <style>
+        body {
+          background-color: #1a1a1a;
+          color: #e0e0e0;
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh;
+          margin: 0;
+        }
+        .container {
+          text-align: center;
+          padding: 2rem;
+        }
+        h1 {
+          font-size: 3rem;
+          margin: 0 0 1rem 0;
+          color: #ff6b6b;
+        }
+        p {
+          font-size: 1.2rem;
+          margin: 0.5rem 0;
+        }
+        .retry {
+          color: #4dabf7;
+          margin-top: 1rem;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <h1>503 Service Unavailable</h1>
+        <p>The service is temporarily unavailable.</p>
+        <p class="retry">Retrying in 3 seconds...</p>
+      </div>
+    </body>
+    </html>
+  '';
 in
 {
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [ 8123 ];
-  };
+  networking.firewall.enable = false;
 
   users.users.traverseda = {
     extraGroups = [ "incus-admin" "incus-users" ];
   };
-  networking.nftables.enable = true;
 
   users.groups.incus-users = {};
 
@@ -97,6 +187,7 @@ in
     };
     script = ''
       mkdir -p /var/lib/incus-proxy-certs
+      mkdir -p /var/www/errors
 
       for i in {1..30}; do
         if ${pkgs.incus}/bin/incus info >/dev/null 2>&1; then
@@ -115,6 +206,9 @@ in
         ${pkgs.incus}/bin/incus config trust add-certificate /var/lib/incus-proxy-certs/client.crt --name incus-proxy
       fi
 
+      cp ${errorPage502} /var/www/errors/502.html
+      cp ${errorPage503} /var/www/errors/503.html
+
       chown nginx:nginx /var/lib/incus-proxy-certs/client.crt
       chown nginx:nginx /var/lib/incus-proxy-certs/client.key
       chmod 600 /var/lib/incus-proxy-certs/client.crt
@@ -124,6 +218,7 @@ in
 
   systemd.tmpfiles.rules = [
     "d /var/lib/incus-proxy-certs 0700 nginx nginx - -"
+    "d /var/www/errors 0755 nginx nginx - -"
   ];
 
   security.wrappers.pam_proxy_helper = {
@@ -178,6 +273,16 @@ in
           proxy_ssl_certificate_key /var/lib/incus-proxy-certs/client.key;
           proxy_ssl_verify off;
           proxy_ssl_server_name on;
+
+          error_page 502 503 /error.html;
+        '';
+      };
+
+      locations."= /error.html" = {
+        root = "/var/www/errors";
+        extraConfig = ''
+          internal;
+          try_files /$status.html =502;
         '';
       };
     };
@@ -190,6 +295,23 @@ in
       locations."/" = {
         proxyPass = "http://10.0.100.73:8123";
         proxyWebsockets = true;
+
+        extraConfig = ''
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection "upgrade";
+
+          error_page 502 503 /error.html;
+        '';
+      };
+
+      locations."= /error.html" = {
+        root = "/var/www/errors";
+        extraConfig = ''
+          internal;
+          try_files /$status.html =502;
+        '';
       };
     };
   };
@@ -202,7 +324,7 @@ in
       CapabilityBoundingSet = [ "CAP_SETUID" "CAP_NET_BIND_SERVICE" ];
       SystemCallFilter = [ "setuid" "setgid" "capset" ];
       ProtectSystem = lib.mkForce false;
-      ReadWritePaths = [ "/var/lib/incus-proxy-certs" ];
+      ReadWritePaths = [ "/var/lib/incus-proxy-certs" "/var/www/errors" ];
     };
   };
 }

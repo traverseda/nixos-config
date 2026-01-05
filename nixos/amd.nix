@@ -1,31 +1,40 @@
 {
-   pkgs,
-    ... 
+  pkgs,
+  inputs,
+  ... 
 }:
 {
+  # ===== AMD GPU Kernel Module =====
   boot.kernelModules = [ "amdgpu" ];
 
-
-#   #docker run --rm --runtime=amd --gpus all rocm/pytorch:latest rocm-smi
-#   virtualisation.docker = {
-#     daemon.settings = {
-#       runtimes = {
-#         amd = {
-#           path = "${pkgs.rocmPackages.rocm-core}/bin/amd-container-runtime";
-#           runtimeArgs = [];
-#         };
-#       };
-#     };
-#   }; 
-## Does not work
-
+  # ===== AMD GPU Hardware Support =====
   hardware.amdgpu.initrd.enable = true;
   hardware.amdgpu.opencl.enable = true;
 
-  # Add ROCm tools and GPU monitoring
+  # ===== OpenGL Support =====
+  hardware.opengl.enable = true;
+  hardware.opengl.driSupport32Bit = true;
+
+  # ===== ROCm and System Packages =====
   environment.systemPackages = with pkgs; [
+    # ROCm tools
     rocmPackages.rocm-smi
     rocmPackages.rocminfo
+    rocmPackages.rocm-core
+
+    # GPU monitoring
     nvtopPackages.amd
+
+    # Utilities
+    clinfo
+    mesa-demos
+    vulkan-tools
   ];
+
+  # ===== User and Group Configuration =====
+  users.groups.render = {};
+  users.groups.video = {};
+
+  # ===== System Settings =====
+  security.unprivilegedUsernsClone = true;
 }

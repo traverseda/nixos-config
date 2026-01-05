@@ -119,6 +119,7 @@
           hostname = "azrael";
         };
         modules = [
+          ./nixos/ollama.nix
           ./nixos/configuration.nix
           ./nixos/kde-desktop.nix
           ./nixos/cad.nix

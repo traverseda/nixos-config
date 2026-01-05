@@ -14,7 +14,8 @@
   nixpkgs.config.rocmSupport = true;
 
 
-  boot.kernelPackages = pkgs.linuxPackages_cachyos-lto;
+  #boot.kernelPackages = pkgs.linuxPackages_cachyos-lto;
+  boot.kernelPackages = pkgs.linuxPackages_zen;
 
   # Enable BORE scheduler
   boot.kernel.sysctl."kernel.sched_bore" = 1;
