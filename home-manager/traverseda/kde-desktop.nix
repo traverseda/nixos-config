@@ -4,8 +4,8 @@
 in
 {
   imports = [
-    inputs.plasma-manager.homeManagerModules.plasma-manager
-    # inputs.stylix.homeManagerModules.stylix
+    inputs.plasma-manager.homeModules.plasma-manager
+    # inputs.stylix.homeModules.stylix
   ];
   # stylix = {
   #   enable = true;
