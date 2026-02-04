@@ -12,8 +12,8 @@
   hardware.amdgpu.opencl.enable = true;
 
   # ===== OpenGL Support =====
-  hardware.opengl.enable = true;
-  hardware.opengl.driSupport32Bit = true;
+  hardware.graphics.enable = true;
+  hardware.graphics.enable32Bit = true;
 
   # ===== ROCm and System Packages =====
   environment.systemPackages = with pkgs; [
