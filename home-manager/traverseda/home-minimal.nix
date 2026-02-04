@@ -26,9 +26,11 @@
 
   programs.git = {
     enable = true;
-    userName = "Alex Davies";
-    userEmail = "traverse.da@gmail.com";
-    extraConfig = {
+    settings = {
+      user = {
+        name = "Alex Davies";
+        email = "traverse.da@gmail.com";
+      };
       push = {
         autoSetupRemote = true; # Automatically set upstream when pushing
       };

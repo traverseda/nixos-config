@@ -49,7 +49,7 @@
     homeDirectory = specialArgs.homeDir or "/home/traverseda";
   };
 
-  programs.git.extraConfig = {
+  programs.git.settings = {
     core = {
       editor = "vim"; # Set default editor for Git
     };
@@ -76,8 +76,12 @@
 
   programs.ssh = {
     enable = true; # Enable SSH module
-    controlMaster = "auto"; # Enable ControlMaster
-    controlPersist = "10m"; # Enable Control
+    matchBlocks = {
+      "*" = {
+        controlMaster = "auto"; # Enable ControlMaster
+        controlPersist = "10m"; # Enable Control
+      };
+    };
   };
 
 
