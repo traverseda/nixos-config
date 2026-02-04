@@ -142,7 +142,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  services.automatic-timezoned.enable = true;
+  #services.automatic-timezoned.enable = true;
   # services.power-profiles-daemon.enable = false;
 
   virtualisation.docker.enable = true;

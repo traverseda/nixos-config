@@ -17,19 +17,6 @@ let
     exec "${pkgs.gphoto2}/bin/gphoto2" --stdout --capture-movie | "${pkgs.ffmpeg}/bin/ffmpeg" -i - -vcodec rawvideo -pix_fmt yuv420p -f v4l2 /dev/video10
   '';
 
-  dslrWebcamService = ''
-    [Unit]
-    Description=DSLR Webcam Service
-    After=network.target
-
-    [Service]
-    ExecStart=${pkgs.writeScriptBin "dslr-webcam" dslrWebcamScript}/bin/dslr-webcam
-    ExecStop=/bin/kill -s TERM $MAINPID
-    Restart=on-failure
-
-    [Install]
-    WantedBy=multi-user.target
-  '';
 in
 {
   # Ensure your system configuration includes these options:

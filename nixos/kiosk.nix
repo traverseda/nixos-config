@@ -3,7 +3,7 @@
 let
   kioskUrl = specialArgs.kioskUrl or "http://localhost:8123";
   enableDarkMode = specialArgs.enableDarkMode or true;
-  dailyRestart = specialArgs.dailyRestart or true;
+  dailyRestart = specialArgs.dailyRestart or false;
   dimTimeout = specialArgs.dimTimeout or 300;
   dimBrightness = specialArgs.dimBrightness or "10%";
 
@@ -52,11 +52,12 @@ let
 
 in
 {
-  hardware.bluetooth.enable = false;
-  hardware.bluetooth.powerOnBoot = false;
   hardware.graphics.enable = true;
 
   system.autoUpgrade.operation = "boot";
+
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
 
   programs.sway = {
     enable = true;

@@ -12,7 +12,9 @@
 
     #Use the catchyos kernel
     chaotic.url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-    
+
+    openclaw.url = "github:openclaw/nix-openclaw/main";
+
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
@@ -58,7 +60,7 @@
     self,
     nixpkgs,
     home-manager,
-    chaotic,
+    # chaotic,
     # winapps,
     # nixvim,
     # plasma-manager,

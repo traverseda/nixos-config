@@ -5,7 +5,7 @@ in
 {
   imports = [
     inputs.plasma-manager.homeManagerModules.plasma-manager
-    inputs.stylix.homeManagerModules.stylix
+    # inputs.stylix.homeManagerModules.stylix
   ];
   # stylix = {
   #   enable = true;

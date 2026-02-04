@@ -99,7 +99,13 @@
     pkgs.noto-fonts-color-emoji
   ];
 
-  fonts.fontconfig.enable = true;
+  fonts.fontconfig = {
+    enable = true;
+    defaultFonts = {
+      emoji = [ "Noto Color Emoji" ];
+    };
+  };
+
 
   programs.dconf.enable = true;
 
