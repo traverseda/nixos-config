@@ -35,6 +35,11 @@
       inputs.home-manager.follows = "home-manager";
     };
 
+    openclaw-local = {
+      url = "path:./openclaw";
+      inputs.nixpkgs.follows = "nixpkgs"; # Keeps nixpkgs versions in sync
+    };
+
     # winapps = {
     #   url = "github:winapps-org/winapps";
     #   inputs.nixpkgs.follows = "nixpkgs";
@@ -221,6 +226,7 @@
         modules = [
           # > Our main home-manager configuration file <
           ./home-manager/traverseda/home.nix
+          # inputs.openclaw-local.homeManagerModules.default
         ];
       };
       "spiri@generic" = home-manager.lib.homeManagerConfiguration {
