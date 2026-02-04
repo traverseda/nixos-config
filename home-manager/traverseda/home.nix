@@ -76,6 +76,7 @@
 
   programs.ssh = {
     enable = true; # Enable SSH module
+    enableDefaultConfig = false;
     matchBlocks = {
       "*" = {
         controlMaster = "auto"; # Enable ControlMaster
