@@ -180,7 +180,7 @@
       plugins = [ "git" "docker" "docker-compose" ];
       theme = "robbyrussell";
     };
-    initExtra = ''
+    initContent = ''
     source ~/.profile
     eval "$(load-kwallet-env)"
     if [[ -n ''${NVIM+x} ]]; then
