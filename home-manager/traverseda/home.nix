@@ -12,7 +12,6 @@
   # You can import other home-manager modules here
   imports = [
     ./home-minimal.nix
-    ./openclaw.nix
     inputs.nixvim.homeManagerModules.nixvim
     inputs.nix-index-database.hmModules.nix-index
     # (import ./nixvim.nix { inherit pkgs; })

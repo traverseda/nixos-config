@@ -1,12 +1,15 @@
+{ inputs, mkSource, ... }:
 
-{ pkgs, inputs, ... }:
+{ config, lib, pkgs, ... }:
+
 {
   imports = [
     inputs.openclaw.homeManagerModules.openclaw
   ];
 
   programs.openclaw = {
-    documents = ./Documents;
+    documents = ./documents;
+
     config = {
       gateway = {
         mode = "local";
@@ -24,27 +27,25 @@
       #   ];
       #   groups = {
       #     "*" = { requireMention = true; };
-      #     "-1001234567890" = { requireMention = false; }; # couples group
-      #     "-1002345678901" = { requireMention = true; };  # noisy group
+      #     "-1001234567890" = { requireMention = false; };
+      #     "-1002345678901" = { requireMention = true; };
       #   };
       # };
     };
 
     instances.default = {
       enable = true;
-      package = pkgs.openclaw; # batteries-included
+      package = pkgs.openclaw; # or inputs.openclaw.packages.${pkgs.system}.default
       stateDir = "~/.openclaw";
       workspaceDir = "~/.openclaw/workspace";
       launchd.enable = true;
 
-      # Plugins (prod: pinned GitHub). Built-ins are via nix-steipete-tools.
-      # MVP target: repo pointers resolve to tools + skills automatically.
       plugins = [
-        # { source = "github:openclaw/nix-steipete-tools?dir=tools/oracle"; }
-        # { source = "github:openclaw/nix-steipete-tools?dir=tools/peekaboo"; }
-        # { source = "github:joshp123/xuezh"; }
+        { source = "${mkSource "nix-steipete-tools"}?dir=tools/oracle"; }
+        { source = "${mkSource "nix-steipete-tools"}?dir=tools/peekaboo"; }
+        # { source = "${mkSource "xuezh"}"; }
         # {
-        #   source = "github:joshp123/padel-cli";
+        #   source = "${mkSource "padel-cli"}";
         #   config = {
         #     env = { PADEL_AUTH_FILE = "/run/agenix/padel-auth"; };
         #     settings = {
@@ -67,3 +68,4 @@
     };
   };
 }
+
