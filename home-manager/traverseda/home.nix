@@ -161,7 +161,7 @@
     text = ''
     dark-mode: true
     read: CONVENTIONS.md
-    model: ollama/deepseek-coder-v2:16b-lite-instruct-q4_K_M
+    model: deepseek/deepseek-reasoner
     watch-files: true
 
     '';
