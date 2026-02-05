@@ -161,7 +161,7 @@
     text = ''
     dark-mode: true
     read: CONVENTIONS.md
-    model: gemini/gemini-2.5-pro
+    model: ollama/qwen2.5:7b-instruct-q4_K_M
     watch-files: true
 
     '';

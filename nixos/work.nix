@@ -30,6 +30,14 @@
     openFirewall = true;
   };
 
+
+  # home-manager = {
+  #   backupFileExtension = ".bak";
+  #   users = {
+  #     traverseda = inputs.openclaw-local.homeManagerModules.default;
+  #   };
+  # };
+
   # services.kubo = {
   #   enable = true;
   #   autoMount = true;

@@ -16,30 +16,34 @@
         openclaw.homeManagerModules.openclaw
       ];
 
+      nixpkgs.overlays = [
+        openclaw.overlays.default
+      ];
+
       programs.openclaw = {
         documents = ./documents;
 
-        config = {
-          gateway = {
-            mode = "local";
-            auth = {
-              token = "<gatewayToken>";
-            };
-          };
-        };
-
         instances.default = {
           enable = true;
-          package = openclaw.packages.x86_64-linux.default;
-          stateDir = "~/.openclaw";
-          workspaceDir = "~/.openclaw/workspace";
-
           plugins = [
             # { source = "github:openclaw/nix-steipete-tools?dir=tools/oracle"; }
             # { source = "github:openclaw/nix-steipete-tools?dir=tools/peekaboo"; }
           ];
         };
       };
+
+      # Override the broken config file with a working one
+      home.file.".openclaw/openclaw.json".force = true;
+      home.file.".openclaw/openclaw.json".text = ''
+        {
+          "gateway": {
+            "mode": "local",
+            "auth": {
+              "token": "<gatewayToken>"
+            }
+          }
+        }
+      '';
     };
   };
 }
