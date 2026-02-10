@@ -44,11 +44,6 @@
     };
   };
 
-  home = {
-    username = specialArgs.homeUser or "traverseda";
-    homeDirectory = specialArgs.homeDir or "/home/traverseda";
-  };
-
   programs.git.settings = {
     core = {
       editor = "vim"; # Set default editor for Git
@@ -161,6 +156,7 @@
     text = ''
     dark-mode: true
     read: CONVENTIONS.md
+    weak-model: ollama/qwen2.5:7b-instruct-q4_K_M
     model: deepseek/deepseek-reasoner
     watch-files: true
 

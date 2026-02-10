@@ -17,7 +17,7 @@ nixos-rebuild switch --flake .#hearth --target-host hearth.local --sudo --ask-su
 #Install home manager on other linux
 sh <(curl -L https://nixos.org/nix/install) --daemon
 nix-shell -p home-manager
-home-manager switch --flake git+https://codeberg.org/traverseda/nixos-config.git?ref=main#traverseda@generic --extra-experimental-features nix-command --extra-experimental-features flakes
+home-manager switch --flake --impure git+https://codeberg.org/traverseda/nixos-config.git?ref=main#generic-minimal --extra-experimental-features nix-command --extra-experimental-features flakes
 ```
 
 

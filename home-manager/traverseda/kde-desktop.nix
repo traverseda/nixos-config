@@ -19,6 +19,8 @@ in
     LC_ALL = "en_US.UTF-8";
   };
 
+  # services.opensnitch-ui.enable = true;
+
   programs.plasma = {
     enable = true;
     kscreenlocker.appearance.wallpaperSlideShow.path = "${builtins.path { path = ../../wallpapers; }}";

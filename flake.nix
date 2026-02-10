@@ -83,6 +83,10 @@
     # This is a function that generates an attribute by calling a function you
     # pass to it, with each system as an argument
     forAllSystems = nixpkgs.lib.genAttrs systems;
+
+    #For generic impure installs
+    user = builtins.getEnv "USER";
+    home = builtins.getEnv "HOME";
   in {
     # Your custom packages
     # Accessible through 'nix build', 'nix shell', etc
@@ -229,14 +233,15 @@
           # inputs.openclaw-local.homeManagerModules.default
         ];
       };
-      "spiri@generic" = home-manager.lib.homeManagerConfiguration {
+      "generic-minimal" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.aarch64-linux; # Home-manager requires 'pkgs' instance
-        extraSpecialArgs = {inherit inputs outputs;
-            homeUser = "spiri";
-            homeDir = "/home/spiri";
+        extraSpecialArgs = {
+          inherit inputs outputs;
+          homeUser = user;
+          homeDir = home;
         };
         modules = [
-          ./home-manager/traverseda/home.nix
+          ./home-manager/traverseda/home-minimal.nix
         ];
       };
       "traverseda@minimal" = home-manager.lib.homeManagerConfiguration {
