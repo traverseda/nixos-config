@@ -9,7 +9,7 @@
   ...
 }: {
   imports = [
-    (import ./nixvim.nix { inherit pkgs; })
+    ./nixvim.nix
   ];
 
   nixpkgs = {
