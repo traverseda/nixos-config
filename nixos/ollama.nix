@@ -11,6 +11,7 @@
     environmentVariables = {
       OLLAMA_VULKAN = "1";
       OLLAMA_FLASH_ATTENTION = "1";
+      OLLAMA_KEEP_ALIVE = "4h";
     };
   };
 
