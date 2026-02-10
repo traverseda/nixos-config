@@ -13,7 +13,13 @@ let
 
   dslrWebcamScript = ''
     #!/bin/sh
-    modprobe dslr-webcam || true
+    ${pkgs.kmod}/bin/modprobe dslr-webcam || true
+    # Wait up to 2 seconds for /dev/video10 to appear
+    tries=0
+    while [ ! -c /dev/video10 ] && [ $tries -lt 20 ]; do
+        ${pkgs.coreutils}/bin/sleep 0.1
+        tries=$((tries+1))
+    done
     exec "${pkgs.gphoto2}/bin/gphoto2" --stdout --capture-movie | "${pkgs.ffmpeg}/bin/ffmpeg" -i - -vcodec rawvideo -pix_fmt yuv420p -f v4l2 /dev/video10
   '';
 
@@ -31,6 +37,8 @@ in
   # Install dslr-webcam script and systemd service
   environment.systemPackages = with pkgs; [
     (writeScriptBin "dslr-webcam" dslrWebcamScript)
+    kmod
+    coreutils
   ];
 
   systemd.services.dslr-webcam = {
