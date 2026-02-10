@@ -9,6 +9,7 @@ let
   dslrUdevRule = ''
     ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="04a9", ENV{ID_USB_MODEL}=="Canon_Digital_Camera", RUN+="${pkgs.systemd}/bin/systemctl start dslr-webcam.service"
     ACTION=="remove", SUBSYSTEM=="usb", ATTR{idVendor}=="04a9", ENV{ID_USB_MODEL}=="Canon_Digital_Camera", RUN+="${pkgs.systemd}/bin/systemctl stop dslr-webcam.service"
+    ACTION=="remove", SUBSYSTEM=="usb", ATTR{idVendor}=="04a9", ENV{ID_USB_MODEL}=="Canon_Digital_Camera", RUN+="${pkgs.kmod}/bin/modprobe -r dslr-webcam || true"
   '';
 
   dslrWebcamScript = ''
