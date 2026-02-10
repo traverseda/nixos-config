@@ -241,6 +241,7 @@
           homeDir = home;
         };
         modules = [
+          inputs.nixvim.homeManagerModules.nixvim
           ./home-manager/traverseda/home-minimal.nix
         ];
       };
@@ -248,6 +249,7 @@
         pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
         extraSpecialArgs = {inherit inputs outputs;};
         modules = [
+          inputs.nixvim.homeManagerModules.nixvim
           # > Our minimal home-manager configuration file <
           ./home-manager/traverseda/home-minimal.nix
         ];
