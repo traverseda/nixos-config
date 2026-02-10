@@ -49,4 +49,13 @@
     OLLAMA_HOST = "http://127.0.0.1:11435";
   };
 
+  environment.systemPackages = [
+    pkgs.ollama-vulkan
+    (pkgs.writeShellScriptBin "local-ollama" ''
+      OLLAMA_HOST=http://127.0.0.1:11434 ${pkgs.ollama-vulkan}/bin/ollama "$@"
+    '')
+    (pkgs.writeShellScriptBin "remote-ollama" ''
+      OLLAMA_HOST=http://192.168.192.82:11434 ${pkgs.ollama-vulkan}/bin/ollama "$@"
+    '')
+  ];
 }
