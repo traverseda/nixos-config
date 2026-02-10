@@ -87,6 +87,7 @@
     #For generic impure installs
     user = builtins.getEnv "USER";
     home = builtins.getEnv "HOME";
+    currentSystem = builtins.currentSystem;
   in {
     # Your custom packages
     # Accessible through 'nix build', 'nix shell', etc
@@ -234,7 +235,7 @@
         ];
       };
       "generic-minimal" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.aarch64-linux; # Home-manager requires 'pkgs' instance
+        pkgs = nixpkgs.legacyPackages.${currentSystem}; # Home-manager requires 'pkgs' instance
         extraSpecialArgs = {
           inherit inputs outputs;
           homeUser = user;
