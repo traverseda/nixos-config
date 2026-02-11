@@ -35,9 +35,6 @@
           modules = [
             microvm.nixosModules.microvm
             ({ lib, pkgs, config, packages, tapInterface, ... }:
-            let
-              wayland-proxy-virtwl = microvm.packages.${pkgs.system}.wayland-proxy-virtwl;
-            in
             {
               microvm = {
                 hypervisor = "cloud-hypervisor";
@@ -90,7 +87,7 @@
                 enable = true;
                 description = "Wayland Proxy";
                 serviceConfig = {
-                  ExecStart = "${wayland-proxy-virtwl}/bin/wayland-proxy-virtwl --virtio-gpu --x-display=0 --xwayland-binary=${pkgs.xwayland}/bin/Xwayland";
+                  ExecStart = "${pkgs.wayland-proxy-virtwl}/bin/wayland-proxy-virtwl --virtio-gpu --x-display=0 --xwayland-binary=${pkgs.xwayland}/bin/Xwayland";
                   Restart = "on-failure";
                   RestartSec = 5;
                 };
