@@ -20,39 +20,12 @@
       nixosModules.microvm = microvm.nixosModules.microvm;
 
       packages.${system} = {
-        default = self.packages.${system}.my-microvm;
-        my-microvm = self.nixosConfigurations.my-microvm.config.microvm.declaredRunner;
-        graphical-microvm = self.nixosConfigurations.graphical-microvm.config.microvm.declaredRunner;
+        default = self.packages.${system}.openclaw;
+        openclaw = self.nixosConfigurations.openclaw.config.microvm.declaredRunner;
       };
 
       nixosConfigurations = {
-        my-microvm = nixpkgs.lib.nixosSystem {
-          inherit system;
-          modules = [
-            microvm.nixosModules.microvm
-            {
-              networking.hostName = "openclaw";
-              users.users.root.password = "";
-              microvm = {
-                # balloon.enable = true;
-                volumes = [ {
-                  mountPoint = "/var";
-                  image = "var.img";
-                  size = 256;
-                } ];
-                shares = [ {
-                  proto = "virtiofs";
-                  tag = "ro-store";
-                  source = "/nix/store";
-                  mountPoint = "/nix/.ro-store";
-                } ];
-                hypervisor = "cloud-hypervisor";
-              };
-            }
-          ];
-        };
-
-        graphical-microvm = nixpkgs.lib.nixosSystem {
+        openclaw = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
             inherit self microvm;
@@ -69,13 +42,24 @@
               microvm = {
                 hypervisor = "cloud-hypervisor";
                 graphics.enable = true;
+                volumes = [ {
+                  mountPoint = "/var";
+                  image = "var.img";
+                  size = 256;
+                } ];
+                shares = [ {
+                  proto = "virtiofs";
+                  tag = "ro-store";
+                  source = "/nix/store";
+                  mountPoint = "/nix/.ro-store";
+                } ];
                 interfaces = lib.optional (tapInterface != null) {
                   type = "tap";
                   id = tapInterface;
                   mac = "00:00:00:00:00:02";
                 };
               };
-              networking.hostName = "graphical-microvm";
+              networking.hostName = "openclaw";
               system.stateVersion = lib.trivial.release;
               nixpkgs.overlays = [ self.overlays.default ];
 
