@@ -1,50 +1,57 @@
 {
-  description = "OpenClaw Sub-flake";
+  description = "NixOS in MicroVMs";
 
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-
-    openclaw = {
-      url = "github:openclaw/nix-openclaw";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+  nixConfig = {
+    extra-substituters = [ "https://microvm.cachix.org" ];
+    extra-trusted-public-keys = [ "microvm.cachix.org-1:oXnBc6hRE3eX5rSYdRyMYXnfzcCxC7yKPTbZXALsqys=" ];
   };
 
-  outputs = { self, nixpkgs, openclaw, ... }: {
-    homeManagerModules.default = { config, lib, pkgs, ... }: {
-      imports = [
-        openclaw.homeManagerModules.openclaw
-      ];
+  inputs.microvm = {
+    url = "github:microvm-nix/microvm.nix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
 
-      nixpkgs.overlays = [
-        openclaw.overlays.default
-      ];
+  outputs = { self, nixpkgs, microvm }:
+    let
+      system = "x86_64-linux";
+    in {
+      packages.${system} = {
+        default = self.packages.${system}.my-microvm;
+        my-microvm = self.nixosConfigurations.my-microvm.config.microvm.declaredRunner;
+      };
 
-      programs.openclaw = {
-        documents = ./documents;
+      nixosConfigurations = {
+        my-microvm = nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules = [
+            microvm.nixosModules.microvm
+            {
+              networking.hostName = "openclaw";
+              users.users.root.password = "";
+              microvm = {
+                # balloon.enable = true;
+                volumes = [ {
+                  mountPoint = "/var";
+                  image = "var.img";
+                  size = 256;
+                } ];
+                shares = [ {
+                  # use proto = "virtiofs" for MicroVMs that are started by systemd
+                  proto = "virtiofs";
+                  tag = "ro-store";
+                  # a host's /nix/store will be picked up so that no
+                  # squashfs/erofs will be built for it.
+                  source = "/nix/store";
+                  mountPoint = "/nix/.ro-store";
+                } ];
 
-        instances.default = {
-          enable = true;
-          plugins = [
-            # { source = "github:openclaw/nix-steipete-tools?dir=tools/oracle"; }
-            # { source = "github:openclaw/nix-steipete-tools?dir=tools/peekaboo"; }
+                # "qemu" has 9p built-in!
+                hypervisor = "cloud-hypervisor";
+                # socket = "control.socket";
+              };
+            }
           ];
         };
       };
-
-      # Override the broken config file with a working one
-      home.file.".openclaw/openclaw.json".force = true;
-      home.file.".openclaw/openclaw.json".text = ''
-        {
-          "gateway": {
-            "mode": "local",
-            "auth": {
-              "token": "<gatewayToken>"
-            }
-          }
-        }
-      '';
     };
-  };
 }
-
