@@ -155,7 +155,7 @@
     text = ''
     dark-mode: true
     read: CONVENTIONS.md
-    weak-model: ollama/qwen2.5:7b-instruct-q4_K_M
+    weak-model: deepseek/deepseek-chat
     model: deepseek/deepseek-reasoner
     watch-files: true
 

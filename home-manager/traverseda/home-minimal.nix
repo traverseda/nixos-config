@@ -45,7 +45,8 @@
     pkgs.curl
     pkgs.wget
     pkgs.mosh
-    pkgs.sshuttle
+    pkgs.rsync
+    pkgs.rclone
   ];
 
 

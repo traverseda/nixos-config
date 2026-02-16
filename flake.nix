@@ -35,10 +35,10 @@
       inputs.home-manager.follows = "home-manager";
     };
 
-    openclaw-local = {
-      url = "path:./openclaw";
-      inputs.nixpkgs.follows = "nixpkgs"; # Keeps nixpkgs versions in sync
-    };
+    # openclaw-local = {
+    #   url = "path:./openclaw";
+    #   inputs.nixpkgs.follows = "nixpkgs"; # Keeps nixpkgs versions in sync
+    # };
 
     # winapps = {
     #   url = "github:winapps-org/winapps";

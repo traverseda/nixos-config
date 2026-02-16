@@ -60,14 +60,20 @@
     pkgs.sshfs
     pkgs.stdenv
     pkgs.gcc
-    pkgs.rustc
-    pkgs.cargo
     pkgs.zig
     pkgs.kdePackages.kompare
     pkgs.unstable.distrobox
     pkgs.element-desktop
     pkgs.act
     pkgs.uv
+    pkgs.python3
+
+
+    pkgs.rustc
+    pkgs.cargo
+    pkgs.rust-analyzer
+    pkgs.rustfmt
+    pkgs.clippy
 
     pkgs.gsettings-desktop-schemas
 
@@ -81,6 +87,7 @@
     ]))
 
   ];
+
 
   programs.direnv = {
     enable = true;
