@@ -16,7 +16,8 @@
     #     };
     # })
     pkgs.lightburn
-    pkgs.openscad
+    # pkgs.openscad
+    pkgs.openscad-unstable
     pkgs.orca-slicer
     # pkgs.unstable.orca-slicer
     #pkgs.blender-cadsketcher
