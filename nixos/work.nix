@@ -9,7 +9,6 @@
 }:
 
 {
-  virtualisation.virtualbox.host.enable = true;
 
   users.extraGroups.vboxusers.members = [ "traverseda" ];
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
@@ -30,20 +29,9 @@
     openFirewall = true;
   };
 
+  environment.etc.hosts.mode = "0644";
 
-  # home-manager = {
-  #   backupFileExtension = ".bak";
-  #   users = {
-  #     traverseda = inputs.openclaw-local.homeManagerModules.default;
-  #   };
-  # };
-
-  # services.kubo = {
-  #   enable = true;
-  #   autoMount = true;
-  #   localDiscovery = true;
-  # };
-  # users.users.traverseda.extraGroups = [ config.services.kubo.group ];
+  programs.virt-manager.enable = true;
 
   users.groups.libvirtd.members = ["traverseda"];
 
