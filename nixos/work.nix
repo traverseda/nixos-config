@@ -55,6 +55,7 @@
     pkgs.act
     pkgs.uv
     pkgs.python3
+    pkgs.py-spy #Flamegraph profiling
 
 
     pkgs.rustc
@@ -88,9 +89,9 @@
     enable = true;
     #Include libstdc++ in the nix-ld profile
     libraries = [
-      # pkgs.stdenv.cc.cc
+      pkgs.stdenv.cc.cc
       # pkgs.zlib
-      # pkgs.fuse3
+      pkgs.fuse3
       # pkgs.icu
       # pkgs.nss
       # pkgs.openssl
