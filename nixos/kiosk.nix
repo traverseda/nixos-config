@@ -25,12 +25,12 @@ let
       --disable-features=OverlayScrollbar
   '';
 
+  
+
   swayIdleCmd = pkgs.writeShellScript "swayidle-kiosk" ''
     exec ${pkgs.swayidle}/bin/swayidle -w \
       timeout ${toString dimTimeout} '${pkgs.brightnessctl}/bin/brightnessctl set ${dimBrightness}' \
-      resume '${pkgs.brightnessctl}/bin/brightnessctl set 100%' \
-      timeout ${toString (dimTimeout + 60)} 'swaymsg "output * dpms off"' \
-      resume 'swaymsg "output * dpms on"'
+      resume '${pkgs.brightnessctl}/bin/brightnessctl set 100%'
   '';
 
   swayConfig = pkgs.writeText "sway-kiosk-config" ''

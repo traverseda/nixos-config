@@ -69,6 +69,8 @@
     pkgs.freerdp
     #Github cli
     pkgs.gh
+    
+    pkgs.playwright
 
 
     (pkgs.vscode.fhsWithPackages (ps: with ps; [
@@ -83,6 +85,9 @@
     nix-direnv.enable = true;
   };
 
+  environment.sessionVariables = {
+    PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright.browsers}";
+  };
 
 
   programs.nix-ld = {

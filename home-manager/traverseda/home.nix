@@ -155,10 +155,9 @@
     text = ''
     dark-mode: true
     read: CONVENTIONS.md
-    weak-model: deepseek/deepseek-chat
-    model: deepseek/deepseek-reasoner
+    weak-model: openrouter/deepseek/deepseek-chat
+    model: openrouter/deepseek/deepseek-r1
     watch-files: true
-
     '';
   };
 

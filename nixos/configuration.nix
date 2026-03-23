@@ -123,6 +123,7 @@
     pkgs.home-manager
     pkgs.cifs-utils
     pkgs.appimage-run
+    pkgs.net-tools
   ];
 
   programs.git = {
