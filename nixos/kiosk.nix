@@ -5,7 +5,7 @@ let
   enableDarkMode = specialArgs.enableDarkMode or true;
   dailyRestart = specialArgs.dailyRestart or false;
   dimTimeout = specialArgs.dimTimeout or 300;
-  dimBrightness = specialArgs.dimBrightness or "10%";
+  dimBrightness = specialArgs.dimBrightness or "5%";
 
   chromiumKiosk = pkgs.writeShellScript "chromium-kiosk" ''
     exec ${pkgs.chromium}/bin/chromium \

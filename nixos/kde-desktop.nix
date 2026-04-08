@@ -77,6 +77,7 @@
     pkgs.kdePackages.kio-extras
     pkgs.kdePackages.discover
     pkgs.kdePackages.ksshaskpass
+    pkgs.kdePackages.qtbase
     pkgs.libreoffice-qt
     pkgs.kdePackages.filelight
     pkgs.hunspell

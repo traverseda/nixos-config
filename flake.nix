@@ -127,6 +127,7 @@
           ./nixos/android.nix
           ./nixos/misc/dslr-webcam.nix
           ./nixos/traverseda.nix
+          # ./nixos/cluster_computing.nix
         ];
       };
       #Lenovo T15

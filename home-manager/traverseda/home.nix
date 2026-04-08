@@ -115,6 +115,10 @@
     pkgs.unstable.aider-chat
 
     (pkgs.writeShellScriptBin "nvim-lsp-format" ./nvim-lsp-format.sh)
+
+    pkgs.xwayland-satellite
+
+
     (pkgs.writeShellScriptBin "load-kwallet-env" ''
       # Generate export commands for environment variables from kwallet
       ${pkgs.libsForQt5.kwallet}/bin/kwallet-query -l -f "env_vars" kdewallet 2>/dev/null | \
@@ -155,8 +159,8 @@
     text = ''
     dark-mode: true
     read: CONVENTIONS.md
-    weak-model: openrouter/deepseek/deepseek-chat
-    model: openrouter/deepseek/deepseek-r1
+    weak-model: openrouter/deepseek/deepseek-v3.2-exp
+    model: openrouter/deepseek/deepseek-v3.2-exp
     watch-files: true
     '';
   };
