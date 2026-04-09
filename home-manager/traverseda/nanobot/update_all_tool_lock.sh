@@ -1,0 +1,1 @@
+ for f in tools/*.py; do uv lock --script "$f"; done                                                                                                       

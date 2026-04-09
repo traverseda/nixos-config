@@ -12,6 +12,7 @@
   # You can import other home-manager modules here
   imports = [
     ./home-minimal.nix
+    ./nanobot/nanobot.nix
     inputs.nix-index-database.homeModules.nix-index
     # (import ./nixvim.nix { inherit pkgs; })
   ];
@@ -179,9 +180,11 @@
       plugins = [ "git" "docker" "docker-compose" ];
       theme = "robbyrussell";
     };
+    profileExtra = ''
+      eval "$(load-kwallet-env)"
+    '';    
     initContent = ''
     source ~/.profile
-    eval "$(load-kwallet-env)"
     if [[ -n ''${NVIM+x} ]]; then
       alias vim="nvr --remote"
       export EDITOR=nvr-edit
@@ -191,10 +194,13 @@
   programs.bash = {
     enable = true;
     enableCompletion = true;
+    profileExtra = ''
+      eval "$(load-kwallet-env)"
+    '';
+
 
     initExtra = ''
     source ~/.profile
-    eval "$(load-kwallet-env)"
     if [[ -n ''${NVIM+x} ]]; then
       alias vim="nvr --remote"
       export EDITOR=nvr-edit
