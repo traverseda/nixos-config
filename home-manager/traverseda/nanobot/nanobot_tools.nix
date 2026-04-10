@@ -41,7 +41,7 @@ let
       Unit = {
         Description = "Sandboxed MCP gateway for ${name}";
         After       = [ "graphical-session.target" ];
-        PartOf      = [ "graphical-session.target" ];
+        PartOf      = [ "mcp.target" ];
       };
       Service = {
         Type      = "simple";
@@ -57,7 +57,7 @@ let
         Restart              = "on-failure";
         RestartSec           = "2s";
       };
-      Install.WantedBy = [ "graphical-session.target" ];
+      Install.WantedBy = [ "mcp.target" ];
     };
 
   mcpConnect = pkgs.writeShellScriptBin "mcp-connect" ''
@@ -74,13 +74,18 @@ let
   nanobotEnv = mkUvScriptEnv "nanobot.py";
 
   nanobotSandboxed = pkgs.writeShellScriptBin "nanobot" ''
-    exec /run/wrappers/bin/firejail \
-      --caps.drop=all \
-      --env=XDG_RUNTIME_DIR="$XDG_RUNTIME_DIR" \
-      --whitelist=${config.home.homeDirectory}/.nanobot \
-      --whitelist="$XDG_RUNTIME_DIR/mcp" \
-      --no3d --nodvd --nosound --notv --nou2f --novideo \
-      -- ${nanobotEnv}/bin/nanobot "$@"
+    # Run as an interactive login shell to ensure KWallet env vars are sourced
+    # and that the shell initialization (which might have interactive guards) is fully processed.
+    exec ${pkgs.bash}/bin/bash -li -c '
+      exec /run/wrappers/bin/firejail \
+        --caps.drop=all \
+        --env=XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR}" \
+        --env=OPENROUTER_API_KEY="''${OPENROUTER_API_KEY}" \
+        --whitelist="${config.home.homeDirectory}/.nanobot" \
+        --whitelist="$XDG_RUNTIME_DIR/mcp" \
+        --no3d --nodvd --nosound --notv --nou2f --novideo \
+        -- ${nanobotEnv}/bin/nanobot "$@"
+    ' "nanobot" "$@"
   '';
 
 in

@@ -1,15 +1,8 @@
 # nanobot.nix
-{ config, pkgs, inputs, lib, mkUvScriptEnv, mkMcpService, mcpConnect, nanobotSandboxed, mkCargoEnv, ... }:
+{ config, pkgs, inputs, lib, mkUvScriptEnv, mkMcpService, mcpConnect, nanobotSandboxed, ... }:
 let
   craneLib = inputs.crane.mkLib pkgs;
   mcpTools = {
-    # Very expensive, AI can sort through crap alright.
-    # kagimcp = {
-    #   package      = mkUvScriptEnv "mcp_kagi.py";
-    #   bin          = "kagimcp";
-    #   firejailArgs = [ "--caps.drop=all" "--private" ];
-    #   env          = [ "KAGI_API_KEY" ];
-    # };
     homeAssistant = {
       package = pkgs.mcp-proxy;
       bin = "mcp-proxy https://hearth.0u0.ca/api/mcp --transport=streamablehttp --stateless --headers Authorization \"Bearer \${HOME_ASSISTANT_API_KEY}\"";
@@ -50,16 +43,30 @@ in
 {
   imports = [ ./nanobot_tools.nix ];
 
-  systemd.user.services = (lib.mapAttrs mkMcpService mcpTools) // {
+  systemd.user.targets.mcp = {
+    Unit = {
+      Description = "MCP Servers Target";
+      Wants = lib.mapAttrsToList (name: _: "mcp-${name}.service") mcpTools;
+      After = [ "graphical-session.target" ];
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services = (lib.mapAttrs' (name: tool: lib.nameValuePair "mcp-${name}" (mkMcpService name tool)) mcpTools) // {
     nanobot-gateway = {
       Unit = {
         Description = "nanobot Gateway Service";
-        After = [ "network.target" ];
+        After = [ "network.target" "mcp.target" ];
+        Requires = [ "mcp.target" ];
       };
       Service = {
-        ExecStart = "${nanobotSandboxed}/bin/nanobot gateway --port 8000";
+        ExecStart = "${nanobotSandboxed}/bin/nanobot gateway --port 8777";
         Restart = "always";
         RestartSec = "5s";
+        # StandardInput = "tty-fail" is causing 208/STDIN errors in the user session.
+        # Removing it as systemd user services often cannot acquire a TTY.
+        StandardOutput = "journal";
+        StandardError = "journal";
         Environment = [
           "XDG_RUNTIME_DIR=/run/user/%U"
           "PATH=${lib.makeBinPath [ pkgs.firejail ]}"
@@ -82,7 +89,7 @@ in
       workspace           = "~/.nanobot/workspace";
       model               = "google/gemini-3-flash-preview";
       provider            = "auto";
-      maxTokens           = 8192;
+      maxTokens           = 4096;
       contextWindowTokens = 32000;
       temperature         = 0.7;
       maxToolIterations   = 20;
@@ -101,8 +108,6 @@ in
       args    = [ name ];
     }) mcpTools;
   };
-
-
 
   home.packages = [ nanobotSandboxed mcpConnect ];
 }
