@@ -39,6 +39,8 @@
     pyproject-build-systems.inputs.pyproject-nix.follows = "pyproject-nix";
     pyproject-build-systems.inputs.nixpkgs.follows = "nixpkgs";
 
+    crane.url = "github:ipetkov/crane";
+
 
     plasma-manager = {
       url = "github:pjones/plasma-manager";

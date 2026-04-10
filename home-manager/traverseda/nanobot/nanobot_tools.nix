@@ -79,8 +79,7 @@ let
       --env=XDG_RUNTIME_DIR="$XDG_RUNTIME_DIR" \
       --whitelist=${config.home.homeDirectory}/.nanobot \
       --whitelist="$XDG_RUNTIME_DIR/mcp" \
-      --no3d --nodvd --nosound --notv --nou2f--novideo \
-      --net=none \
+      --no3d --nodvd --nosound --notv --nou2f --novideo \
       -- ${nanobotEnv}/bin/nanobot "$@"
   '';
 

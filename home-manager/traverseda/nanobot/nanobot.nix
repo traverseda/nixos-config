@@ -1,7 +1,9 @@
 # nanobot.nix
-{ config, pkgs, inputs, lib, mkUvScriptEnv, mkMcpService, mcpConnect, nanobotSandboxed, ... }:
+{ config, pkgs, inputs, lib, mkUvScriptEnv, mkMcpService, mcpConnect, nanobotSandboxed, mkCargoEnv, ... }:
 let
+  craneLib = inputs.crane.mkLib pkgs;
   mcpTools = {
+    # Very expensive, AI can sort through crap alright.
     # kagimcp = {
     #   package      = mkUvScriptEnv "mcp_kagi.py";
     #   bin          = "kagimcp";
@@ -14,20 +16,60 @@ let
       env = [ "HOME_ASSISTANT_API_KEY" ];
       firejailArgs = [ "--caps.drop=all" "--private" ];
     };
+
+     vscode = {
+       package = pkgs.mcp-proxy;
+       bin     = "mcp-proxy http://127.0.0.1:3000/sse --transport=sse";
+       env     = [ ];
+       firejailArgs = [ "--caps.drop=all" ]; # No --private here, we need to talk to localhost
+     };
+
+    clipboard = {
+      package = craneLib.buildPackage {
+        src = pkgs.fetchFromGitHub {
+          owner = "mnardit";
+          repo  = "clipboard-mcp";
+          rev   = "main";
+          hash  = "sha256-URJg4fKFxtpJe+LsKbsn2biLdY2+PKWL9ePlXwFzz0U=";
+        };
+      };
+      bin = "clipboard-mcp";
+      env = [ ];
+      firejailArgs = [ "--caps.drop=all" ];
+    };
+
     nixos = {
       package = mkUvScriptEnv "nix.py";
       bin = "mcp-nixos";
       env = [ ];
       firejailArgs = [ "--caps.drop=all" "--private" ];
-
-    };    
+    };
   };
 
 in
 {
   imports = [ ./nanobot_tools.nix ];
 
-  systemd.user.services = lib.mapAttrs mkMcpService mcpTools;
+  systemd.user.services = (lib.mapAttrs mkMcpService mcpTools) // {
+    nanobot-gateway = {
+      Unit = {
+        Description = "nanobot Gateway Service";
+        After = [ "network.target" ];
+      };
+      Service = {
+        ExecStart = "${nanobotSandboxed}/bin/nanobot gateway --port 8000";
+        Restart = "always";
+        RestartSec = "5s";
+        Environment = [
+          "XDG_RUNTIME_DIR=/run/user/%U"
+          "PATH=${lib.makeBinPath [ pkgs.firejail ]}"
+        ];
+      };
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+    };
+  };
 
   home.file.".nanobot/config.json".text = builtins.toJSON {
     providers = {
@@ -38,12 +80,12 @@ in
 
     agents.defaults = {
       workspace           = "~/.nanobot/workspace";
-      model               = "anthropic/claude-opus-4-5";
+      model               = "google/gemini-3-flash-preview";
       provider            = "auto";
       maxTokens           = 8192;
-      contextWindowTokens = 65536;
-      temperature         = 0.1;
-      maxToolIterations   = 200;
+      contextWindowTokens = 32000;
+      temperature         = 0.7;
+      maxToolIterations   = 20;
       maxToolResultChars  = 16000;
       providerRetryMode   = "standard";
       timezone            = "UTC";
@@ -59,6 +101,8 @@ in
       args    = [ name ];
     }) mcpTools;
   };
+
+
 
   home.packages = [ nanobotSandboxed mcpConnect ];
 }
