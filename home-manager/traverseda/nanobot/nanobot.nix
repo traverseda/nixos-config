@@ -19,7 +19,7 @@ let
 
      vscode = {
        package = pkgs.mcp-proxy;
-       bin     = "mcp-proxy http://127.0.0.1:3000/sse --transport=sse";
+       bin     = "mcp-proxy http://127.0.0.1:3777/mcp --transport=streamablehttp";
        env     = [ ];
        firejailArgs = [ "--caps.drop=all" ]; # No --private here, we need to talk to localhost
      };
