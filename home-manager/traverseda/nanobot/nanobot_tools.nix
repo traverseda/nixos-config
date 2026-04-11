@@ -25,41 +25,49 @@ let
     in
       script.mkVirtualEnv { inherit pythonSet; };
 
-  mkMcpService = name: tool:
-    let
-      envFlags = lib.concatStringsSep " \\\n          "
-        (map (v: "--env=${v}=\"\$${v}\"") tool.env);
+   mkMcpBundle = name: tool:                                                                                                                                                                   
+     let                                                                                                                                                                                       
+       execScript = pkgs.writeShellScript "mcp-${name}-exec" ''                                                                                                                                
+         exec /run/wrappers/bin/firejail \                                                                                                                                                     
+           ${lib.concatStringsSep " \\\n              " tool.firejailArgs} \                                                                                                                   
+           ${lib.concatStringsSep " \\\n              " (map (v: "--env=${v}=\"\$${v}\"") tool.env)} \                                                                                         
+           -- ${tool.package}/bin/${tool.bin}                                                                                                                                                  
+       '';                                                                                                                                                                                     
+     in                                                                                                                                                                                        
+     {                                                                                                                                                                                         
+       # Note the '@' - this tells systemd it is a template for Accept=true                                                                                                                    
+       "mcp-${name}@" = {                                                                                                                                                                      
+         Unit = {                                                                                                                                                                              
+           Description = "Sandboxed MCP gateway for ${name}";                                                                                                                                  
+         };                                                                                                                                                                                    
+         Service = {                                                                                                                                                                           
+           # Systemd passes the already-accepted connection here                                                                                                                               
+           StandardInput = "socket";                                                                                                                                                           
+           StandardOutput = "socket";                                                                                                                                                          
+           StandardError = "journal";                                                                                                                                                          
+                                                                                                                                                                                               
+           # Bridge the connected socket (-) to a pipe (EXEC) for Firejail                                                                                                                     
+           ExecStart = "${pkgs.socat}/bin/socat - EXEC:\"${pkgs.bash}/bin/bash --login ${execScript}\"";                                                                                       
+                                                                                                                                                                                               
+           Restart = "on-failure";                                                                                                                                                             
+           RestartSec = "2s";                                                                                                                                                                  
+         };                                                                                                                                                                                    
+       };                                                                                                                                                                                      
+       socket = {                                                                                                                                                                              
+         Unit.Description = "Socket for Sandboxed MCP gateway ${name}";                                                                                                                        
+         Socket = {                                                                                                                                                                            
+           ListenStream = "%t/mcp/${name}.sock";                                                                                                                                               
+           # This triggers the creation of a new service instance per connection                                                                                                               
+           Accept = true;                                                                                                                                                                      
+           SocketMode = "0600";                                                                                                                                                                
+           DirectoryMode = "0700";                                                                                                                                                             
+           RemoveOnStop = true;                                                                                                                                                                
+         };                                                                                                                                                                                    
+         Install.WantedBy = [ "sockets.target" "mcp.target" ];                                                                                                                                 
+       };                                                                                                                                                                                      
+     };     
 
-      execScript = pkgs.writeShellScript "mcp-${name}-exec" ''
-        exec /run/wrappers/bin/firejail \
-          ${lib.concatStringsSep " \\\n          " tool.firejailArgs} \
-          ${envFlags} \
-          -- ${tool.package}/bin/${tool.bin}
-      '';
-    in
-    {
-      Unit = {
-        Description = "Sandboxed MCP gateway for ${name}";
-        After       = [ "graphical-session.target" ];
-        PartOf      = [ "mcp.target" ];
-      };
-      Service = {
-        Type      = "simple";
-        ExecStart = pkgs.writeShellScript "mcp-${name}-service" ''
-          mkdir -p "$XDG_RUNTIME_DIR/mcp"
-          rm -f "$XDG_RUNTIME_DIR/mcp/${name}.sock"
-          exec ${pkgs.socat}/bin/socat \
-            "UNIX-LISTEN:$XDG_RUNTIME_DIR/mcp/${name}.sock,mode=600,fork" \
-            "EXEC:${pkgs.bash}/bin/bash --login ${execScript}"
-        '';
-        RuntimeDirectory     = "mcp";
-        RuntimeDirectoryMode = "0700";
-        Restart              = "on-failure";
-        RestartSec           = "2s";
-      };
-      Install.WantedBy = [ "mcp.target" ];
-    };
-
+                                                            
   mcpConnect = pkgs.writeShellScriptBin "mcp-connect" ''
     name="$1"
     if [[ -z "$name" ]]; then
@@ -90,5 +98,6 @@ let
 
 in
 {
-  _module.args = { inherit mkUvScriptEnv mkMcpService mcpConnect nanobotSandboxed; };
+ 
+  _module.args = { inherit mkUvScriptEnv mkMcpBundle mcpConnect nanobotSandboxed; };
 }

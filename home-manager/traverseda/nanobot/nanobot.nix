@@ -1,22 +1,19 @@
 # nanobot.nix
-{ config, pkgs, inputs, lib, mkUvScriptEnv, mkMcpService, mcpConnect, nanobotSandboxed, ... }:
+{ config, pkgs, inputs, lib, mkUvScriptEnv, mkMcpBundle, mcpConnect, nanobotSandboxed, ... }:
 let
   craneLib = inputs.crane.mkLib pkgs;
   mcpTools = {
-    homeAssistant = {
-      package = pkgs.mcp-proxy;
-      bin = "mcp-proxy https://hearth.0u0.ca/api/mcp --transport=streamablehttp --stateless --headers Authorization \"Bearer \${HOME_ASSISTANT_API_KEY}\"";
-      env = [ "HOME_ASSISTANT_API_KEY" ];
-      firejailArgs = [ "--caps.drop=all" "--private" ];
-    };
 
-     vscode = {
-       package = pkgs.mcp-proxy;
-       bin     = "mcp-proxy http://127.0.0.1:3777/mcp --transport=streamablehttp";
-       env     = [ ];
-       firejailArgs = [ "--caps.drop=all" ]; # No --private here, we need to talk to localhost
-     };
+  };
 
+  mcpConnect = pkgs.writeShellScriptBin "mcp-connect" ''                                                                                                                                    
+    exec ${pkgs.socat}/bin/socat STDIO UNIX-CONNECT:"/run/user/$(id -u)/mcp/$1.sock"                                                                                                            
+  '';      
+in
+{
+  imports = [ ./nanobot_tools.nix ./mcp_tools.nix ];
+
+  nanobot.tools = { 
     clipboard = {
       package = craneLib.buildPackage {
         src = pkgs.fetchFromGitHub {
@@ -28,55 +25,28 @@ let
       };
       bin = "clipboard-mcp";
       env = [ ];
-      firejailArgs = [ "--caps.drop=all" ];
+      firejailArgs = [ "--caps.drop=all --noprofile" ];
     };
-
+     vscode = {
+       package = pkgs.mcp-proxy;
+       bin     = "mcp-proxy http://127.0.0.1:3777/mcp --transport=streamablehttp";
+       env     = [ ];
+       firejailArgs = [ "--caps.drop=all" ]; # No --private here, we need to talk to localhost
+     };
+    homeAssistant = {
+      package = pkgs.mcp-proxy;
+      bin = "mcp-proxy https://hearth.0u0.ca/api/mcp --transport=streamablehttp --stateless --headers Authorization \"Bearer \${HOME_ASSISTANT_API_KEY}\"";
+      env = [ "HOME_ASSISTANT_API_KEY" ];
+      firejailArgs = [ "--caps.drop=all" "--private" ];
+    };
     nixos = {
       package = mkUvScriptEnv "nix.py";
       bin = "mcp-nixos";
       env = [ ];
       firejailArgs = [ "--caps.drop=all" "--private" ];
-    };
+    };     
   };
-
-in
-{
-  imports = [ ./nanobot_tools.nix ];
-
-  systemd.user.targets.mcp = {
-    Unit = {
-      Description = "MCP Servers Target";
-      Wants = lib.mapAttrsToList (name: _: "mcp-${name}.service") mcpTools;
-      After = [ "graphical-session.target" ];
-    };
-    Install.WantedBy = [ "graphical-session.target" ];
-  };
-
-  systemd.user.services = (lib.mapAttrs' (name: tool: lib.nameValuePair "mcp-${name}" (mkMcpService name tool)) mcpTools) // {
-    nanobot-gateway = {
-      Unit = {
-        Description = "nanobot Gateway Service";
-        After = [ "network.target" "mcp.target" ];
-        Requires = [ "mcp.target" ];
-      };
-      Service = {
-        ExecStart = "${nanobotSandboxed}/bin/nanobot gateway --port 8777";
-        Restart = "always";
-        RestartSec = "5s";
-        # StandardInput = "tty-fail" is causing 208/STDIN errors in the user session.
-        # Removing it as systemd user services often cannot acquire a TTY.
-        StandardOutput = "journal";
-        StandardError = "journal";
-        Environment = [
-          "XDG_RUNTIME_DIR=/run/user/%U"
-          "PATH=${lib.makeBinPath [ pkgs.firejail ]}"
-        ];
-      };
-      Install = {
-        WantedBy = [ "default.target" ];
-      };
-    };
-  };
+  
 
   home.file.".nanobot/config.json".text = builtins.toJSON {
     providers = {
@@ -103,10 +73,10 @@ in
       };
     };
 
-    tools.mcpServers = lib.mapAttrs (name: _: {
-      command = "${mcpConnect}/bin/mcp-connect";
-      args    = [ name ];
-    }) mcpTools;
+    tools.mcpServers = lib.mapAttrs (name: _: {                                                                                                                                             
+      command = "${mcpConnect}/bin/mcp-connect";                                                                                                                                            
+      args = [ name ];                                                                                                                                                                      
+    }) config.nanobot.tools; 
   };
 
   home.packages = [ nanobotSandboxed mcpConnect ];
