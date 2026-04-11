@@ -12,7 +12,7 @@
         # Combine all flags into a single list
         allArgs = [ "--private" "--quiet" ]
                   ++ (tool.firejailArgs or [])
-                  ++ (map (v: "--env=''${v}") (tool.env or []))
+                  ++ (map (v: "--env=${v}=\${${v}}") (tool.env or []))
                   ++ [ "--" mcpBin ];
 
         fullCmd = "${firejailBin} ${lib.concatStringsSep " " allArgs}";
