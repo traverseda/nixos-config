@@ -11,7 +11,7 @@ let
   '';      
 in
 {
-  imports = [ ./nanobot_tools.nix ./mcp_tools.nix ];
+  imports = [ ./nanobot_old.nix ./mcp_tools.nix ];
 
   nanobot.tools = { 
     clipboard = {
