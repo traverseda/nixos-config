@@ -1,17 +1,14 @@
 # nanobot.nix
-{ config, pkgs, inputs, lib, mkUvScriptEnv, mkMcpBundle, mcpConnect, nanobotSandboxed, ... }:
+{ config, pkgs, inputs, lib, mkUvScriptEnv, nanobotSandboxed, ... }:
 let
   craneLib = inputs.crane.mkLib pkgs;
-  mcpTools = {
-
-  };
 
   mcpConnect = pkgs.writeShellScriptBin "mcp-connect" ''                                                                                                                                    
     exec ${pkgs.socat}/bin/socat STDIO UNIX-CONNECT:"/run/user/$(id -u)/mcp/$1.sock"                                                                                                            
   '';      
 in
 {
-  imports = [ ./nanobot_old.nix ./mcp_tools.nix ];
+  imports = [ ./nanobot_old.nix ./mcp_tools.nix ./nanobot_gateway.nix ];
 
   nanobot.tools = { 
     clipboard = {
