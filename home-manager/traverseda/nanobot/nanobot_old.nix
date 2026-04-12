@@ -7,7 +7,7 @@ let
 
 
 
-  nanobotEnv = mkUvScriptEnv "nanobot.py";
+  nanobotEnv = mkUvScriptEnv ./tools/nanobot.py [ ];
 
   nanobotSandboxed = pkgs.writeShellScriptBin "nanobot" ''
     # Run as an interactive login shell to ensure KWallet env vars are sourced
@@ -26,6 +26,6 @@ let
 
 in
 {
- 
+
   _module.args = { inherit nanobotSandboxed; };
 }

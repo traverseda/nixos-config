@@ -1,67 +1,35 @@
-# MCP Service Architecture: The "Secret-Aware" Sandbox Flow
+# Nanobot Home-Manager Configuration
 
-This document explains how a single MCP (Model Context Protocol) tool is defined, sandboxed, and connected to the `nanobot` gateway within this NixOS configuration.
+This directory contains the Home-Manager configuration for `nanobot`, a sandboxed AI assistant integrated into a NixOS environment.
 
-## Overview
+## Architecture & Goals
 
-The architecture is designed to solve a specific problem: **How do we give a sandboxed AI tool access to secrets (like API keys) that are managed via interactive shell hooks (e.g., `bash --login`)?**
+The primary goal of this setup is to provide a highly capable AI agent that has access to local tools and state while maintaining a strict security boundary.
 
-The solution uses a "Socket-Bridge" pattern:
-1. **The Gateway** (`nanobot`) is heavily sandboxed and has no access to secrets.
-2. **The Tool** is wrapped in its own sandbox and only loads secrets at the moment of execution.
-3. **The Bridge** (`socat` + Unix Sockets) connects the two.
+### 1. The Sandbox (Firejail)
+To prevent the LLM from having unrestricted access to the host system, the `nanobot` binary is wrapped in a **Firejail** sandbox.
+- **Capabilities**: All kernel capabilities are dropped (`--caps.drop=all`).
+- **Filesystem**: Access is restricted using a whitelist approach. Only `~/.nanobot` and the MCP runtime directory are accessible.
+- **Hardware**: Access to 3D acceleration, DVD, sound, TV, U2F, and video devices is disabled.
 
----
+### 2. Environment & Secrets (The Login Shell Pattern)
+The configuration uses a specific execution pattern to handle secrets (like API keys) and environment variables:
+- **Login Shell Wrapper**: The entry point uses `bash -li -c`. This ensures that the environment is initialized as a login shell, which is necessary for sourcing secrets managed by tools like KWallet, keychain, or other environment-based secret managers that hook into shell initialization.
+- **Explicit Passing**: Key variables (e.g., `OPENROUTER_API_KEY`, `XDG_RUNTIME_DIR`) are explicitly captured from the host environment and passed into the Firejail sandbox via `--env` flags. This creates a "Secret-Aware" bridge where the sandbox only sees what it is explicitly granted.
 
-## The 5-Layer Execution Flow
+### 3. State & Persistence
+The agent's state is persisted in `~/.nanobot`:
+- **`memory/`**: Contains long-term facts (`MEMORY.md`) and a full interaction history (`history.jsonl`).
+- **`skills/`**: Custom executable skills that extend the agent's capabilities.
+- **`sessions/`**: Context and state for active chat sessions.
+- **`HEARTBEAT.md`**: A task list checked periodically by the system to trigger background actions.
 
-When `nanobot` calls a tool (e.g., `homeAssistant`), the following chain triggers:
+## File Structure
 
-### 1. The Connection Launcher (`mcp-connect`)
-`nanobot` is configured to use `mcp-connect <name>` as its "executable" for every MCP server.
-- **Action:** Runs `socat STDIO UNIX-CONNECT:/run/user/1000/mcp/<name>.sock`.
-- **Purpose:** Bridges the gateway's standard input/output to a local Unix socket.
+- `nanobot.nix`: The main module defining the `nanobot` service and its environment.
+- `mcp_tools.nix`: Defines the list of MCP tools, their required environment variables, and specific `firejail` arguments.
+- `nanobot_gateway.nix`: Handles the gateway logic and socket-bridge connections.
+- `tools/`: Implementation logic for individual MCP tools.
 
-### 2. The Socket Listener (Systemd + `socat`)
-Each tool has a background systemd user service (defined via `mkMcpService` in `nanobot_tools.nix`).
-- **Action:** Runs `socat UNIX-LISTEN:... EXEC:"bash --login ..."`.
-- **Purpose:** It waits for a connection on the socket. When one arrives, it **forks** and starts a new process.
-
-### 3. The Secret Loader (`bash --login`)
-Because `socat` uses `EXEC` with a login shell:
-- **Action:** Bash starts and sources your `.bash_profile` / `.zprofile`.
-- **Purpose:** This triggers your **profile hooks** (e.g., bitwarden-cli, keychain, or custom scripts) to populate environment variables like `HOME_ASSISTANT_API_KEY`.
-
-### 4. The Sandbox Wrapper (`firejail`)
-The login shell executes the `execScript` generated for that tool.
-- **Action:** Runs `firejail --env=SECRET=$SECRET ... <tool-binary>`.
-- **Purpose:** It "traps" the process. Even though we just loaded secrets, `firejail` ensures the tool can't wander around your home directory or access the network (unless explicitly allowed). It passes only the specific environment variables required.
-
-### 5. The Implementation (`uv2nix` VirtualEnv)
-The final process is the actual Python or Rust binary.
-- **Action:** The script runs inside a Nix-native virtual environment.
-- **Purpose:** Provides the actual MCP logic (e.g., `nix.py`). Since it was built with `uv2nix`, all dependencies are locked and reproducible in the Nix store.
-
----
-
-## File Responsibilities
-
-### `home-manager/.../nanobot.nix`
-- **The Manifest:** Defines the list of tools, their required environment variables, and their specific `firejail` arguments (e.g., `--private` or `--net=none`).
-
-### `home-manager/.../nanobot_tools.nix`
-- **The Factory:** Contains the Nix logic to:
-    - Build the `uv2nix` environments (`mkUvScriptEnv`).
-    - Generate the Systemd service units (`mkMcpService`).
-    - Create the `mcp-connect` bridge script.
-
-### `./tools/` directory
-- **The Logic:** Contains the actual scripts (like `nix.py`). These files often contain inline PEP 723 metadata (dependencies) which `uv2nix` uses to build the environment.
-
----
-
-## Key Benefits
-- **Security:** The main AI gateway never sees your API keys.
-- **Isolation:** Each tool has its own filesystem and network rules.
-- **Compatibility:** Works with any secret-management system that hooks into a login shell.
-- **Cleanliness:** Tools are started on-demand and cleaned up by systemd.
+## Usage in NixOS
+This configuration is deployed via Home-Manager, using `writeShellScriptBin` to generate the sandboxed wrapper that orchestrates the login shell, environment variables, and Firejail constraints.

@@ -3,14 +3,14 @@
 let
   craneLib = inputs.crane.mkLib pkgs;
 
-  mcpConnect = pkgs.writeShellScriptBin "mcp-connect" ''                                                                                                                                    
-    exec ${pkgs.socat}/bin/socat STDIO UNIX-CONNECT:"/run/user/$(id -u)/mcp/$1.sock"                                                                                                            
-  '';      
+  mcpConnect = pkgs.writeShellScriptBin "mcp-connect" ''
+    exec ${pkgs.socat}/bin/socat STDIO UNIX-CONNECT:"/run/user/$(id -u)/mcp/$1.sock"
+  '';
 in
 {
   imports = [ ./nanobot_old.nix ./mcp_tools.nix ./nanobot_gateway.nix ];
 
-  nanobot.tools = { 
+  nanobot.tools = {
     clipboard = {
       package = craneLib.buildPackage {
         src = pkgs.fetchFromGitHub {
@@ -37,13 +37,13 @@ in
       firejailArgs = [ "--caps.drop=all" "--private" ];
     };
     nixos = {
-      package = mkUvScriptEnv "nix.py";
+      package = mkUvScriptEnv ./tools/nix.py [ ];
       bin = "mcp-nixos";
       env = [ ];
       firejailArgs = [ "--caps.drop=all" "--private" ];
-    };     
+    };
   };
-  
+
 
   home.file.".nanobot/config.json".text = builtins.toJSON {
     providers = {
@@ -70,10 +70,26 @@ in
       };
     };
 
-    tools.mcpServers = lib.mapAttrs (name: _: {                                                                                                                                             
-      command = "${mcpConnect}/bin/mcp-connect";                                                                                                                                            
-      args = [ name ];                                                                                                                                                                      
-    }) config.nanobot.tools; 
+    api = {
+      host = "127.0.0.1";
+      port = 8900;
+      timeout = 120.0;
+    };
+
+    gateway = {
+      host = "127.0.0.1";
+      port = 18790;
+      heartbeat = {
+        enabled = true;
+        intervalS = 1800;
+        keepRecentMessages = 8;
+      };
+    };
+
+    tools.mcpServers = lib.mapAttrs (name: _: {
+      command = "${mcpConnect}/bin/mcp-connect";
+      args = [ name ];
+    }) config.nanobot.tools;
   };
 
   home.packages = [ nanobotSandboxed mcpConnect ];
