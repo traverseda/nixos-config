@@ -42,6 +42,12 @@ in
       env = [ ];
       firejailArgs = [ "--caps.drop=all" "--private" ];
     };
+    # treesitter = {
+    #   package = mkUvScriptEnv ./tools/treesitter.py [];
+    #   bin="mcp-server-tree-sitter";
+    #   env = [];
+    #   firejailArgs = [];
+    # };
   };
 
 
@@ -54,15 +60,15 @@ in
 
     agents.defaults = {
       workspace           = "~/.nanobot/workspace";
-      model               = "google/gemini-3-flash-preview";
+      model               = "deepseek/deepseek-v3.2-exp";
       provider            = "auto";
       maxTokens           = 4096;
       contextWindowTokens = 32000;
-      temperature         = 0.7;
-      maxToolIterations   = 20;
+      temperature         = 0.4;
+      maxToolIterations   = 15;
       maxToolResultChars  = 16000;
       providerRetryMode   = "standard";
-      timezone            = "UTC";
+      timezone            = "America/Halifax";
       dream = {
         intervalH     = 2;
         maxBatchSize  = 20;
