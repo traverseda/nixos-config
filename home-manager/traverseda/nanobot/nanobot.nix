@@ -60,7 +60,7 @@ in
 
     agents.defaults = {
       workspace           = "~/.nanobot/workspace";
-      model               = "deepseek/deepseek-v3.2-exp";
+      model               = "deepseek/deepseek-v3.2";
       provider            = "auto";
       maxTokens           = 4096;
       contextWindowTokens = 32000;

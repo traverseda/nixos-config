@@ -160,8 +160,8 @@
     text = ''
     dark-mode: true
     read: CONVENTIONS.md
-    weak-model: openrouter/deepseek/deepseek-v3.2-exp
-    model: openrouter/deepseek/deepseek-v3.2-exp
+    weak-model: openrouter/deepseek/deepseek-v3.2
+    model: openrouter/deepseek/deepseek-v3.2
     watch-files: true
     '';
   };
