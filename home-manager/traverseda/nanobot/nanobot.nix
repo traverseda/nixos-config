@@ -6,6 +6,18 @@ let
   mcpConnect = pkgs.writeShellScriptBin "mcp-connect" ''
     exec ${pkgs.socat}/bin/socat STDIO UNIX-CONNECT:"/run/user/$(id -u)/mcp/$1.sock"
   '';
+
+  anytypeMcp = pkgs.buildNpmPackage {
+    pname = "anytype-mcp";
+    version = "1.2.5";
+    src = pkgs.fetchFromGitHub {
+      owner = "anyproto";
+      repo = "anytype-mcp";
+      rev = "main";
+      hash = "sha256-N/6mospk2aFFecPo+nvgDc5m79N0sngtRcxC9yyO2qU=";
+    };
+    npmDepsHash = "sha256-V33PPWVnsTXCTi7gRZDuw17bArZak/3V0GvWkfGbayQ=";
+  };
 in
 {
   imports = [ ./nanobot_old.nix ./mcp_tools.nix ./nanobot_gateway.nix ];
@@ -40,6 +52,12 @@ in
       package = mkUvScriptEnv ./tools/nix.py [ ];
       bin = "mcp-nixos";
       env = [ ];
+      firejailArgs = [ "--caps.drop=all" "--private" ];
+    };
+    anytype = {
+      package = anytypeMcp;
+      bin = "anytype-mcp";
+      env = [ "OPENAPI_MCP_HEADERS" "ANYTYPE_API_BASE_URL" ];
       firejailArgs = [ "--caps.drop=all" "--private" ];
     };
     # treesitter = {
