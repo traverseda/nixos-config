@@ -18,6 +18,11 @@ let
     };
     npmDepsHash = "sha256-V33PPWVnsTXCTi7gRZDuw17bArZak/3V0GvWkfGbayQ=";
   };
+
+  anytypeWrapper = pkgs.writeShellScriptBin "anytype-mcp-wrapper" ''
+    export OPENAPI_MCP_HEADERS="Authorization: Bearer $ANYTYPE_API_KEY"
+    exec ${anytypeMcp}/bin/anytype-mcp
+  '';
 in
 {
   imports = [ ./nanobot_old.nix ./mcp_tools.nix ./nanobot_gateway.nix ];
@@ -55,9 +60,9 @@ in
       firejailArgs = [ "--caps.drop=all" "--private" ];
     };
     anytype = {
-      package = anytypeMcp;
-      bin = "anytype-mcp";
-      env = [ "OPENAPI_MCP_HEADERS" "ANYTYPE_API_BASE_URL" ];
+      package = anytypeWrapper;
+      bin = "anytype-mcp-wrapper";
+      env = [ "ANYTYPE_API_KEY" "ANYTYPE_API_BASE_URL" ];
       firejailArgs = [ "--caps.drop=all" "--private" ];
     };
     # treesitter = {
