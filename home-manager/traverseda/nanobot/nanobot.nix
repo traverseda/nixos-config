@@ -20,7 +20,7 @@ let
   };
 
   anytypeWrapper = pkgs.writeShellScriptBin "anytype-mcp-wrapper" ''
-    export OPENAPI_MCP_HEADERS="Authorization: Bearer $ANYTYPE_API_KEY"
+    export OPENAPI_MCP_HEADERS="{\"Authorization\":\"Bearer $ANYTYPE_API_KEY\", \"Anytype-Version\":\"2025-11-08\"}"
     exec ${anytypeMcp}/bin/anytype-mcp
   '';
 in
@@ -115,10 +115,13 @@ in
       };
     };
 
-    tools.mcpServers = lib.mapAttrs (name: _: {
-      command = "${mcpConnect}/bin/mcp-connect";
-      args = [ name ];
-    }) config.nanobot.tools;
+    tools = {
+      restrictToWorkspace = true;
+      mcpServers = lib.mapAttrs (name: _: {
+        command = "${mcpConnect}/bin/mcp-connect";
+        args = [ name ];
+      }) config.nanobot.tools;
+    };
   };
 
   home.packages = [ nanobotSandboxed mcpConnect ];
