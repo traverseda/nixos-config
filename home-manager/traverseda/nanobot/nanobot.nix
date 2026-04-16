@@ -83,13 +83,14 @@ in
 
     agents.defaults = {
       workspace           = "~/.nanobot/workspace";
-      model               = "deepseek/deepseek-v3.2";
+      #model               = "deepseek/deepseek-v3.2";
+      model               = "google/gemini-3.1-flash-lite-preview";
       provider            = "auto";
       maxTokens           = 4096;
       contextWindowTokens = 32000;
       temperature         = 0.4;
       maxToolIterations   = 15;
-      maxToolResultChars  = 16000;
+      maxToolResultChars  = 1600;
       providerRetryMode   = "standard";
       timezone            = "America/Halifax";
       dream = {
@@ -116,6 +117,7 @@ in
     };
 
     tools = {
+      exec.enable = false;
       restrictToWorkspace = true;
       mcpServers = lib.mapAttrs (name: _: {
         command = "${mcpConnect}/bin/mcp-connect";
