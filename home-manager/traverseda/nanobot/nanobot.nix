@@ -4,7 +4,7 @@ let
   craneLib = inputs.crane.mkLib pkgs;
 
   mcpConnect = pkgs.writeShellScriptBin "mcp-connect" ''
-    exec ${pkgs.socat}/bin/socat STDIO UNIX-CONNECT:"/run/user/$(id -u)/mcp/$1.sock"
+    exec ${pkgs.socat}/bin/socat STDIO UNIX-CONNECT:"$XDG_RUNTIME_DIR/mcp/$1.sock"
   '';
 
   anytypeMcp = pkgs.buildNpmPackage {
@@ -25,7 +25,7 @@ let
   '';
 in
 {
-  imports = [ ./nanobot_old.nix ./mcp_tools.nix ./nanobot_gateway.nix ];
+  imports = [ ./nanobot_sandbox.nix ./mcp_tools.nix ./nanobot_gateway.nix ];
 
   nanobot.tools = {
     clipboard = {
@@ -85,7 +85,7 @@ in
     };
 
     agents.defaults = {
-      workspace           = "~/.nanobot/workspace";
+      workspace           = "/workspace";
       #model               = "deepseek/deepseek-v3.2";
       model               = "qwen/qwen3.5-35b-a3b";
       provider            = "auto";
