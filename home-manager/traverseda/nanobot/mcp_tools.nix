@@ -30,18 +30,24 @@ let
 
   mkMcpService = name: tool:
     let
-      firejailBin = "/run/wrappers/bin/firejail";
+      bwrapBin = "${pkgs.bubblewrap}/bin/bwrap";
       mcpBin = "${tool.package}/bin/${tool.bin}";
 
-      allArgs = [ "--private" "--quiet" ]
-                ++ (tool.firejailArgs or [])
-                ++ (map (v: "--env=${v}=\${${v}}") (tool.env or []))
-                ++ [ "--" mcpBin ];
+      # Build bubblewrap arguments for isolation
+      bwrapArgs =
+        [ "--unshare-all" "--die-with-parent"
+          "--ro-bind /nix/store/ /nix/store/"
+          "--ro-bind /etc/resolv.conf /etc/resolv.conf"
+          "--ro-bind /etc/hosts /etc/hosts"
+        ]
+        ++ (tool.bwrapArgs or [])
+        ++ (map (v: "--setenv ${v} \${${v}}") (tool.env or []))
+        ++ [ mcpBin ];
 
-      fullCmd = "${firejailBin} ${lib.concatStringsSep " " allArgs}";
+      fullCmd = "${bwrapBin} ${lib.concatStringsSep " " bwrapArgs}";
 
       launcher = pkgs.writeShellScript "mcp-${name}-launcher" ''
-        exec ${pkgs.bash}/bin/bash --login -c ${lib.escapeShellArg fullCmd} 2> >(systemd-cat -t mcp-${name})  
+        exec ${pkgs.bash}/bin/bash --login -c ${lib.escapeShellArg fullCmd} 2> >(systemd-cat -t mcp-${name})
       '';
     in {
       name = "mcp-${name}";
@@ -67,7 +73,7 @@ in {
         package = lib.mkOption { type = lib.types.package; };
         bin = lib.mkOption { type = lib.types.str; };
         env = lib.mkOption { type = lib.types.listOf lib.types.str; default = []; };
-        firejailArgs = lib.mkOption { type = lib.types.listOf lib.types.str; default = []; };
+        bwrapArgs = lib.mkOption { type = lib.types.listOf lib.types.str; default = [ ]; };
       };
     });
     default = {};

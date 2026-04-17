@@ -38,32 +38,35 @@ in
         };
       };
       bin = "clipboard-mcp";
-      env = [ ];
-      firejailArgs = [ "--caps.drop=all --noprofile" ];
+      bwrapArgs = [ 
+        "--bind" "$XDG_RUNTIME_DIR/wayland-0" "$XDG_RUNTIME_DIR/wayland-0"                                                                                                                          
+        "--bind" "$XDG_RUNTIME_DIR/bus" "$XDG_RUNTIME_DIR/bus"           
+       ];
     };
      vscode = {
        package = pkgs.mcp-proxy;
        bin     = "mcp-proxy http://127.0.0.1:3777/mcp --transport=streamablehttp";
        env     = [ ];
-       firejailArgs = [ "--caps.drop=all" ]; # No --private here, we need to talk to localhost
+       bwrapArgs = ["--share-net" ];
      };
     homeAssistant = {
       package = pkgs.mcp-proxy;
       bin = "mcp-proxy https://hearth.0u0.ca/api/mcp --transport=streamablehttp --stateless --headers Authorization \"Bearer \${HOME_ASSISTANT_API_KEY}\"";
       env = [ "HOME_ASSISTANT_API_KEY" ];
-      firejailArgs = [ "--caps.drop=all" "--private" ];
+      bwrapArgs = ["--share-net" ];
+
     };
     nixos = {
       package = mkUvScriptEnv ./tools/nix.py [ ];
       bin = "mcp-nixos";
       env = [ ];
-      firejailArgs = [ "--caps.drop=all" "--private" ];
+      bwrapArgs = ["--share-net" ];
     };
     anytype = {
       package = anytypeWrapper;
       bin = "anytype-mcp-wrapper";
       env = [ "ANYTYPE_API_KEY" "ANYTYPE_API_BASE_URL" ];
-      firejailArgs = [ "--caps.drop=all" "--private" ];
+      bwrapArgs = ["--share-net"];
     };
     # treesitter = {
     #   package = mkUvScriptEnv ./tools/treesitter.py [];
@@ -84,7 +87,7 @@ in
     agents.defaults = {
       workspace           = "~/.nanobot/workspace";
       #model               = "deepseek/deepseek-v3.2";
-      model               = "google/gemini-3.1-flash-lite-preview";
+      model               = "qwen/qwen3.5-35b-a3b";
       provider            = "auto";
       maxTokens           = 4096;
       contextWindowTokens = 32000;
