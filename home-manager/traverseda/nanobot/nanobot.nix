@@ -85,7 +85,7 @@ in
     };
 
     agents.defaults = {
-      workspace           = "/workspace";
+      workspace           = "${config.home.homeDirectory}/.nanobot/";
       #model               = "deepseek/deepseek-v3.2";
       model               = "qwen/qwen3.5-35b-a3b";
       provider            = "auto";
