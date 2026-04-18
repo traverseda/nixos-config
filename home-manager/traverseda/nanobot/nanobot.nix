@@ -103,6 +103,19 @@ in
       };
     };
 
+    channels = {
+      websocket = {
+        enabled = true;
+        host = "127.0.0.1";
+        port = 8765;
+        path = "/";
+        websocketRequiresToken = false;
+        allowFrom = [ "*" ];
+        streaming = true;
+      };
+    };
+
+
     api = {
       host = "127.0.0.1";
       port = 8900;

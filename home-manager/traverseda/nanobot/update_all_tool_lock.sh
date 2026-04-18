@@ -1,1 +1,1 @@
- for f in tools/*.py; do uv lock --script "$f"; done                                                                                                       
+ for f in tools/*.py; do uv lock --upgrade --script "$f"; done                                                                                                       

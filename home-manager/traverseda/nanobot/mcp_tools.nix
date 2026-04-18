@@ -55,6 +55,8 @@ let
         Unit = {
           Description = "Sandboxed MCP gateway for ${name}";
           PartOf = [ "mcp.target" ];
+          After = [ "kwalletd5.service" ];
+          Wants = [ "kwalletd5.service" ];
         };
         Service = {
           ExecStart = "${pkgs.socat}/bin/socat UNIX-LISTEN:%t/mcp/${name}.sock,fork,reuseaddr EXEC:${launcher},sigint";
