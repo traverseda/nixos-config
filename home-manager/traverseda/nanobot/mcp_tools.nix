@@ -47,7 +47,7 @@ let
       fullCmd = "${bwrapBin} ${lib.concatStringsSep " " bwrapArgs}";
 
       launcher = pkgs.writeShellScript "mcp-${name}-launcher" ''
-        exec ${pkgs.bash}/bin/bash --login -c ${lib.escapeShellArg fullCmd} 2> >(systemd-cat -t mcp-${name})
+        exec ${pkgs.bash}/bin/bash --login -c ${lib.escapeShellArg fullCmd}
       '';
     in {
       name = "mcp-${name}";

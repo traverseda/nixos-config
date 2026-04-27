@@ -140,6 +140,7 @@
           ./nixos/android.nix
           ./nixos/misc/dslr-webcam.nix
           ./nixos/traverseda.nix
+          ./nixos/reverse_engineering.nix
           # ./nixos/cluster_computing.nix
         ];
       };

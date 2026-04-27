@@ -15,15 +15,12 @@ script: extraPackages:
       lib.composeManyExtensions [
         inputs.pyproject-build-systems.overlays.wheel
         overlay
-        (final: prev: 
-          # Create an attribute set from the list of packages
-          # We use lib.getName to get the string name for the key
-          lib.listToAttrs (map (p: { 
-            name = lib.getName p; 
-            value = p; 
-          }) extraPackages)
-        )
       ]
     );
+    uvEnv = scriptData.mkVirtualEnv { inherit pythonSet; };
   in
-    scriptData.mkVirtualEnv { inherit pythonSet; }
+    pkgs.runCommand "uv-script-env" {
+      buildInputs = extraPackages;
+    } ''
+      ln -s ${uvEnv} $out
+    ''

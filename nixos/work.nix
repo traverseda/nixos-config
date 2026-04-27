@@ -38,7 +38,48 @@
   virtualisation.libvirtd.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
 
+
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = false;
+    defaultNetwork.settings.dns_enabled = true;
+  };
+
+
+  # Auto-prune for distrobox-specific podman storage
+  systemd.user.timers."podman-distrobox-prune" = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "weekly";
+      Persistent = true;
+    };
+  };
+
+  systemd.user.services."podman-distrobox-prune" = {
+    description = "Prune unused distrobox podman resources";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.podman}/bin/podman --root %h/.local/share/distrobox-podman/storage --runroot /run/user/%U/distrobox-podman system prune -f";
+    };
+  };
+
+
+  environment.sessionVariables = {
+    DBX_CONTAINER_MANAGER = "/run/current-system/sw/bin/podman-distrobox";
+  };
+
+
   environment.systemPackages = [
+    pkgs.podman
+    pkgs.unstable.distrobox
+
+    # Wrapper that runs podman with isolated storage for distrobox
+    (pkgs.writeShellScriptBin "podman-distrobox" ''
+      exec ${pkgs.podman}/bin/podman \
+        --root "$HOME/.local/share/distrobox-podman/storage" \
+        --runroot "$XDG_RUNTIME_DIR/distrobox-podman" \
+        "$@"
+    '')    
     pkgs.qemu
     pkgs.unstable.qgroundcontrol
     pkgs.networkmanager-iodine
@@ -71,6 +112,8 @@
     pkgs.gh
     
     pkgs.playwright
+
+    pkgs.anytype #notes
 
 
     (pkgs.vscode.fhsWithPackages (ps: with ps; [
