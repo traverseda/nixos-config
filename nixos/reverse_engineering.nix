@@ -12,11 +12,11 @@
         # Your current tools
         imhex    # Hex Editor
         binwalk  # Firmware Analysis
-        losetup  # Loop device management
+        util-linux  # Loop device management
 
         # The missing essentials
-        ghidra-bin # Decompiler/Disassembler (faster install than 'ghidra') <kcite ref="2"/>
-        binutils   # Tools for manipulating binaries (provides 'strings', 'objdump', 'nm') <kcite ref="4"/><kcite ref="6"/>
+        ghidra-bin # Decompiler/Disassembler (faster install than 'ghidra')
+        binutils   # Tools for manipulating binaries (provides 'strings', 'objdump', 'nm')
         gdb        # Debugger
 
         # Highly recommended additions
