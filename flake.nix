@@ -20,26 +20,29 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    stylix = {
-      url = "github:danth/stylix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # stylix = {
+    #   url = "github:danth/stylix";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     nixvim = {
       url = "github:nix-community/nixvim/";
     };
 
-    uv2nix.url = "github:pyproject-nix/uv2nix";
-    uv2nix.inputs.pyproject-nix.follows = "pyproject-nix";
-    uv2nix.inputs.nixpkgs.follows = "nixpkgs";
+    # Quickly hack python and rust packages into our env
+    # uv2nix.url = "github:pyproject-nix/uv2nix";
+    # uv2nix.inputs.pyproject-nix.follows = "pyproject-nix";
+    # uv2nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    pyproject-nix.url = "github:pyproject-nix/pyproject.nix";
-    pyproject-nix.inputs.nixpkgs.follows = "nixpkgs";
-    pyproject-build-systems.url = "github:pyproject-nix/build-system-pkgs";
-    pyproject-build-systems.inputs.pyproject-nix.follows = "pyproject-nix";
-    pyproject-build-systems.inputs.nixpkgs.follows = "nixpkgs";
+    # pyproject-nix.url = "github:pyproject-nix/pyproject.nix";
+    # pyproject-nix.inputs.nixpkgs.follows = "nixpkgs";
+    # pyproject-build-systems.url = "github:pyproject-nix/build-system-pkgs";
+    # pyproject-build-systems.inputs.pyproject-nix.follows = "pyproject-nix";
+    # pyproject-build-systems.inputs.nixpkgs.follows = "nixpkgs";
 
-    crane.url = "github:ipetkov/crane";
+    # crane.url = "github:ipetkov/crane";
+
+    hermes-agent.url = "github:NousResearch/hermes-agent/v2026.4.30";
 
 
     plasma-manager = {
@@ -129,7 +132,7 @@
         };
         modules = [
           # ./nixos/openclaw.nix
-          ./nixos/ollama.nix
+          # ./nixos/ollama.nix
           ./nixos/configuration.nix
           ./nixos/kde-desktop.nix
           ./nixos/cad.nix

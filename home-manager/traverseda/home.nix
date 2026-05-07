@@ -12,6 +12,7 @@
   # You can import other home-manager modules here
   imports = [
     ./home-minimal.nix
+    ./hermes.nix
     #./nanobot/nanobot.nix
     inputs.nix-index-database.homeModules.nix-index
     # (import ./nixvim.nix { inherit pkgs; })
