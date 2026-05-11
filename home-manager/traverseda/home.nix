@@ -167,6 +167,12 @@
     '';
   };
 
+  # programs.tirith={
+  #   enable=true;
+  #   enableZshIntegration=true;
+  #   enableBashIntegration=true;
+  # };
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;
