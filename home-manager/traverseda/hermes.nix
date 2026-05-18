@@ -9,6 +9,8 @@ let
     "OPENROUTER_API_KEY"
     "HOME_ASSISTANT_API_KEY"
     "TAVILY_API_KEY"
+    "PULSE_SERVER"
+    "XDG_RUNTIME_DIR"
   ];
 
   # Launcher script: loads API keys from kwallet, then execs the bwrap-wrapped hermes.
@@ -87,11 +89,16 @@ in {
         --dev /dev
         --tmpfs /tmp
 
+        # Audio — PulseAudio (via PipeWire) for mic/speaker access
+        --bind /dev/snd /dev/snd
+        --bind /run/user/$UID/pulse /run/user/$UID/pulse
+
         # User workspace (scripts, data, CSV output)
         --bind "$WORKSPACE" "$WORKSPACE"
 
         --setenv HERMES_TUI "0"
         --setenv SSL_CERT_FILE "/etc/static/ssl/certs/ca-bundle.crt"
+        --setenv LD_LIBRARY_PATH "${pkgs.portaudio}/lib"
         --setenv NIX_REMOTE "daemon"
         --setenv NIX_CONF_DIR "/etc/static/nix"
         --setenv NIX_PATH "/etc/nix/path"
@@ -102,6 +109,19 @@ in {
           BWRAP_ARGS+=(--setenv "${var}" "''${${var}}")
         fi
       '') passEnv)}
+
+      # Subcommand: drop into an interactive shell inside the same bwrap sandbox.
+      # Useful for debugging what's available (binaries, env vars, mounts, env vars).
+      if [ "''${1:-}" = "bwrap-shell" ]; then
+        shift
+        if [ "$PWD" != "$HOME" ]; then
+          BWRAP_ARGS+=(--bind "$PWD" "$PWD")
+          BWRAP_ARGS+=(--chdir "$PWD")
+        else
+          BWRAP_ARGS+=(--chdir "$WORKSPACE")
+        fi
+        exec bwrap "''${BWRAP_ARGS[@]}" /bin/bash "$@"
+      fi
 
       if [ "$PWD" != "$HOME" ]; then
         BWRAP_ARGS+=(--bind "$PWD" "$PWD")
@@ -116,6 +136,8 @@ in {
     hermes-launcher
     # portaudio – required for voice mode
     pkgs.portaudio
+    #For tts
+    pkgs.espeak-ng
   ];
 
   systemd.user.services.hermes = {
