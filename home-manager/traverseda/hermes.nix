@@ -92,6 +92,11 @@ in {
         # Audio — PulseAudio (via PipeWire) for mic/speaker access
         --bind /dev/snd /dev/snd
         --bind /run/user/$UID/pulse /run/user/$UID/pulse
+        --bind /run/user/$UID/pipewire-0 /run/user/$UID/pipewire-0
+
+        # ALSA config — needed by PortAudio for device enumeration
+        --ro-bind ${pkgs.alsa-lib}/share/alsa /usr/share/alsa
+        --ro-bind /etc/alsa /etc/alsa
 
         # User workspace (scripts, data, CSV output)
         --bind "$WORKSPACE" "$WORKSPACE"

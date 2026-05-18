@@ -13,6 +13,8 @@
   imports = [
     ./home-minimal.nix
     ./hermes.nix
+    ./aider.nix
+    ./opencode.nix
     #./nanobot/nanobot.nix
     inputs.nix-index-database.homeModules.nix-index
     # (import ./nixvim.nix { inherit pkgs; })
@@ -114,8 +116,6 @@
     pkgs.libsForQt5.kwallet
 
     pkgs.python3Packages.flake8
-    pkgs.unstable.aider-chat
-
     (pkgs.writeShellScriptBin "nvim-lsp-format" ./nvim-lsp-format.sh)
 
     pkgs.xwayland-satellite
@@ -147,25 +147,19 @@
     (pkgs.writeShellScriptBin "nvr-edit" ''
       nvr --remote-wait $@
     '')
-    (pkgs.writeShellScriptBin "autocommit" ''
-      aider --commit
-    ''
-    )
   ];
 
   home.sessionVariables = {
     OLLAMA_API_BASE = "http://localhost:11434";
+    AI_STRONG_MODEL = "deepseek/deepseek-v4-flash";
+    AI_STRONG_PROVIDER = "openrouter";
+    AI_WEAK_MODEL = "meta-llama/llama-4-scout";
+    AI_WEAK_PROVIDER = "openrouter";
+    AI_VISION_MODEL = "openai/gpt-4.1-nano";
+    AI_VISION_PROVIDER = "openrouter";
   };
 
-  home.file.".aider.conf.yml" = {
-    text = ''
-    dark-mode: true
-    read: CONVENTIONS.md
-    weak-model: openrouter/deepseek/deepseek-v3.2
-    model: openrouter/deepseek/deepseek-v3.2
-    watch-files: true
-    '';
-  };
+
 
   # programs.tirith={
   #   enable=true;
