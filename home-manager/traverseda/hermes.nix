@@ -26,25 +26,75 @@ in {
 
       WORKSPACE="/home/traverseda/0u0/hermes"
 
+      #
+      # Mount layout for the AI agent inside the sandbox:
+      #
+      # /etc/ssl/certs/  — On NixOS, these are symlinks to
+      #   /etc/static/ssl/certs/. Mounting /etc/static/ lets all cert
+      #   symlinks resolve naturally.
+      #
+      # /etc/static/ — NixOS-generated config files referenced by
+      #   symlinks from /etc/. Includes CA certs and other generated
+      #   configs.
+      #
+      # /run/current-system/ — NixOS system generation. Puts `nix`
+      #   at /run/current-system/sw/bin/nix plus the rest of the
+      #   system PATH. Needed for `nix build`, `nix shell`, etc.
+      #
+      # /nix/var/nix/daemon-socket — Nix daemon socket. Required
+      #   whenever you run any `nix` command.
+      #
+      # /nix/store — Everything (hermes binary, python, curl, packages)
+      #   lives here. Read-only.
+      #
+
       BWRAP_ARGS=(
-        # Directory writable (logs, history), but config.yaml read-only
+        # Hermes runtime (logs, history, config, skills)
         --bind "$HOME/.hermes" "$HOME/.hermes"
-        #--ro-bind "$HOME/.hermes/config.yaml" "$HOME/.hermes/config.yaml"
+
         # DNS
         --ro-bind /etc/resolv.conf /etc/resolv.conf
+
+        # Isolation
         --unshare-ipc
         --unshare-pid
         --unshare-uts
         --unshare-cgroup
         --die-with-parent
+
+        # Nix store — all binaries live here
         --ro-bind /nix/store /nix/store
+
+        # NixOS system generation — provides `nix` binary at /run/current-system/sw/bin/nix
         --ro-bind /run/current-system/ /run/current-system/
+
+        # Compatibility shebang paths — uvx-installed scripts have #!/bin/sh or
+        # #!/usr/bin/env, but NixOS doesn't have /bin or /usr/bin
+        --ro-bind /run/current-system/sw/bin /bin
+        --ro-bind /run/current-system/sw/bin /usr/bin
+
+        # Nix daemon socket — needed for `nix build`, `nix shell`, etc. inside sandbox
         --bind /nix/var/nix/daemon-socket /nix/var/nix/daemon-socket
+
+        # NixOS-generated config (CA certs, etc.) — /etc/ symlinks resolve through this
+        --ro-bind /etc/static/ /etc/static/
+
+        # Nix config directory — so NIX_PATH=/etc/nix/path resolves nixpkgs for nix-shell
+        --ro-bind /etc/static/nix /etc/nix
+
+        # OS interface
         --proc /proc
         --dev /dev
         --tmpfs /tmp
+
+        # User workspace (scripts, data, CSV output)
         --bind "$WORKSPACE" "$WORKSPACE"
+
         --setenv HERMES_TUI "0"
+        --setenv SSL_CERT_FILE "/etc/static/ssl/certs/ca-bundle.crt"
+        --setenv NIX_REMOTE "daemon"
+        --setenv NIX_CONF_DIR "/etc/static/nix"
+        --setenv NIX_PATH "/etc/nix/path"
       )
 
       ${builtins.concatStringsSep "\n" (map (var: ''
