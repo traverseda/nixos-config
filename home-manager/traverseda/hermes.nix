@@ -1,7 +1,7 @@
 { config, pkgs, inputs, ... }:
 
 let
-  hermes-bin = "${inputs.hermes-agent.packages.agent.packages.${pkgs.system}.default}/bin/hermes";
+  hermes-bin = "${inputs.hermes-agent.packages.${pkgs.system}.default}/bin/hermes";
 
   # Environment variables to pass through into the bwrap sandbox.
   # Add new entries here as needed — they'll be set via --setenv.
@@ -80,7 +80,7 @@ in {
         --ro-bind /etc/static/ /etc/static/
 
         # Nix config directory — so NIX_PATH=/etc/nix/path resolves nixpkgs for nix-shell
-        --ro-bind /etc/static/nix /etc/nixx
+        --ro-bind /etc/static/nix /etc/nix
 
         # OS interface
         --proc /proc
