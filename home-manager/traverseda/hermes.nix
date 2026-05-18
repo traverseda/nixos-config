@@ -13,7 +13,7 @@ let
 
   # Launcher script: loads API keys from kwallet, then execs the bwrap-wrapped hermes.
   # Used by the systemd user service so env vars are available even without a login shell.
-  hermes-launcher = pkgs.writeShellScriptBin "hermes-launcher" ''
+  hermes-launcher = pkgs.writeShellScriptBin "her "hermes-launcher" ''
     set -euo pipefail
     eval "$(load-kwallet-env)"
     exec hermes "$@"
@@ -53,6 +53,8 @@ in {
         --bind "$HOME/.hermes" "$HOME/.hermes"
 
         # DNS
+        --bind "$HOME/.hermes" "$HOME/.hermes"
+        # DNS
         --ro-bind /etc/resolv.conf /etc/resolv.conf
 
         # Isolation
@@ -65,7 +67,8 @@ in {
         # Nix store — all binaries live here
         --ro-bind /nix/store /nix/store
 
-        # NixOS system generation — provides `nix` binary at /run/current-system/sw/bin/nix
+        # NixOS
+        system generation — provides `nix` binary at /run/current-system/sw/bin/nix
         --ro-bind /run/current-system/ /run/current-system/
 
         # Compatibility shebang paths — uvx-installed scripts have #!/bin/sh or
@@ -114,6 +117,8 @@ in {
     '')
     pkgs.bubblewrap
     hermes-launcher
+    # portaudio – required for voice mode
+    pkgs.portaudio
   ];
 
   systemd.user.services.hermes = {
