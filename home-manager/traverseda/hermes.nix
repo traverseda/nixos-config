@@ -1,7 +1,7 @@
 { config, pkgs, inputs, ... }:
 
 let
-  hermes-bin = "${inputs.hermes-agent.packages.${pkgs.system}.default}/bin/hermes";
+  hermes-bin = "${inputs.hermes-agent.packages.agent.packages.${pkgs.system}.default}/bin/hermes";
 
   # Environment variables to pass through into the bwrap sandbox.
   # Add new entries here as needed — they'll be set via --setenv.
@@ -13,7 +13,7 @@ let
 
   # Launcher script: loads API keys from kwallet, then execs the bwrap-wrapped hermes.
   # Used by the systemd user service so env vars are available even without a login shell.
-  hermes-launcher = pkgs.writeShellScriptBin "her "hermes-launcher" ''
+  hermes-launcher = pkgs.writeShellScriptBin "hermes-launcher" ''
     set -euo pipefail
     eval "$(load-kwallet-env)"
     exec hermes "$@"
@@ -53,8 +53,6 @@ in {
         --bind "$HOME/.hermes" "$HOME/.hermes"
 
         # DNS
-        --bind "$HOME/.hermes" "$HOME/.hermes"
-        # DNS
         --ro-bind /etc/resolv.conf /etc/resolv.conf
 
         # Isolation
@@ -67,12 +65,11 @@ in {
         # Nix store — all binaries live here
         --ro-bind /nix/store /nix/store
 
-        # NixOS
-        system generation — provides `nix` binary at /run/current-system/sw/bin/nix
+        # NixOS system generation — provides nix binary at /run/current-system/sw/bin/nix
         --ro-bind /run/current-system/ /run/current-system/
 
         # Compatibility shebang paths — uvx-installed scripts have #!/bin/sh or
-        # #!/usr/bin/env, but NixOS doesn't have /bin or /usr/bin
+        #!/usr/bin/env, but NixOS doesn't have /bin or /usr/bin
         --ro-bind /run/current-system/sw/bin /bin
         --ro-bind /run/current-system/sw/bin /usr/bin
 
@@ -83,7 +80,7 @@ in {
         --ro-bind /etc/static/ /etc/static/
 
         # Nix config directory — so NIX_PATH=/etc/nix/path resolves nixpkgs for nix-shell
-        --ro-bind /etc/static/nix /etc/nix
+        --ro-bind /etc/static/nix /etc/nixx
 
         # OS interface
         --proc /proc
