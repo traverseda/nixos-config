@@ -103,7 +103,12 @@
     vimAlias = true;
   };
 
+  services.usbmuxd.enable = true;
+
+
   environment.systemPackages = with pkgs; [
+    libimobiledevice
+    ifuse  # optional, for manual FUSE mounting
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     qt6.qtmultimedia
     exfat

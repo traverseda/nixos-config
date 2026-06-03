@@ -101,7 +101,7 @@ in {
         # User workspace (scripts, data, CSV output)
         --bind "$WORKSPACE" "$WORKSPACE"
 
-        --setenv HERMES_TUI "0"
+        --setenv HERMES_TUI "1"
         --setenv SSL_CERT_FILE "/etc/static/ssl/certs/ca-bundle.crt"
         --setenv LD_LIBRARY_PATH "${pkgs.portaudio}/lib"
         --setenv NIX_REMOTE "daemon"
