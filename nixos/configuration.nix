@@ -77,13 +77,25 @@
   # This will additionally add your inputs to the system's legacy channels
   # Making legacy nix commands consistent as well, awesome!
   nix.nixPath = [ "/etc/nix/path" ];
+
+
   environment.etc =
     lib.mapAttrs'
       (name: value: {
         name = "nix/path/${name}";
         value.source = value.flake;
       })
-      config.nix.registry;
+      config.nix.registry
+    // {
+      "profile".text = lib.mkAfter ''
+        # Deduplicate XDG_DATA_DIRS (preserve order, first occurrence wins)
+        if [ -n "''${XDG_DATA_DIRS:-}" ]; then
+          XDG_DATA_DIRS=$(printf '%s\n' "$XDG_DATA_DIRS" | tr ':' '\n' | awk '!x[$0]++' | paste -sd ':' -)
+          export XDG_DATA_DIRS
+        fi
+      '';
+    };
+
 
   nix.settings = {
     # Enable flakes and new 'nix' command
@@ -225,6 +237,8 @@
   users.groups = {
     lpadmin = { };
   };
+
+
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.05";
