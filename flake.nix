@@ -4,7 +4,7 @@
 
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
 
     # impermanence.url = "github:nix-community/impermanence";
 
@@ -17,7 +17,7 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -27,7 +27,8 @@
     # };
 
     nixvim = {
-      url = "github:nix-community/nixvim/";
+      url = "github:nix-community/nixvim/nixos-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Quickly hack python and rust packages into our env
@@ -43,7 +44,7 @@
 
     # crane.url = "github:ipetkov/crane";
 
-    hermes-agent.url = "github:NousResearch/hermes-agent/v2026.4.30";
+    # hermes-agent.url = "github:NousResearch/hermes-agent/v2026.4.30";
 
 
     plasma-manager = {
@@ -163,15 +164,15 @@
           ./nixos/gaming.nix
         ];
       };
-      hearth = nixpkgs.lib.nixosSystem {
+      kiosk = nixpkgs.lib.nixosSystem {
         specialArgs = {
           inherit inputs outputs;
-          hostname = "hearth";
+          hostname = "kiosk";
         };
         modules = [
           ./nixos/configuration.nix
           ./nixos/kiosk.nix
-          ./nixos/incus.nix
+          # ./nixos/incus.nix
           ./nixos/zerotier.nix
         ];
       };

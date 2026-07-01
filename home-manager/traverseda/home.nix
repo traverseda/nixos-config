@@ -71,12 +71,12 @@
   };
 
   programs.ssh = {
-    enable = true; # Enable SSH module
+    enable = true;
     enableDefaultConfig = false;
     matchBlocks = {
       "*" = {
-        controlMaster = "auto"; # Enable ControlMaster
-        controlPersist = "10m"; # Enable Control
+        controlMaster = "auto";
+        controlPersist = "10m";
       };
     };
   };
@@ -111,7 +111,7 @@
     pkgs.comma
     pkgs.docker-compose
     pkgs.netcat-gnu
-    pkgs.libsForQt5.kwallet
+    pkgs.kdePackages.kwallet
 
     pkgs.python3Packages.flake8
     (pkgs.writeShellScriptBin "nvim-lsp-format" ./nvim-lsp-format.sh)
@@ -121,11 +121,11 @@
 
     (pkgs.writeShellScriptBin "load-kwallet-env" ''
       # Generate export commands for environment variables from kwallet
-      ${pkgs.libsForQt5.kwallet}/bin/kwallet-query -l -f "env_vars" kdewallet 2>/dev/null | \
+      ${pkgs.kdePackages.kwallet}/bin/kwallet-query -l -f "env_vars" kdewallet 2>/dev/null | \
       while IFS= read -r key; do
         key=$(echo "$key" | xargs)
         [[ -z "$key" ]] && continue
-        value=$(${pkgs.libsForQt5.kwallet}/bin/kwallet-query -r "$key" -f "env_vars" kdewallet 2>/dev/null | xargs)
+        value=$(${pkgs.kdePackages.kwallet}/bin/kwallet-query -r "$key" -f "env_vars" kdewallet 2>/dev/null | xargs)
         [[ -n "$value" ]] && printf 'export %s="%s"\n' "$key" "$value"
       done
     '')
@@ -209,6 +209,29 @@
 
   # Enable home-manager and git
   programs.home-manager.enable = true;
+
+  systemd.user.services.llama-cpp-server = {
+    Unit = {
+      Description = "llama.cpp inference server (tab-complete)";
+      After = [ "network.target" ];
+    };
+    Service = {
+      ExecStart = ''
+        ${pkgs.unstable.llama-cpp}/bin/llama-server \
+          -hf unsloth/Qwen2.5-Coder-7B-Instruct-GGUF:Q4_K_M \
+          -ngl 99 --port 48611 --host 127.0.0.1 \
+          --ctx-size 4096 \
+          --flash-attn \
+          --cache-type-k q8_0 --cache-type-v q4_0 \
+          --cache-reuse 100
+      '';
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
+    Install = {
+      WantedBy = [ "default.target" ];
+    };
+  };
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";

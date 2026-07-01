@@ -1,7 +1,7 @@
 { inputs, outputs, lib, config, pkgs, hostname, specialArgs, ... }:
 
 let
-  kioskUrl = specialArgs.kioskUrl or "http://localhost:8123";
+  kioskUrl = specialArgs.kioskUrl or "http://hearth.local";
   enableDarkMode = specialArgs.enableDarkMode or true;
   dailyRestart = specialArgs.dailyRestart or false;
   dimTimeout = specialArgs.dimTimeout or 300;

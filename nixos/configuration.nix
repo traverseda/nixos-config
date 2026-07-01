@@ -165,6 +165,7 @@
 
   virtualisation.docker.enable = true;
   virtualisation.docker.liveRestore = false;
+  virtualisation.docker.package = pkgs.docker_29; # TODO: remove when nixos-25.11 defaults to docker 29+
 
   # virtualisation.incus.enable = true;
   # networking.nftables.enable = true;

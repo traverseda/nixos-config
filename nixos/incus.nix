@@ -51,6 +51,7 @@ let
           font-size: 3rem;
           margin: 0 0 1rem 0;
           color: #ff6b6b;
+          
         }
         p {
           font-size: 1.2rem;
