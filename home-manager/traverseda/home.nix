@@ -137,7 +137,7 @@
     '')
     (pkgs.writeShellScriptBin "pipx" ''
       export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
-      exec ${pkgs.pipx}/bin/pipx "$@"
+      exec ${pkgs.unstable.pipx}/bin/pipx "$@"
     '')
 
     pkgs.nerd-fonts.hack #Don't forget to fc-cache -r

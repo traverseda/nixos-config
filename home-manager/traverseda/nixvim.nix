@@ -92,7 +92,7 @@
       enable = true;
       servers = {
         html.enable = true;
-        htmx.enable = true;
+        htmx.enable = false;
         dockerls.enable = true;
         cssls.enable = true;
         jsonls.enable = true;
