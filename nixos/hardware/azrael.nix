@@ -89,8 +89,14 @@
       options = [ "fmask=0077" "dmask=0077" ];
     };
 
+  fileSystems."/swap" =
+    { device = "/dev/mapper/luks-2d5b5522-4438-402c-b314-bff0732afc51";
+      fsType = "btrfs";
+      options = [ "subvol=swap" "noatime" ];
+    };
+
   swapDevices =
-    [ { device = "/dev/mapper/luks-dd135ce4-e404-41de-895f-317f0b2a645e"; }
+    [ { device = "/swap/swapfile"; size = 69632; } # 68 GiB, matches old swap partition
     ];
 
 
