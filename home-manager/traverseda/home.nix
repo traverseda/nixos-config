@@ -120,11 +120,14 @@
 
 
     (pkgs.writeShellScriptBin "load-kwallet-env" ''
-      # Generate export commands for environment variables from kwallet
+      # Generate export commands for environment variables from kwallet.
+      # kwallet-query prints errors like "The folder env_vars does not exist!"
+      # to stdout instead of stderr, so keys are validated as real identifiers
+      # before use to avoid treating that error text as a key.
       ${pkgs.kdePackages.kwallet}/bin/kwallet-query -l -f "env_vars" kdewallet 2>/dev/null | \
       while IFS= read -r key; do
         key=$(echo "$key" | xargs)
-        [[ -z "$key" ]] && continue
+        [[ "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || continue
         value=$(${pkgs.kdePackages.kwallet}/bin/kwallet-query -r "$key" -f "env_vars" kdewallet 2>/dev/null | xargs)
         [[ -n "$value" ]] && printf 'export %s="%s"\n' "$key" "$value"
       done
