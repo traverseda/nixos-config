@@ -24,6 +24,7 @@
   hardware.block.defaultScheduler = "kyber";  
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "thunderbolt" "usbhid" "usb_storage" "sd_mod" ];
+
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-amd" "amdgpu" ];
   boot.extraModulePackages = [ ];
@@ -64,26 +65,34 @@
   services.power-profiles-daemon.enable = true;
 
   fileSystems."/" =
-    {
-      device = "/dev/disk/by-uuid/6638ca69-8a70-4f82-afd6-02c0d61f4d9f";
-      fsType = "ext4";
+    { device = "/dev/mapper/luks-2d5b5522-4438-402c-b314-bff0732afc51";
+      fsType = "btrfs";
     };
 
-  boot.initrd.luks.devices."cryptroot".device = "/dev/disk/by-uuid/2f7b0c1c-5d7f-403f-b4fd-fc0f423e83ee";
+  boot.initrd.luks.devices."luks-2d5b5522-4438-402c-b314-bff0732afc51".device = "/dev/disk/by-uuid/2d5b5522-4438-402c-b314-bff0732afc51";
+
+  fileSystems."/home" =
+    { device = "/dev/mapper/luks-2d5b5522-4438-402c-b314-bff0732afc51";
+      fsType = "btrfs";
+      options = [ "subvol=home" ];
+    };
+
+  fileSystems."/nix" =
+    { device = "/dev/mapper/luks-2d5b5522-4438-402c-b314-bff0732afc51";
+      fsType = "btrfs";
+      options = [ "subvol=nix" ];
+    };
 
   fileSystems."/boot" =
-    {
-      device = "/dev/disk/by-uuid/B01C-E401";
+    { device = "/dev/disk/by-uuid/9165-8446";
       fsType = "vfat";
-      options = [ "fmask=0022" "dmask=0022" ];
+      options = [ "fmask=0077" "dmask=0077" ];
     };
 
-  swapDevices = [
-    {
-      device = "/swapfile";
-      size = 64 * 1024; # 16GB
-    }
-  ];
+  swapDevices =
+    [ { device = "/dev/mapper/luks-dd135ce4-e404-41de-895f-317f0b2a645e"; }
+    ];
+
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
