@@ -3,3 +3,4 @@ result
 .aider*
 .env
 .worktrees/
+.vscode/
