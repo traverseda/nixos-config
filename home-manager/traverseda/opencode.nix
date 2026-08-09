@@ -1,12 +1,17 @@
-{ config, lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   programs.opencode = {
     enable = true;
+    extraPackages = [pkgs.nixd pkgs.nixpkgs-fmt pkgs.pyright];
     settings = {
+      lsp = true;
       provider.openrouter.models = {
-        "${config.home.sessionVariables.AI_STRONG_MODEL}" = { };
-        "${config.home.sessionVariables.AI_WEAK_MODEL}" = { };
+        "${config.home.sessionVariables.AI_STRONG_MODEL}" = {};
+        "${config.home.sessionVariables.AI_WEAK_MODEL}" = {};
       };
       mcp.tavily = {
         type = "remote";

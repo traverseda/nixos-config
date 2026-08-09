@@ -81,7 +81,6 @@
     };
   };
 
-
   home.packages = [
     pkgs.htop
     pkgs.zsh
@@ -118,7 +117,6 @@
 
     pkgs.xwayland-satellite
 
-
     (pkgs.writeShellScriptBin "load-kwallet-env" ''
       # Generate export commands for environment variables from kwallet.
       # kwallet-query prints errors like "The folder env_vars does not exist!"
@@ -132,7 +130,6 @@
         [[ -n "$value" ]] && printf 'export %s="%s"\n' "$key" "$value"
       done
     '')
-
 
     (pkgs.writeShellScriptBin "poetry" ''
       export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
@@ -160,8 +157,6 @@
     AI_VISION_PROVIDER = "openrouter";
   };
 
-
-
   # programs.tirith={
   #   enable=true;
   #   enableZshIntegration=true;
@@ -179,18 +174,18 @@
     history.path = "${config.xdg.dataHome}/zsh/history";
     oh-my-zsh = {
       enable = true;
-      plugins = [ "git" "docker" "docker-compose" ];
+      plugins = ["git" "docker" "docker-compose"];
       theme = "robbyrussell";
     };
     profileExtra = ''
       eval "$(load-kwallet-env)"
-    '';    
+    '';
     initContent = ''
-    source ~/.profile
-    if [[ -n ''${NVIM+x} ]]; then
-      alias vim="nvr --remote"
-      export EDITOR=nvr-edit
-    fi
+      source ~/.profile
+      if [[ -n ''${NVIM+x} ]]; then
+        alias vim="nvr --remote"
+        export EDITOR=nvr-edit
+      fi
     '';
   };
   programs.bash = {
@@ -200,13 +195,12 @@
       eval "$(load-kwallet-env)"
     '';
 
-
     initExtra = ''
-    source ~/.profile
-    if [[ -n ''${NVIM+x} ]]; then
-      alias vim="nvr --remote"
-      export EDITOR=nvr-edit
-    fi
+      source ~/.profile
+      if [[ -n ''${NVIM+x} ]]; then
+        alias vim="nvr --remote"
+        export EDITOR=nvr-edit
+      fi
     '';
   };
 
@@ -216,7 +210,7 @@
   systemd.user.services.llama-cpp-server = {
     Unit = {
       Description = "llama.cpp inference server (tab-complete)";
-      After = [ "network.target" ];
+      After = ["network.target"];
     };
     Service = {
       ExecStart = ''
@@ -232,7 +226,7 @@
       RestartSec = "5s";
     };
     Install = {
-      WantedBy = [ "default.target" ];
+      WantedBy = ["default.target"];
     };
   };
 
