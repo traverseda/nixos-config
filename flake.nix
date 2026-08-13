@@ -1,7 +1,6 @@
 {
   description = "Your new nix config";
 
-
   inputs = {
     # Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
@@ -46,7 +45,6 @@
 
     # hermes-agent.url = "github:NousResearch/hermes-agent/v2026.4.30";
 
-
     plasma-manager = {
       url = "github:pjones/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -60,7 +58,6 @@
     # openclaw-vm.inputs.nixpkgs.follows = "nixpkgs";
     # openclaw-vm.inputs.home-manager.follows = "home-manager";
     # openclaw-vm.inputs.microvm.follows = "microvm";  # this is the critical one
-
   };
 
   outputs = {
@@ -140,6 +137,7 @@
           ./nixos/cad.nix
           ./nixos/amd.nix
           ./nixos/zerotier.nix
+          ./nixos/tailscale.nix
           ./nixos/work.nix
           ./nixos/gaming.nix
           ./nixos/android.nix
