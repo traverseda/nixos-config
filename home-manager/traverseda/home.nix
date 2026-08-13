@@ -111,6 +111,9 @@
     pkgs.docker-compose
     pkgs.netcat-gnu
     pkgs.kdePackages.kwallet
+    pkgs.playwright.browsers
+    pkgs.playwright-test
+    pkgs.playwright-mcp
 
     pkgs.python3Packages.flake8
     (pkgs.writeShellScriptBin "nvim-lsp-format" ./nvim-lsp-format.sh)
@@ -155,6 +158,7 @@
     AI_WEAK_PROVIDER = "openrouter";
     AI_VISION_MODEL = "openai/gpt-4.1-nano";
     AI_VISION_PROVIDER = "openrouter";
+    PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright.browsers}";
   };
 
   # programs.tirith={

@@ -1,5 +1,9 @@
 # AGENTS.md
 
+> **Builds work on a dirty git tree.** Nix evaluates the flake from the git index, so uncommitted changes to *tracked* files build fine (the "Git tree is dirty" warning is harmless). New files must be `git add`ed first — untracked files are invisible to the build and cause `Path '...' is not tracked by Git` errors.
+
+> **The agent cannot run `sudo`** (needs interactive password/fingerprint), so it can't `nixos-rebuild switch` — the user runs that. The agent *can* still verify a build without root via `nixos-rebuild build --flake .#<host>` or `nix build .#nixosConfigurations.<host>.config.system.build.toplevel`.
+
 ## Build & deploy
 
 ```bash
@@ -39,6 +43,14 @@ nix fmt
 home-manager switch --impure --flake "git+https://codeberg.org/traverseda/nixos-config.git?ref=main#generic-minimal" \
   --extra-experimental-features nix-command --extra-experimental-features flakes
 ```
+
+## OpenCode configuration
+
+- **OpenCode is configured declaratively via home-manager** in `home-manager/traverseda/opencode.nix`. It writes `~/.config/opencode/opencode.json` on `home-manager switch` — do NOT edit that file directly (it's generated, edits get overwritten).
+- Model/provider vars (`AI_STRONG_MODEL`, `AI_WEAK_MODEL`, `AI_VISION_MODEL`, `*_PROVIDER`) live in `home-manager/traverseda/home.nix` and are referenced from the opencode config.
+- Custom opencode packages live in `pkgs/` (e.g. `pkgs/opencode-vision`), registered in `pkgs/default.nix`.
+- The `vision` MCP server (`opencode-vision`) gives text-only models image analysis via the OpenRouter vision model (`AI_VISION_MODEL`); it needs `OPENROUTER_API_KEY` available as an env var (e.g. stored in kwallet so `load-kwallet-env` exports it). The `openrouter` provider is added as a patch in `pkgs/opencode-vision/`.
+- The `playwright` MCP server (packaged `pkgs.playwright-mcp`) lets agents drive a browser and take screenshots; it uses the nix-packaged playwright browsers via `PLAYWRIGHT_BROWSERS_PATH` (set in `home-manager/traverseda/home.nix`, which also installs `playwright-test`/`playwright-mcp`/`playwright.browsers` system-wide so `playwright screenshot` etc. work in general).
 
 ## Flake inputs
 
