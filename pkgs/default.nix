@@ -6,4 +6,5 @@
   # creality-print = pkgs.callPackage ./creality-print { };
   blender-cadsketcher = pkgs.callPackage ./blender-cadsketcher {};
   opencode-vision = pkgs.callPackage ./opencode-vision {};
+  openrouter-image-mcp = pkgs.callPackage ./openrouter-image-mcp {};
 }

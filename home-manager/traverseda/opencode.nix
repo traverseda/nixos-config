@@ -20,18 +20,16 @@
       };
       mcp.xaelwiki = {
         type = "remote";
-        url = "https://notes.0u0.ca/mcp";
+        url = "http://hermes.tail1905aa.ts.net:8000/mcp";
         headers.Authorization = "Bearer {env:XAEL_AUTH_TOKEN}";
       };
-      mcp.vision = {
+      mcp.openrouter_image = {
         type = "local";
-        command = ["${pkgs.opencode-vision}/bin/opencode-vision"];
+        command = ["${pkgs.openrouter-image-mcp}/bin/openrouter-image-mcp"];
         environment = {
-          VISION_PROVIDER = "openrouter";
           OPENROUTER_API_KEY = "{env:OPENROUTER_API_KEY}";
           OPENROUTER_MODEL = "{env:AI_VISION_MODEL}";
         };
-        timeout = 30000;
       };
       mcp.playwright = {
         type = "local";
@@ -39,14 +37,20 @@
         environment.PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright.browsers}";
       };
       plugin = [
+        "file://${pkgs.opencode-vision}/dist/index.js"
         [
           "@vectorize-io/opencode-hindsight"
           {
-            hindsightApiUrl = "https://hindsight-api.0u0.ca";
+            hindsightApiUrl = "http://hermes.tail1905aa.ts.net:8888/mcp/code";
             bankId = "code";
           }
         ]
       ];
     };
+  };
+
+  xdg.configFile."opencode/opencode-vision.json".text = builtins.toJSON {
+    models = ["*deepseek*" "*llama*"];
+    imageAnalysisTool = "openrouter_image_analyze_image";
   };
 }

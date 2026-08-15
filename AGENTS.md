@@ -48,8 +48,8 @@ home-manager switch --impure --flake "git+https://codeberg.org/traverseda/nixos-
 
 - **OpenCode is configured declaratively via home-manager** in `home-manager/traverseda/opencode.nix`. It writes `~/.config/opencode/opencode.json` on `home-manager switch` — do NOT edit that file directly (it's generated, edits get overwritten).
 - Model/provider vars (`AI_STRONG_MODEL`, `AI_WEAK_MODEL`, `AI_VISION_MODEL`, `*_PROVIDER`) live in `home-manager/traverseda/home.nix` and are referenced from the opencode config.
-- Custom opencode packages live in `pkgs/` (e.g. `pkgs/opencode-vision`), registered in `pkgs/default.nix`.
-- The `vision` MCP server (`opencode-vision`) gives text-only models image analysis via the OpenRouter vision model (`AI_VISION_MODEL`); it needs `OPENROUTER_API_KEY` available as an env var (e.g. stored in kwallet so `load-kwallet-env` exports it). The `openrouter` provider is added as a patch in `pkgs/opencode-vision/`.
+- Custom opencode packages live in `pkgs/` (e.g. `pkgs/opencode-vision`, `pkgs/openrouter-image-mcp`), registered in `pkgs/default.nix`.
+- Vision for text-only models: the `opencode-vision` plugin (DavidEasden's, packaged in `pkgs/opencode-vision`) intercepts pasted images and routes them to the `openrouter_image` MCP server (`pkgs/openrouter-image-mcp`), which analyzes them via the OpenRouter vision model (`AI_VISION_MODEL`). Needs `OPENROUTER_API_KEY` available as an env var (e.g. stored in kwallet so `load-kwallet-env` exports it). The plugin's config (which models to intercept + MCP tool name) is generated to `~/.config/opencode/opencode-vision.json` from `home-manager/traverseda/opencode.nix`.
 - The `playwright` MCP server (packaged `pkgs.playwright-mcp`) lets agents drive a browser and take screenshots; it uses the nix-packaged playwright browsers via `PLAYWRIGHT_BROWSERS_PATH` (set in `home-manager/traverseda/home.nix`, which also installs `playwright-test`/`playwright-mcp`/`playwright.browsers` system-wide so `playwright screenshot` etc. work in general).
 
 ## Flake inputs

@@ -1,33 +1,32 @@
 {
   lib,
-  fetchurl,
-  python3,
+  fetchFromGitHub,
+  buildNpmPackage,
 }:
-python3.pkgs.buildPythonApplication rec {
+buildNpmPackage rec {
   pname = "opencode-vision";
-  version = "2.1.0";
-  pyproject = true;
+  version = "1.3.0";
 
-  src = fetchurl {
-    url = "https://files.pythonhosted.org/packages/75/af/5b33c40c57f202edc3f499f1c80c85c37cd19bbb75eaa76e07d536b3bd8f/opencode_vision-${version}.tar.gz";
-    sha256 = "af7aa64b598cfa2432a0c481fc7117f0cb8f24f9f6f3db987ca206f9cf5bbad4";
+  src = fetchFromGitHub {
+    owner = "DavidEasden";
+    repo = "opencode-vision";
+    rev = "bc24cc84658a79c1204717646cf32701b1bba2c0";
+    hash = "sha256-K5K8WVvc6CErJHusCky7Ho9wOFES5jHMjrWth7ZTvpc=";
   };
 
-  nativeBuildInputs = [python3.pkgs.setuptools python3.pkgs.wheel];
-  dependencies = [python3.pkgs.pillow];
+  npmDepsHash = "sha256-4cBmi3hYCLD0IyTjwtRvqtKXO1gta4pEg1MtHIr1S7U=";
 
-  postPatch = ''
-    cp ${./openrouter.py} opencode_vision/openrouter.py
-    cp ${./providers-openrouter.py} opencode_vision/providers/openrouter.py
-    sed -i '/from opencode_vision.providers import ollama/a from opencode_vision.providers import openrouter as _openrouter  # noqa: F401, E402' opencode_vision/providers/__init__.py
+  # The plugin only type-imports @opencode-ai/*; the built dist is
+  # self-contained (node built-ins only), so expose it as dist/index.js.
+  postInstall = ''
+    mkdir -p $out/dist
+    cp -r $out/lib/node_modules/opencode-vision/dist/. $out/dist/
   '';
 
-  pythonImportsCheck = ["opencode_vision" "opencode_vision.providers.openrouter"];
-
   meta = {
-    description = "MCP vision server for OpenCode text-only models (Gemini Vision API + OCR)";
-    homepage = "https://github.com/NickRivers1983/opencode-vision";
-    license = lib.licenses.mit;
+    description = "OpenCode plugin giving vision support to text-only models";
+    homepage = "https://github.com/DavidEasden/opencode-vision";
+    license = lib.licenses.agpl3Only;
     platforms = lib.platforms.linux;
   };
 }
