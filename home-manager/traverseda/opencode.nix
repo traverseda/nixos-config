@@ -41,7 +41,7 @@
         [
           "@vectorize-io/opencode-hindsight"
           {
-            hindsightApiUrl = "http://hermes.tail1905aa.ts.net:8888/mcp/code";
+            hindsightApiUrl = "http://hermes.tail1905aa.ts.net:8888";
             bankId = "code";
           }
         ]
