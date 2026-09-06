@@ -16,7 +16,6 @@ let
 in {
   # example = pkgs.callPackage ./example { };
   # creality-print = pkgs.callPackage ./creality-print { };
-  adobe-acrobat = pkgs.callPackage ./adobe-acrobat {};
   blender-cadsketcher = pkgs.callPackage ./blender-cadsketcher {};
   opencode-vision = pkgs.callPackage ./opencode-vision {};
   openrouter-image-mcp = pkgs.callPackage ./openrouter-image-mcp {};
