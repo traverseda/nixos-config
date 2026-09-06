@@ -2,13 +2,33 @@
 
 ## WinApps module
 
-**Created** 2026-09-06. Uses distrobox's isolated podman storage.
+**Created** 2026-09-06. Uses distrobox's isolated podman storage + declarative systemd lifecycle.
 
 - Creates a `podman` wrapper that routes all podman calls to `podman-distrobox` (storage at `~/.local/share/distrobox-podman/storage`), so WinApps containers share the same isolated podman as distrobox.
-- Provides `services.winapps` options: `enable`, `rdpScaling` (default 140), `windowsHostIP` (default 192.168.122.1), `windowsUser`, `windowsPassword`.
+- Provides `services.winapps` options: `enable`, `rdpScaling` (default 140), `windowsHostIP` (default 192.168.122.1), `windowsUser`, `windowsPassword`, `startOnLogin` (default true).
 - Sets `WINAPPS_CONTAINER_MANAGER` env var for winapps to find the wrapper.
 - Installed on azrael via `./nixos/winapps.nix` module.
-- Still needs: `winapps-setup` (interactive) to configure the Windows VM, RDP settings, and create desktop entries.
+
+### Container lifecycle
+
+- **`winapps-container-manager {start|stop|restart|status|logs}`** — declarative container management via systemd user service.
+- `systemctl --user start winapps-container` — starts the Windows VM container (uses `podman-distrobox compose` with isolated storage).
+- Timer runs daily cleanup of stale container resources.
+- Config at `/opt/winapps/compose.yaml` (created by `winapps-setup`).
+
+### App installation
+
+- **`winapps-desktop-generator`** — idempotent script that regenerates desktop entries for Windows apps installed on the VM.
+- Run after installing new Windows apps on the Windows VM.
+- Uses `winapps setup` internally to detect installed apps.
+
+### Setup workflow
+
+Still needs: `winapps-setup` (interactive CLI) to configure the Windows VM, RDP settings, and create desktop entries. The Windows VM must have RDP enabled with the registry patch from `RDPApps.reg` before running setup.
+
+### Configuration
+
+`services.winapps.{windowsHostIP, windowsUser, windowsPassword, rdpScaling}` — defaults provided. Credentials can be stored securely (kwallet) and referenced in `/etc/winapps/winapps.conf` (module generates base config, user overrides go to `~/.config/winapps/winapps.conf`).
 
 ## Build & deploy
 
@@ -84,11 +104,3 @@ home-manager switch --impure --flake "git+https://codeberg.org/traverseda/nixos-
 | `plasma-manager` | KDE Plasma config |
 | `nix-index-database` | `nix-locate` database |
 | `winapps` | Windows app bridging via RDP (github:winapps-org/winapps) |
-
-## WinApps
-
-- **NixOS module** at `nixos/winapps.nix` — provides `winapps` and `winapps-launcher` packages.
-- **Enabled** on `azrael` for running Windows apps (Office/Adobe) via RDP from a Windows VM.
-- **Distrobox podman storage**: the module creates a `podman` wrapper that routes all podman calls through `podman-distrobox` (isolated storage at `~/.local/share/distrobox-podman/storage`). WinApps containers use this same isolated storage.
-- **Setup required**: run `winapps-setup` after deploying to interactively configure the Windows VM, RDP settings, and available applications. The Windows VM must have RDP enabled with the registry patch from `RDPApps.reg`.
-- **Configuration**: `services.winapps.{windowsHostIP, windowsUser, windowsPassword, rdpScaling}` — defaults provided, credentials should be stored securely (kwallet) and updated in `/etc/winapps/winapps.conf` manually.
