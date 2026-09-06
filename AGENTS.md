@@ -1,5 +1,17 @@
 # AGENTS.md
 
+## WinApps module
+
+**Created** 2026-09-06. Uses distrobox's isolated podman storage.
+
+- Creates a `podman` wrapper that routes all podman calls to `podman-distrobox` (storage at `~/.local/share/distrobox-podman/storage`), so WinApps containers share the same isolated podman as distrobox.
+- Provides `services.winapps` options: `enable`, `rdpScaling` (default 140), `windowsHostIP` (default 192.168.122.1), `windowsUser`, `windowsPassword`.
+- Sets `WINAPPS_CONTAINER_MANAGER` env var for winapps to find the wrapper.
+- Installed on azrael via `./nixos/winapps.nix` module.
+- Still needs: `winapps-setup` (interactive) to configure the Windows VM, RDP settings, and create desktop entries.
+
+## Build & deploy
+
 > **Builds work on a dirty git tree.** Nix evaluates the flake from the git index, so uncommitted changes to *tracked* files build fine (the "Git tree is dirty" warning is harmless). New files must be `git add`ed first — untracked files are invisible to the build and cause `Path '...' is not tracked by Git` errors.
 
 > **The agent cannot run `sudo`** (needs interactive password/fingerprint), so it can't `nixos-rebuild switch` — the user runs that. The agent *can* still verify a build without root via `nixos-rebuild build --flake .#<host>` or `nix build .#nixosConfigurations.<host>.config.system.build.toplevel`.
