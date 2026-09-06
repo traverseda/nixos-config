@@ -29,6 +29,15 @@ nix fmt
 - **Overlays**: `additions` (custom pkgs from `pkgs/`), `modifications` (empty, for overrides), `unstable-packages` (exposes nixpkgs-unstable as `pkgs.unstable`).
 - **Home-manager**: full profile at `home-manager/traverseda/home.nix`, minimal at `home-manager/traverseda/home-minimal.nix`.
 
+## OpenCode MCP servers & plugins
+
+- **tavily** — remote MCP (`https://mcp.tavily.com`) for web search.
+- **xaelwiki** — remote MCP (`http://hermes.tail1905aa.ts.net:8000`) for wiki/memory access. Requires `XAEL_AUTH_TOKEN`.
+- **openrouter_image** — local MCP (`pkgs/openrouter-image-mcp`) that analyzes images via the OpenRouter vision model. Needs `OPENROUTER_API_KEY`.
+- **playwright** — local MCP (`pkgs/playwright-mcp`) for browser automation and screenshots. Uses nix-packaged browsers via `PLAYWRIGHT_BROWSERS_PATH`.
+- **opencode-vision** plugin — intercepts pasted images for text-only models (see AGENTS.md below for details).
+- **`@vectorize-io/opencode-hindsight`** plugin — long-term conversation memory (RAG over past conversations) via `http://hermes.tail1905aa.ts.net:8888`.
+
 ## Key conventions
 
 - **Formatter is `alejandra`** (set in `flake.nix` outputs). Run `nix fmt` before committing.
@@ -50,7 +59,6 @@ home-manager switch --impure --flake "git+https://codeberg.org/traverseda/nixos-
 - Model/provider vars (`AI_STRONG_MODEL`, `AI_WEAK_MODEL`, `AI_VISION_MODEL`, `*_PROVIDER`) live in `home-manager/traverseda/home.nix` and are referenced from the opencode config.
 - Custom opencode packages live in `pkgs/` (e.g. `pkgs/opencode-vision`, `pkgs/openrouter-image-mcp`), registered in `pkgs/default.nix`.
 - Vision for text-only models: the `opencode-vision` plugin (DavidEasden's, packaged in `pkgs/opencode-vision`) intercepts pasted images and routes them to the `openrouter_image` MCP server (`pkgs/openrouter-image-mcp`), which analyzes them via the OpenRouter vision model (`AI_VISION_MODEL`). Needs `OPENROUTER_API_KEY` available as an env var (e.g. stored in kwallet so `load-kwallet-env` exports it). The plugin's config (which models to intercept + MCP tool name) is generated to `~/.config/opencode/opencode-vision.json` from `home-manager/traverseda/opencode.nix`.
-- The `playwright` MCP server (packaged `pkgs.playwright-mcp`) lets agents drive a browser and take screenshots; it uses the nix-packaged playwright browsers via `PLAYWRIGHT_BROWSERS_PATH` (set in `home-manager/traverseda/home.nix`, which also installs `playwright-test`/`playwright-mcp`/`playwright.browsers` system-wide so `playwright screenshot` etc. work in general).
 
 ## Flake inputs
 
@@ -59,7 +67,7 @@ home-manager switch --impure --flake "git+https://codeberg.org/traverseda/nixos-
 | `nixpkgs` | stable (`nixos-26.05`) |
 | `nixpkgs-unstable` | exposed as `pkgs.unstable` via overlay |
 | `home-manager` | `release-26.05` |
-| `chaotic` | catchyOS kernel (`chaotic-cx/nyx`) |
+| `chaotic` | catchyOS kernel (`chaotic-cx/nyx/nyxpkgs-unstable`) |
 | `nixvim` | neovim config (`nixos-26.05`) |
 | `plasma-manager` | KDE Plasma config |
 | `nix-index-database` | `nix-locate` database |

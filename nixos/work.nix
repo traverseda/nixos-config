@@ -3,12 +3,22 @@
   pkgs,
   # system,
   inputs,
-  #  lib,
+  lib,
   #  ros,
   ...
 }:
 
 {
+
+  # Pylance recursively watches the whole workspace; other modules (incus,
+  # x11) already push these up via mkDefault/low-priority mkOverride, but
+  # that hasn't been enough to avoid ENOSPC. Force a higher ceiling so it
+  # always wins regardless of what else is contending for these knobs.
+  boot.kernel.sysctl = {
+    "fs.inotify.max_user_watches" = lib.mkForce 1048576;
+    "fs.inotify.max_user_instances" = lib.mkForce 8192;
+    "fs.inotify.max_queued_events" = lib.mkForce 1048576;
+  };
 
   users.extraGroups.vboxusers.members = [ "traverseda" ];
   boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
@@ -71,6 +81,7 @@
 
   environment.systemPackages = [
     pkgs.podman
+    pkgs.skopeo
     pkgs.unstable.distrobox
 
     # Wrapper that runs podman with isolated storage for distrobox
@@ -115,10 +126,7 @@
 
     pkgs.anytype #notes
 
-
-    (pkgs.vscode.fhsWithPackages (ps: with ps; [
-      stdenv.cc.cc.lib
-    ]))
+    pkgs.vscode
 
   ];
 

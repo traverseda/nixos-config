@@ -26,6 +26,19 @@ in
     kscreenlocker.appearance.wallpaperSlideShow.path = "${builtins.path { path = ../../wallpapers; }}";
     workspace.wallpaperSlideShow.path = "${builtins.path { path = ../../wallpapers; }}";
 
+    # The wallpaper slideshow is applied via a qdbus call to plasmashell,
+    # fired from an autostart .desktop entry at login. That call can race
+    # plasmashell's D-Bus interface coming up; when it does, the call fails
+    # silently but the runner script (dash, not bash) still records the run
+    # as successful and never retries. Wait for plasmashell to be reachable
+    # over D-Bus before letting the wallpaper script run.
+    startup.desktopScript."wallpaper_slideshow".preCommands = ''
+      for i in $(seq 1 60); do
+        qdbus org.kde.plasmashell >/dev/null 2>&1 && break
+        sleep 1
+      done
+    '';
+
     shortcuts = {
       "services/org.kde.konsole.desktop"."_launch" = ["Meta+Return" "Ctrl+Alt+T"];
       "kwin"."Window Close" = ["Meta+Shift+C" "Alt+F4"];
@@ -69,6 +82,90 @@ in
       "kwinrc"."Desktops"."Rows"."value" = 2;
       "kwinrc"."Plugins"."cubeEnabled" = true;
       "kwinrc"."Windows"."FocusPolicy" = "FocusFollowsMouse";
+      # Baloo indexes/extracts content across all of $HOME by default with
+      # no awareness of things like Nextcloud sync churn, Wine prefixes, or
+      # Rust target/ dirs. Not used for search here, so just turn it off.
+      "baloofilerc"."Basic Settings"."Indexing-Enabled" = false;
     };
+
+    panels = [
+      {
+        location = "bottom";
+        widgets = [
+          "org.kde.plasma.kickoff"
+          "org.kde.plasma.pager"
+          "org.kde.plasma.taskmanager"
+          "org.kde.plasma.marginsseparator"
+          {
+            name = "org.kde.plasma.systemmonitor";
+            config = {
+              Appearance = {
+                chartFace = "org.kde.ksysguard.barchart";
+                title = "CPU Usage";
+              };
+              Sensors.highPrioritySensorIds = ''["cpu/all/user","cpu/all/system","cpu/all/wait"]'';
+              SensorColors = {
+                "cpu/all/user" = "103,197,247";
+                "cpu/all/system" = "247,103,103";
+                "cpu/all/wait" = "247,206,103";
+              };
+              "org.kde.ksysguard.barchart/General" = {
+                barChartStacked = true;
+                rangeAuto = false;
+                rangeFrom = 0;
+                rangeTo = 100;
+              };
+            };
+          }
+          {
+            name = "org.kde.plasma.systemmonitor";
+            config = {
+              Appearance = {
+                chartFace = "org.kde.ksysguard.barchart";
+                title = "CPU Frequency";
+              };
+              Sensors.highPrioritySensorIds = ''["cpu/all/averageFrequency"]'';
+              SensorColors."cpu/all/averageFrequency" = "172,103,247";
+              "org.kde.ksysguard.barchart/General" = {
+                rangeAuto = false;
+                rangeFrom = 0;
+                rangeTo = 5010;
+              };
+            };
+          }
+          {
+            name = "org.kde.plasma.systemmonitor";
+            config = {
+              Appearance = {
+                chartFace = "org.kde.ksysguard.barchart";
+                title = "GPU & Memory";
+              };
+              Sensors.highPrioritySensorIds = ''["gpu/all/usage","memory/physical/usedPercent"]'';
+              SensorColors = {
+                "gpu/all/usage" = "103,247,137";
+                "memory/physical/usedPercent" = "247,103,228";
+              };
+              SensorLabels = {
+                "gpu/all/usage" = "GPU usage";
+                "memory/physical/usedPercent" = "Memory Usage";
+              };
+              "org.kde.ksysguard.barchart/General" = {
+                rangeAuto = false;
+                rangeFrom = 0;
+                rangeTo = 100;
+              };
+            };
+          }
+          "org.kde.plasma.systemtray"
+          {
+            name = "org.kde.plasma.digitalclock";
+            config = {
+              Appearance.fontWeight = 400;
+            };
+          }
+          "org.kde.plasma.showdesktop"
+        ];
+      }
+    ];
   };
 }

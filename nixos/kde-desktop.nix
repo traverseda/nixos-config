@@ -173,6 +173,13 @@
 
   # services.opensnitch.enable = true;
 
+  # systemd-oomd only watches Konsole's scope by default (KDE sets
+  # ManagedOOMMemoryPressure=kill on it explicitly). app.slice itself is
+  # left at "auto", so nothing ever triggers for VS Code, Chromium, etc.
+  # enableUserSlices sets kill+80% on user.slice AND installs a global
+  # slice.d/ drop-in for the user manager, which covers app.slice too.
+  systemd.oomd.enableUserSlices = true;
+
   home-manager = {
     extraSpecialArgs = { inherit inputs outputs; };
     backupFileExtension = ".bak";

@@ -9,10 +9,20 @@
     extraPackages = [pkgs.nixd pkgs.nixpkgs-fmt pkgs.pyright];
     settings = {
       lsp = true;
-      provider.openrouter.models = {
-        "${config.home.sessionVariables.AI_STRONG_MODEL}" = {};
-        "${config.home.sessionVariables.AI_WEAK_MODEL}" = {};
-        "${config.home.sessionVariables.AI_VISION_MODEL}" = {};
+      provider = {
+        openrouter.models = {
+          "${config.home.sessionVariables.AI_WEAK_MODEL}" = {};
+          "${config.home.sessionVariables.AI_VISION_MODEL}" = {};
+        };
+        "${config.home.sessionVariables.AI_STRONG_PROVIDER}" = {
+          npm = "@ai-sdk/openai-compatible";
+          name = "Local VLLM";
+          options = {
+            baseURL = "http://192.168.193.96:8000/v1";
+            apiKey = "{env:VLLM_API_KEY}";
+          };
+          models."${config.home.sessionVariables.AI_STRONG_MODEL}" = {};
+        };
       };
       mcp.tavily = {
         type = "remote";

@@ -1,0 +1,249 @@
+# Patch for https://github.com/Atomic-Germ/q4nx-build, pinned to commit
+# 90dcda09c9be0fc896562692777b7303c26963be (2026-08-24).
+#
+# Used to convert NousResearch/DeepHermes-3-Llama-3-{3,8}B-Preview (plain HF
+# safetensors, not GGUF) into FastFlowLM's .q4nx format for the 3b/8b models
+# shipped in ../vendor. Not vendored/packaged as a Nix derivation here since
+# it's a one-off build-time tool, not something the deployed system needs at
+# runtime - see the commit that added this file for the fuller rationale.
+#
+# Fixes two real bugs found in q4nx-build's HF-safetensors conversion path
+# (the GGUF conversion path is unaffected and was already correct):
+#
+# 1. _build_hf_name_map() (q4nx/model_converter.py) never expanded the
+#    "{bid}" per-layer placeholder in q4nx_name templates before using them
+#    as dict keys, and the only place that *does* expand it
+#    (_create_name_maps' bid-range auto-detection) scans self.gguf_tensors,
+#    which is empty for an HF-only source. Net effect: every per-layer
+#    tensor (all attention/MLP weights, for every architecture using the
+#    shared base implementation) was silently dropped from the conversion -
+#    only embed_tokens/lm_head/norm survived. Fixed by expanding "{bid}"
+#    using num_hidden_layers read directly from the HF config.json.
+#
+# 2. The HF-safetensors path never actually quantized anything: llama.py's
+#    _convert_hf stored every 2D weight matrix as-is (raw bf16), and
+#    _export_q4nx_tensors just safetensors-dumps whatever's in
+#    self.q4nx_tensors with no packing step. Only the GGUF path called
+#    _pack_q4nx(). So even with bug #1 fixed, the output was a full-shape
+#    BF16 passthrough mislabeled ".q4nx" (16GB for an 8B model, not the
+#    expected ~5-6GB), which the NPU runtime cannot read correctly. Fixed by
+#    adding _quantize_hf_weight(), which reuses the same
+#    gguf.quantize() -> unpack_q4_1() -> _pack_q4nx() sequence
+#    GGUFTensor._requantize_to() already uses for GGUF sources needing
+#    on-the-fly requantization, and wiring it into llama.py's _convert_hf
+#    for every 2D weight except embed_tokens (kept as a full-precision bf16
+#    lookup table) and 1D norm vectors (kept bf16 passthrough) - matching
+#    exactly what the GGUF path does for the same tensor categories.
+#
+# Verified against NousResearch/DeepHermes-3-Llama-3-8B-Preview: without
+# these fixes, output was 16GB, all-BF16, 288/291 tensors unmapped. With
+# them: 5.7GB, real I8-packed Q4_1 weights, 0 unmapped tensors, size in line
+# with the official FastFlowLM/Llama-3.1-8B-NPU2 registry entry's stated
+# footprint (5.4GB).
+#
+# 3. assemble_model_assets_hf() (q4nx/model_assets.py) never writes
+#    chat_template.jinja for HF sources whose tokenizer_config.json stores
+#    chat_template as a *list* of named templates (newer HF convention,
+#    used by DeepHermes-3) rather than a single string - it can only copy a
+#    chat_template.jinja that already exists upstream, and these repos
+#    don't ship one. automodel.cpp falls back to tokenizer_config.json's raw
+#    chat_template field only when no .jinja file is present, and passes it
+#    straight into minja::chat_template() expecting a plain string, so
+#    `flm run` crashed at load time with "[json.exception.type_error.302]
+#    type must be string, but is array". Fixed by ensure_chat_template_jinja(),
+#    which extracts the "default" (or first) named template and writes it
+#    out as chat_template.jinja when one isn't already present.
+#
+# Apply with: git apply q4nx-build-hf-quantize.patch (from the repo root of
+# a fresh clone at the pinned commit above).
+diff --git a/q4nx/model_converter.py b/q4nx/model_converter.py
+index 902d649..f00e1f3 100644
+--- a/q4nx/model_converter.py
++++ b/q4nx/model_converter.py
+@@ -265,14 +265,45 @@ class __Q4NX_Converter(ABC):
+ 
+         Reverses the config's GGUF->Q4NX name_map and fills in the gaps:
+         for most converters, Q4NX names are already in HF format.
++
++        Per-layer templates (containing "{bid}") must be expanded per actual
++        layer index. Bug fix: the bid-range auto-detection in
++        _create_name_maps() only scans self.gguf_tensors, which is empty for
++        HF-safetensors sources - so for HF sources we instead read
++        num_hidden_layers directly from the HF config.json. Without this,
++        every per-layer key here is left as the literal, un-expanded
++        "...{bid}..." string, which never matches a real HF tensor name and
++        silently drops every attention/MLP weight from the conversion.
+         """
++        num_layers = None
++        if getattr(self, "hf_dir", None) is not None:
++            config_path = self.hf_dir / "config.json"
++            if config_path.is_file():
++                cfg = json.loads(config_path.read_text())
++                num_layers = (
++                    cfg.get("num_hidden_layers")
++                    or cfg.get("n_layer")
++                    or cfg.get("num_layers")
++                )
++
+         hf_to_q4nx: Dict[str, str] = {}
+         for param_info in self.q4nx_config["name_map"].values():
+             q4nx_name = param_info["q4nx_name"]
+             # Skip GGUF-only tensors (rope_freqs, etc.)
+             if "rope_freqs" in q4nx_name:
+                 continue
+-            hf_to_q4nx[q4nx_name] = q4nx_name
++            if "{bid}" in q4nx_name:
++                if num_layers is None:
++                    raise ValueError(
++                        "Cannot expand per-layer tensor name "
++                        f"'{q4nx_name}': no num_hidden_layers/n_layer/"
++                        "num_layers field found in HF config.json"
++                    )
++                for bid in range(num_layers):
++                    expanded = q4nx_name.format(bid=bid)
++                    hf_to_q4nx[expanded] = expanded
++            else:
++                hf_to_q4nx[q4nx_name] = q4nx_name
+         return hf_to_q4nx
+ 
+     def _convert_hf(self, q4nx_path: str, weights_type: str):
+@@ -843,9 +874,31 @@ class __Q4NX_Converter(ABC):
+ 
+         merged = torch.from_numpy(merged)
+         return merged
+-    
+-    
+-    
++
++    def _quantize_hf_weight(self, w: torch.Tensor) -> torch.Tensor:
++        """Quantize a full-precision HF weight matrix to this model's
++        default_tensor_type and pack it into Q4NX layout.
++
++        The HF-safetensors conversion path (_convert_hf) starts from
++        un-quantized weights, unlike the GGUF path where matmul weights
++        usually arrive already block-quantized. This reuses the exact same
++        quantize-then-unpack sequence GGUFTensor._requantize_to() uses for
++        GGUF sources that also need on-the-fly (re)quantization, so both
++        paths produce bit-identical Q4NX packing for the same input values.
++        """
++        rows, cols = w.shape
++        w_np = w.to(torch.float32).contiguous().numpy()
++        data_quantized = quantize(w_np, self.default_tensor_type).copy()
++        if self.default_tensor_type == GGMLQuantizationType.Q4_1:
++            d, m, qw = GGUFTensor.unpack_q4_1(data_quantized, cols)
++        elif self.default_tensor_type == GGMLQuantizationType.Q4_0:
++            d, m, qw = GGUFTensor.unpack_q4_0(data_quantized, cols)
++        elif self.default_tensor_type == GGMLQuantizationType.Q8_0:
++            d, m, qw = GGUFTensor.unpack_q8_0(data_quantized, cols)
++        else:
++            raise ValueError(f"Unsupported default_tensor_type: {self.default_tensor_type}")
++        return self._pack_q4nx(d, m, qw)
++
+     def _multi_modal_mm_weight_rearrange(self, weight: torch.Tensor,
+                                             kernel_mm_K:int|None, kernel_mm_N:int|None
+                                             ) -> torch.Tensor:
+diff --git a/q4nx/models/llama.py b/q4nx/models/llama.py
+index 13c955e..7e53c06 100644
+--- a/q4nx/models/llama.py
++++ b/q4nx/models/llama.py
+@@ -76,6 +76,7 @@ class Llama(__Q4NX_Converter, model_arch=ModelArch.LLAMA):
+                 cfg = json.load(f)
+             rope_dim = cfg.get("rope_dim") or cfg.get("head_dim")
+ 
++        embed_tokens_raw = None
+         for name in sorted(self.weight_map):
+             key = name.replace("model.language_model.", "")
+             if key not in hf_name_map:
+@@ -85,22 +86,37 @@ class Llama(__Q4NX_Converter, model_arch=ModelArch.LLAMA):
+             q4nx_name = hf_name_map[key]
+ 
+             if key == "model.embed_tokens.weight":
++                # Matches the GGUF path: the embedding table is kept as a
++                # full-precision lookup table, never block-quantized.
++                embed_tokens_raw = w
+                 self.q4nx_tensors[q4nx_name] = w.to(torch.bfloat16)
+                 continue
+-            if key == "lm_head.weight":
+-                self.q4nx_tensors[q4nx_name] = w
++
++            if w.dim() == 1:
++                # Norm weights (RMSNorm scale vectors) are 1D and are never
++                # block-quantized on the GGUF path either (see
++                # GGUFTensor.unpack's is_native_float branch) - keep as a
++                # float passthrough.
++                self.q4nx_tensors[q4nx_name] = w.to(torch.bfloat16)
+                 continue
+ 
+             if ("self_attn.q_proj.weight" in key or "self_attn.k_proj.weight" in key) and rope_dim is not None:
+                 pp = rope_dim // 2
+                 w = rearrange(w, '(g p q) c -> (g q p) c', p=pp, q=2).contiguous()
+ 
+-            self.q4nx_tensors[q4nx_name] = w
++            # Real quantization: all other 2D matmul weights (attention
++            # o/v-proj, MLP up/gate/down-proj, and lm_head when present)
++            # get block-quantized and packed into Q4NX layout, same as the
++            # GGUF path does for pre-quantized GGUF matmul weights.
++            self.q4nx_tensors[q4nx_name] = self._quantize_hf_weight(w)
+ 
+         if "lm_head.weight" not in self.q4nx_tensors:
+             print("[INFO] No lm_head in HF source, using embedding weights")
+-            if "model.embed_tokens.weight" in self.q4nx_tensors:
+-                self.q4nx_tensors["lm_head.weight"] = self.q4nx_tensors["model.embed_tokens.weight"]
++            if embed_tokens_raw is not None:
++                # Matches the GGUF path's tied-embedding fallback: lm_head
++                # gets its own block-quantized copy, while embed_tokens.weight
++                # itself stays the full-precision bf16 lookup table.
++                self.q4nx_tensors["lm_head.weight"] = self._quantize_hf_weight(embed_tokens_raw)
+ 
+         print(f"[INFO] Produced {len(self.q4nx_tensors)} Q4NX tensors")
+         self._export_weights(q4nx_path, weights_type)
+diff --git a/q4nx/model_assets.py b/q4nx/model_assets.py
+index 5819c30..b3cd8d2 100644
+--- a/q4nx/model_assets.py
++++ b/q4nx/model_assets.py
+@@ -873,6 +873,37 @@ def ensure_hf_tokenizer_ids(output_dir: Path) -> None:
+         print(f"[INFO] Patched {path.name} with EOS/BOS/PAD token ids from HF tokenizer")
+ 
+ 
++def ensure_chat_template_jinja(output_dir: Path) -> None:
++    """Materialize chat_template.jinja from a multi-template tokenizer_config.json.
++
++    Newer HF repos (e.g. DeepHermes-3) store ``chat_template`` in
++    tokenizer_config.json as a *list* of ``{"name": ..., "template": ...}``
++    dicts (supporting multiple named templates) instead of the older
++    single-string convention. automodel.cpp only reads tokenizer_config's
++    raw chat_template field when no chat_template.jinja file is present in
++    the model directory, and passes it straight into minja::chat_template()
++    expecting a plain string - so a list value crashes the runtime at load
++    time with "type must be string, but is array". _fetch_assets() can only
++    copy a chat_template.jinja that already exists upstream; these repos
++    don't ship one, so extract the "default" (or first) named template here.
++    """
++    path = output_dir / "tokenizer_config.json"
++    if not path.exists() or (output_dir / "chat_template.jinja").exists():
++        return
++    with open(path, encoding="utf-8") as f:
++        cfg = json.load(f)
++    template = cfg.get("chat_template")
++    if not isinstance(template, list):
++        return
++    chosen = next((t for t in template if t.get("name") == "default"), None) or (
++        template[0] if template else None
++    )
++    if not chosen or not isinstance(chosen.get("template"), str):
++        return
++    (output_dir / "chat_template.jinja").write_text(chosen["template"], encoding="utf-8")
++    print(f"[INFO] Wrote chat_template.jinja from tokenizer_config.json's '{chosen.get('name', 'default')}' template")
++
++
+ def inject_flm_keys(config: dict, q4nx_config: dict, output_dir: Path, flm_version: Optional[str]):
+     """Restructure a source HF config.json into the shape the FLM runtime expects.
+ 
+@@ -1040,6 +1071,7 @@ def assemble_model_assets_hf(
+         json.dump(config, f, indent=2, ensure_ascii=False)
+ 
+     ensure_hf_tokenizer_ids(output_dir)
++    ensure_chat_template_jinja(output_dir)
+ 
+     assemble_readme(
+         output_dir, candidates, build_readme_meta(output_dir, flm_version), source_file

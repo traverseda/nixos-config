@@ -144,6 +144,7 @@
           ./nixos/misc/dslr-webcam.nix
           ./nixos/traverseda.nix
           ./nixos/reverse_engineering.nix
+          ./nixos/npu.nix
           # ./nixos/cluster_computing.nix
         ];
       };

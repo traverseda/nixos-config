@@ -1,1 +1,3 @@
 wallpapers/* filter=lfs diff=lfs merge=lfs -text
+pkgs/fastflowlm/vendor/** filter=lfs diff=lfs merge=lfs -text
+pkgs/adobe-acrobat/vendor/** filter=lfs diff=lfs merge=lfs -text
