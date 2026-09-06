@@ -61,6 +61,50 @@
     esac
   '';
 
+  # Computes the raw sha256 hash (stripping "hash:" or "sha256:" prefix if needed)
+  iso_sha_clean = let
+    raw = cfg.isoSha256;
+  in
+    lib.removePrefix "hash:" (lib.removePrefix "sha256:" raw);
+
+  # Downloads and verifies Tiny10 ISO (NOT stored in Nix store)
+  # ISO lives in ~/.local/share/winapps/iso/ instead
+  winapps-download-iso = pkgs.writeShellScriptBin "winapps-download-iso" ''
+    set -euo pipefail
+
+    iso_url="${cfg.isoDownloadUrl}"
+    iso_dir="''${HOME}/.local/share/winapps/iso"
+    iso_target="''${ISO_DIR:-$iso_dir}/tiny10.iso"
+
+    mkdir -p "$iso_dir"
+    [[ -d "$ISO_DIR" ]] && iso_target="$ISO_DIR/tiny10.iso"
+
+    if [[ -f "$iso_target" ]]; then
+      actual=$(sha256sum "$iso_target" | cut -d' ' -f1)
+      if [[ "$actual" == "${iso_sha_clean}" ]]; then
+        echo "ISO already verified: $iso_target"
+        exit 0
+      fi
+      echo "Hash mismatch, re-downloading..."
+      rm "$iso_target"
+    fi
+
+    echo "Downloading from: $iso_url"
+    ${pkgs.curl}/bin/curl -L -o "$iso_target" "$iso_url"
+
+    actual=$(sha256sum "$iso_target" | cut -d' ' -f1)
+    if [[ "$actual" != "${iso_sha_clean}" ]]; then
+      echo "ERROR: Hash mismatch!"
+      echo "  Expected: ${iso_sha_clean}"
+      echo "  Got:      $actual"
+      rm "$iso_target"
+      exit 1
+    fi
+
+    iso_size=$(( $(stat -c%s "$iso_target") / 1024 / 1024 ))
+    echo "Verified: $iso_target ($iso_sizeMB)"
+  '';
+
   winapps-desktop-generator = pkgs.writeShellScriptBin "winapps-desktop-generator" ''
     set -euo pipefail
 
@@ -115,6 +159,18 @@ in {
       default = true;
       description = "Automatically start the Windows VM container when user logs in.";
     };
+
+    services.winapps.tiny10iso.url = lib.mkOption {
+      type = lib.types.str;
+      default = "https://archive.org/download/tiny-w-10-pro/Tiny%20-%20W10%20Pro.iso";
+      description = "URL for the Tiny10 Pro ISO.";
+    };
+
+    services.winapps.tiny10iso.sha256 = lib.mkOption {
+      type = lib.types.str;
+      default = "sha256-0000000000000000000000000000000000000000000000000000000000000000";
+      description = "SHA256 hash of the Tiny10 ISO. To get it, run:";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -123,6 +179,7 @@ in {
       winapps.packages.${pkgs.system}.winapps-launcher
       winapps-container-manager
       winapps-desktop-generator
+      winapps-download-iso
       podman-wrapper
     ];
 
