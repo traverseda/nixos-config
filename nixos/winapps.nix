@@ -2,20 +2,28 @@
   config,
   pkgs,
   lib,
-  winapps,
   ...
 }: let
   cfg = config.services.winapps;
 
-  podman-wrapper = pkgs.writeShellScriptBin "podman" ''
-    exec ${config.environment.systemPackages}/bin/podman-distrobox "$@"
-  '';
+  winapps-home = "${config.home-manager.users.traverseda.home.path}";
+  iso-path = "${winapps-home}/.local/share/winapps/iso/tiny10.iso";
 
   compose-path = "$WINAPPS_DATA/compose.yaml";
 
+  # Computes the raw sha256 hash (stripping "hash:" or "sha256:" prefix if needed)
+  iso_sha_clean = let
+    raw = cfg.tiny10iso.sha256;
+  in
+    lib.removePrefix "hash:" (lib.removePrefix "sha256:" raw);
+
+  # App list as newline-separated file (read by scripts)
+  apps-file = pkgs.writeText "winapps-apps" (builtins.concatStringsSep "\n" cfg.windowsApps);
+
+  # Container manager: start/stop/restart/status/logs for the WinApps Windows VM container
   winapps-container-manager = pkgs.writeShellScriptBin "winapps-container-manager" ''
     set -euo pipefail
-    export PATH="${pkgs.podman}/bin:${config.environment.systemPackages}/bin:$PATH"
+    export PATH="${pkgs.podman}/bin:/run/current-system/sw/bin:$PATH"
 
     if [[ $# -eq 0 ]]; then
       echo "Usage: winapps-container-manager {start|stop|restart|status|logs}"
@@ -24,9 +32,10 @@
 
     subcmd="$1"
     shift
+    local_compose_path="$(echo $WINAPPS_DATA)/compose.yaml"
 
     # Ensure the compose file exists
-    if [[ ! -f "$compose-path" ]]; then
+    if [[ ! -f "$local_compose_path" ]]; then
       echo "Error: WinApps container not configured yet."
       echo "Run 'winapps-setup' first to create the configuration."
       exit 1
@@ -36,23 +45,29 @@
     case "$subcmd" in
       start)
         echo "Starting WinApps Windows VM container..."
-        ${lib.getExe podman-wrapper} compose -f "$compose-path" up -d "$@"
+        podman-distrobox compose -f "$local_compose_path" up -d "$@"
         sleep 2
-        ${lib.getExe podman-wrapper} ps --filter "name=RDPWindows" --format "{{.Status}}" 2>/dev/null | grep -q "Up" || echo "Container started (status may be initializing)"
+        podman-distrobox ps --filter "name=RDPWindows" --format "{{.Status}}" 2>/dev/null | grep -q "Up" || echo "Container started (status may be initializing)"
+
+        # If apps are configured, install them
+        if [[ -s "${apps-file}" ]]; then
+          echo "Apps configured in winapps-apps list"
+          ${winapps-apps-config}/bin/winapps-apps-config 2>&1 || echo "Warning: App installation had issues."
+        fi
         ;;
       stop)
         echo "Stopping WinApps Windows VM container..."
-        ${lib.getExe podman-wrapper} compose -f "$compose-path" down
+        podman-distrobox compose -f "$local_compose_path" down
         ;;
       restart)
         echo "Restarting WinApps Windows VM container..."
-        ${lib.getExe podman-wrapper} compose -f "$compose-path" restart "$@"
+        podman-distrobox compose -f "$local_compose_path" restart "$@"
         ;;
       status)
-        ${lib.getExe podman-wrapper} compose -f "$compose-path" ps "$@"
+        podman-distrobox compose -f "$local_compose_path" ps "$@"
         ;;
       logs)
-        ${lib.getExe podman-wrapper} compose -f "$compose-path" logs -f "$@"
+        podman-distrobox compose -f "$local_compose_path" logs -f "$@"
         ;;
       *)
         echo "Unknown subcommand: $subcmd"
@@ -61,18 +76,12 @@
     esac
   '';
 
-  # Computes the raw sha256 hash (stripping "hash:" or "sha256:" prefix if needed)
-  iso_sha_clean = let
-    raw = cfg.isoSha256;
-  in
-    lib.removePrefix "hash:" (lib.removePrefix "sha256:" raw);
-
-  # Downloads and verifies Tiny10 ISO (NOT stored in Nix store)
-  # ISO lives in ~/.local/share/winapps/iso/ instead
+  # Downloads and verifies the Tiny10 ISO (NOT stored in Nix store)
+  # ISO lives in ~/.local/share/winapps/iso/, not in the Nix store
   winapps-download-iso = pkgs.writeShellScriptBin "winapps-download-iso" ''
     set -euo pipefail
 
-    iso_url="${cfg.isoDownloadUrl}"
+    iso_url="${cfg.tiny10iso.url}"
     iso_dir="''${HOME}/.local/share/winapps/iso"
     iso_target="''${ISO_DIR:-$iso_dir}/tiny10.iso"
 
@@ -97,6 +106,7 @@
       echo "ERROR: Hash mismatch!"
       echo "  Expected: ${iso_sha_clean}"
       echo "  Got:      $actual"
+      echo "ISO removed. Fix the hash and try again."
       rm "$iso_target"
       exit 1
     fi
@@ -105,6 +115,7 @@
     echo "Verified: $iso_target ($iso_sizeMB)"
   '';
 
+  # Regenerates desktop entries for Windows apps installed on the VM
   winapps-desktop-generator = pkgs.writeShellScriptBin "winapps-desktop-generator" ''
     set -euo pipefail
 
@@ -112,14 +123,10 @@
     # This is idempotent and can be run any time
     if command -v winapps >/dev/null 2>&1; then
       mkdir -p "$HOME/.local/share/applications"
-
-      # Run setup to detect Windows apps and generate entries
-      # --non-interactive flag skips user prompts, making this idempotent
       winapps setup --non-interactive 2>/dev/null || {
         echo "winapps not configured yet. Run 'winapps-setup' first."
         exit 1
       }
-
       echo "WinApps desktop entries regenerated."
     else
       echo "winapps not installed. Deploy WinApps module first."
@@ -127,29 +134,46 @@
     fi
   '';
 
-  # Installs Windows apps on the VM via WinApps (e.g., Adobe Acrobat Reader)
-  winapps-install-apps = pkgs.writeShellScriptBin "winapps-install-apps" ''
+  # Installs and configures Windows apps on the VM
+  winapps-apps-config = pkgs.writeShellScriptBin "winapps-apps-config" ''
     set -euo pipefail
 
-    app_name="${lib.escapeShellArg (builtins.concatStringsSep " " cfg.windowsApps)}"
+    # Read apps from the file written by Nix
+    apps=""
+    while IFS= read -r app; do
+      app=$(echo "$app" | tr -d '[:space:]')
+      [[ -n "$app" ]] && apps="$apps $app"
+    done < "${apps-file}"
 
-    if [[ -z "$app_name" ]]; then
-      echo "No apps configured. Set services.winapps.windowsApps to install."
-      exit 1
+    # If no apps configured, just regenerate desktop entries
+    if [[ -z "$apps" ]]; then
+      winapps-desktop-generator
+      exit 0
     fi
 
-    if command -v winapps >/dev/null 2>&1; then
-      echo "Installing apps on Windows VM: $app_name"
-      winapps install --non-interactive $app_name 2>&1
-      echo ""
-      echo "Regenerating desktop entries..."
-      mkdir -p "$HOME/.local/share/applications"
-      winapps setup --non-interactive 2>/dev/null || echo "Warning: Desktop entry generation had issues."
-      echo "Done."
-    else
-      echo "winapps not installed. Deploy WinApps module first."
-      exit 1
-    fi
+    # Wait for Windows VM to be ready (max 180s)
+    echo "Waiting for Windows VM RDP port at ${cfg.windowsHostIP}:3389..."
+    for i in $(seq 1 60); do
+      if ${pkgs.netcat-gnu}/bin/nc -z "${cfg.windowsHostIP}" 3389 2>/dev/null; then
+        echo "Windows VM is ready."
+        break
+      fi
+      if [[ $i -eq 60 ]]; then
+        echo "Error: Windows VM not ready after 60s."
+        exit 1
+      fi
+      sleep 2
+    done
+
+    # Install configured apps on the VM
+    echo "Installing apps on Windows VM: $apps"
+    winapps install --non-interactive $apps
+
+    # Regenerate desktop entries
+    echo "Generating desktop entries..."
+    mkdir -p "$HOME/.local/share/applications"
+    winapps-desktop-generator
+    echo "App installation complete."
   '';
 in {
   options = {
@@ -206,21 +230,20 @@ in {
 
   config = lib.mkIf cfg.enable {
     environment.systemPackages = [
-      winapps.packages.${pkgs.system}.winapps
-      winapps.packages.${pkgs.system}.winapps-launcher
       winapps-container-manager
       winapps-desktop-generator
-      winapps-install-apps
+      winapps-apps-config
       winapps-download-iso
-      podman-wrapper
+      pkgs.podman
+      pkgs.curl
+      pkgs.netcat-gnu
     ];
 
     environment.sessionVariables = {
-      WINAPPS_CONTAINER_MANAGER = "${lib.getExe podman-wrapper}";
       WINAPPS_DATA = "/opt/winapps";
     };
 
-    # Base configuration file (overridden by user config at ~/.config/winapps/winapps.conf)
+    # Base configuration file (user overrides go to ~/.config/winapps/winapps.conf)
     environment.etc."winapps/winapps.conf".text =
       "RDP_SCALING=${toString cfg.rdpScaling}\n"
       + "WAFLAVOR=podman\n"
@@ -228,17 +251,32 @@ in {
       + "WINDOWS_USER=${cfg.windowsUser}\n"
       + "WINDOWS_PASSWORD=${cfg.windowsPassword}\n";
 
-    # Systemd service to maintain the container lifecycle
+    # Systemd services for container lifecycle management
+
+    # Container startup service
     systemd.user.services.winapps-container = {
       description = "WinApps Windows VM container (managed by winapps-container-manager)";
       wantedBy = ["default.target"];
       after = ["network-online.target"];
       wants = ["network-online.target"];
-
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = "yes";
         ExecStart = "${winapps-container-manager}/bin/winapps-container-manager start";
+      };
+    };
+
+    # App installation service (runs after container is started, only if apps are configured)
+    systemd.user.services.winapps-apps = {
+      description = "Install and configure Windows apps on WinApps VM";
+      wantedBy = ["default.target"];
+      after = ["winapps-container.service"];
+      requires = ["winapps-container.service"];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = "yes";
+        # Only runs if apps list is non-empty
+        ExecStart = lib.optionalString (cfg.windowsApps != []) "${winapps-apps-config}/bin/winapps-apps-config";
       };
     };
 
@@ -254,13 +292,17 @@ in {
     systemd.user.services.winapps-container-cleanup = {
       description = "Cleanup stale WinApps container resources";
       wantedBy = ["default.target"];
-
       serviceConfig = {
         Type = "oneshot";
-        ExecStart = "${pkgs.podman}/bin/podman --root %h/.local/share/distrobox-podman/storage --runroot /run/user/%U/distrobox-podman ps --filter name=RDPWindows --format {{.Status}} 2>/dev/null | grep -q 'Up' || ${pkgs.podman}/bin/podman --root %h/.local/share/distrobox-podman/storage --runroot /run/user/%U/distrobox-podman compose -f $WINAPPS_DATA/compose.yaml down 2>/dev/null || true";
+        ExecStart = pkgs.writeShellScript "winapps-cleanup" ''
+          ${pkgs.podman}/bin/podman --root %h/.local/share/distrobox-podman/storage \
+            --runroot /run/user/%U/distrobox-podman \
+            ps --filter name=RDPWindows --format {{.Status}} 2>/dev/null | grep -q "Up" || \
+          ${pkgs.podman}/bin/podman --root %h/.local/share/distrobox-podman/storage \
+            --runroot /run/user/%U/distrobox-podman \
+            compose -f $WINAPPS_DATA/compose.yaml down 2>/dev/null || true;
+        '';
       };
     };
-
-    # Optional desktop autostart for the launcher
   };
 }
