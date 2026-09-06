@@ -25,7 +25,7 @@ nix fmt
 - **Multi-host NixOS flake** with home-manager. No CI, no tests — this is purely declarative config.
 - **Hostnames are angel names** (see `hostnames.md`). Each host defined in `flake.nix` → `nixosConfigurations.<host>`.
 - **Per-host hardware config** is auto-imported via `./hardware/${hostname}.nix` in `nixos/configuration.nix` (line 17). `hostname` is passed as `specialArgs`.
-- **Role modules** (flat in `nixos/`): `cad.nix`, `gaming.nix`, `work.nix`, `family.nix`, `amd.nix`, `nvidia.nix`, etc. — composed per host by listing them in `flake.nix` under each host's `modules`.
+- **Role modules** (flat in `nixos/`): `cad.nix`, `gaming.nix`, `work.nix`, `family.nix`, `amd.nix`, `nvidia.nix`, `tailscale.nix`, `android.nix`, `npu.nix`, `reverse_engineering.nix`, `misc/dslr-webcam.nix`, `winapps.nix`, etc. — composed per host by listing them in `flake.nix` under each host's `modules`.
 - **Overlays**: `additions` (custom pkgs from `pkgs/`), `modifications` (empty, for overrides), `unstable-packages` (exposes nixpkgs-unstable as `pkgs.unstable`).
 - **Home-manager**: full profile at `home-manager/traverseda/home.nix`, minimal at `home-manager/traverseda/home-minimal.nix`.
 
@@ -71,3 +71,11 @@ home-manager switch --impure --flake "git+https://codeberg.org/traverseda/nixos-
 | `nixvim` | neovim config (`nixos-26.05`) |
 | `plasma-manager` | KDE Plasma config |
 | `nix-index-database` | `nix-locate` database |
+
+## WinApps
+
+- **NixOS module** at `nixos/winapps.nix` — provides `winapps` and `winapps-launcher` packages.
+- **Enabled** on `azrael` for running Windows apps (Office/Adobe) via RDP from a Windows VM.
+- **Distrobox podman storage**: the module creates a `podman` wrapper that routes all podman calls through `podman-distrobox` (isolated storage at `~/.local/share/distrobox-podman/storage`). WinApps containers use this same isolated storage.
+- **Setup required**: run `winapps-setup` after deploying to interactively configure the Windows VM, RDP settings, and available applications. The Windows VM must have RDP enabled with the registry patch from `RDPApps.reg`.
+- **Configuration**: `services.winapps.{windowsHostIP, windowsUser, windowsPassword, rdpScaling}` — defaults provided, credentials should be stored securely (kwallet) and updated in `/etc/winapps/winapps.conf` manually.

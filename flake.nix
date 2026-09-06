@@ -54,6 +54,11 @@
     # microvm.url = "github:microvm-nix/microvm.nix";
     # microvm.inputs.nixpkgs.follows = "nixpkgs";
 
+    winapps = {
+      url = "github:winapps-org/winapps";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # openclaw-vm.url = "path:./openclaw-vm";
     # openclaw-vm.inputs.nixpkgs.follows = "nixpkgs";
     # openclaw-vm.inputs.home-manager.follows = "home-manager";
@@ -65,7 +70,7 @@
     nixpkgs,
     home-manager,
     # chaotic,
-    # winapps,
+    winapps,
     # nixvim,
     # plasma-manager,
     # ros,
@@ -145,6 +150,7 @@
           ./nixos/traverseda.nix
           ./nixos/reverse_engineering.nix
           ./nixos/npu.nix
+          ./nixos/winapps.nix
           # ./nixos/cluster_computing.nix
         ];
       };
