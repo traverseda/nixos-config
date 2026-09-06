@@ -126,6 +126,31 @@
       exit 1
     fi
   '';
+
+  # Installs Windows apps on the VM via WinApps (e.g., Adobe Acrobat Reader)
+  winapps-install-apps = pkgs.writeShellScriptBin "winapps-install-apps" ''
+    set -euo pipefail
+
+    app_name="${lib.escapeShellArg (builtins.concatStringsSep " " cfg.windowsApps)}"
+
+    if [[ -z "$app_name" ]]; then
+      echo "No apps configured. Set services.winapps.windowsApps to install."
+      exit 1
+    fi
+
+    if command -v winapps >/dev/null 2>&1; then
+      echo "Installing apps on Windows VM: $app_name"
+      winapps install --non-interactive $app_name 2>&1
+      echo ""
+      echo "Regenerating desktop entries..."
+      mkdir -p "$HOME/.local/share/applications"
+      winapps setup --non-interactive 2>/dev/null || echo "Warning: Desktop entry generation had issues."
+      echo "Done."
+    else
+      echo "winapps not installed. Deploy WinApps module first."
+      exit 1
+    fi
+  '';
 in {
   options = {
     services.winapps.enable = lib.mkEnableOption "WinApps integration";
@@ -160,6 +185,12 @@ in {
       description = "Automatically start the Windows VM container when user logs in.";
     };
 
+    services.winapps.windowsApps = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [];
+      description = "Windows apps to install on the VM (e.g., ['Acrobat', 'Word', 'Excel']).";
+    };
+
     services.winapps.tiny10iso.url = lib.mkOption {
       type = lib.types.str;
       default = "https://archive.org/download/tiny-w-10-pro/Tiny%20-%20W10%20Pro.iso";
@@ -179,6 +210,7 @@ in {
       winapps.packages.${pkgs.system}.winapps-launcher
       winapps-container-manager
       winapps-desktop-generator
+      winapps-install-apps
       winapps-download-iso
       podman-wrapper
     ];
