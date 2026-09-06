@@ -83,6 +83,7 @@ home-manager switch --impure --flake "git+https://codeberg.org/traverseda/nixos-
 | `nixvim` | neovim config (`nixos-26.05`) |
 | `plasma-manager` | KDE Plasma config |
 | `nix-index-database` | `nix-locate` database |
+| `winapps` | Windows app bridging via RDP (github:winapps-org/winapps) |
 
 ## WinApps
 
