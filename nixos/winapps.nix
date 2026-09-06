@@ -168,8 +168,8 @@ in {
 
     services.winapps.tiny10iso.sha256 = lib.mkOption {
       type = lib.types.str;
-      default = "sha256-0000000000000000000000000000000000000000000000000000000000000000";
-      description = "SHA256 hash of the Tiny10 ISO. To get it, run:";
+      default = "sha256-895ae2ce99950ac985857b0a74fe37ed1ab1edbe388880b6612d5abf0b1daab9";
+      description = "SHA256 hash of the Tiny10 ISO. To update: nix-prefetch-url file://$(echo $HOME)/.local/share/winapps/iso/tiny10.iso";
     };
   };
 
