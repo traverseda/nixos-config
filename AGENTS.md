@@ -5,7 +5,7 @@
 **Created** 2026-09-06. Uses distrobox's isolated podman storage + declarative systemd lifecycle.
 
 - Creates a `podman` wrapper that routes all podman calls to `podman-distrobox` (storage at `~/.local/share/distrobox-podman/storage`), so WinApps containers share the same isolated podman as distrobox.
-- Provides `services.winapps` options: `enable`, `rdpScaling` (default 140), `windowsHostIP` (default 192.168.122.1), `windowsUser`, `windowsPassword`, `startOnLogin` (default true).
+- Provides `services.winapps` options: `enable`, `rdpScaling` (default 140), `windowsHostIP` (default 192.168.122.1), `windowsUser`, `windowsPassword`, `startOnLogin` (default true), `windowsApps` (list of apps to install).
 - Sets `WINAPPS_CONTAINER_MANAGER` env var for winapps to find the wrapper.
 - Installed on azrael via `./nixos/winapps.nix` module.
 
@@ -21,6 +21,9 @@
 - **`winapps-desktop-generator`** — idempotent script that regenerates desktop entries for Windows apps installed on the VM.
 - Run after installing new Windows apps on the Windows VM.
 - Uses `winapps setup` internally to detect installed apps.
+- **`winapps-install-apps`** — installs Windows apps on the VM via WinApps' `winapps install --non-interactive` + regenerates desktop entries.
+- Apps listed in `services.winapps.windowsApps = ["Acrobat"];` are installed automatically when this script is run.
+- Supported apps are listed in the WinApps docs: Adobe, Office family, Visual Studio, etc.
 
 ### ISO management
 
