@@ -22,9 +22,13 @@
 - Run after installing new Windows apps on the Windows VM.
 - Uses `winapps setup` internally to detect installed apps.
 
-### Setup workflow
+### ISO management
 
-Still needs: `winapps-setup` (interactive CLI) to configure the Windows VM, RDP settings, and create desktop entries. The Windows VM must have RDP enabled with the registry patch from `RDPApps.reg` before running setup.
+- **`winapps-download-iso`** — downloads Tiny10 ISO to `~/.local/share/winapps/iso/` (NOT the Nix store).
+- Idempotent: checks SHA256 hash before each download, skips if already verified.
+- Configurable URL via `services.winapps.tiny10iso.url`, hash via `services.winapps.tiny10iso.sha256`.
+- Default: archive.org download of Tiny10 Pro.
+- To update the hash after downloading: `nix-prefetch-url --unpack "https://.../Tiny%20-%20W10%20Pro.iso"` then paste the result into the config.
 
 ### Configuration
 
