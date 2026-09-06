@@ -85,6 +85,20 @@ nix fmt
 - **`allowUnfree = true`** is set globally in `configuration.nix`.
 - **`mainUser`** specialArg is used for non-traverseda hosts (e.g. `selaphiel` → `mainUser = "ingrid"`).
 
+## Agent file editing workflow
+
+The `edit` tool requires *exact* matching of strings (whitespace and all). Nix files use tabs for indentation, and `nix fmt` can realign strings, making substrings impossible to match after formatting.
+
+- **Small changes** (1-3 lines, same section): `read` → `edit`. Only if the change is truly atomic and the file hasn't been reformatted since you last read it.
+- **Complex/multi-section changes**: `read` the file → `write` the *entire* file with your modifications. Never patch complex files piece-by-piece.
+- **After any `write`**: always run `nix fmt` to realign tabs and spacing. This resets the file so you can use `edit` again if needed on the *formatted* version.
+
+### Nix string escaping
+
+- Inside Nix heredocs `'' ... ''`, pure shell `$var` is safe (no Nix interpolation).
+- Nix `${attr}` interpolation **always** activates inside `'' ''`.
+- To avoid accidental Nix interpolation in shell scripts, use `${${attr}}` or write the script logic in a separate file.
+
 ## Home-manager on non-NixOS
 
 ```bash
