@@ -1,9 +1,12 @@
-{ config, pkgs, lib, options, ... }:
-
-let
-  privateZeroTierInterfaces = [ "zt_aura" ]; # ZT NET INTERFACE 
+{
+  config,
+  pkgs,
+  lib,
+  options,
+  ...
+}: let
+  privateZeroTierInterfaces = ["zt_aura"]; # ZT NET INTERFACE
 in {
-
   networking.firewall.trustedInterfaces = privateZeroTierInterfaces; # TRUST VPN ONLY
 
   services.avahi = {
@@ -21,8 +24,8 @@ in {
 
   systemd.services.createDevicemap = {
     description = "Create ZeroTier devicemap file";
-    before = [ "zerotierone.service" ]; # Ensure ZeroTier service has started
-    wantedBy = [ "multi-user.target" ];
+    before = ["zerotierone.service"]; # Ensure ZeroTier service has started
+    wantedBy = ["multi-user.target"];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
@@ -36,5 +39,5 @@ in {
   services.zerotierone.enable = true;
 
   #Don't join zerotier if I'm testing in a VM
-  services.zerotierone.joinNetworks = lib.optionals (!options.virtualisation ? qemu) [ "e5cd7a9e1cf4cb82" ];
+  services.zerotierone.joinNetworks = lib.optionals (!options.virtualisation ? qemu) ["e5cd7a9e1cf4cb82"];
 }

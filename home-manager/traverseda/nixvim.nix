@@ -1,7 +1,9 @@
-{ inputs, pkgs, ... }:
-
 {
-  imports = [ inputs.nixvim.homeModules.nixvim ];
+  inputs,
+  pkgs,
+  ...
+}: {
+  imports = [inputs.nixvim.homeModules.nixvim];
   programs.nixvim = {
     enable = true;
     defaultEditor = true;
@@ -73,12 +75,12 @@
           '';
         };
         sources = [
-          { name = "copilot"; }
-          { name = "nvim_lsp"; }
-          { name = "path"; }
-          { name = "buffer"; }
-          { name = "treesitter"; }
-          { name = "bash"; }
+          {name = "copilot";}
+          {name = "nvim_lsp";}
+          {name = "path";}
+          {name = "buffer";}
+          {name = "treesitter";}
+          {name = "bash";}
         ];
       };
     };
@@ -113,13 +115,13 @@
 
         yamlls = {
           enable = true;
-          filetypes = [ "yaml" ];
+          filetypes = ["yaml"];
         };
         nixd = {
           enable = true;
 
           settings = {
-            formatting.command = [ "nixpkgs-fmt" ];
+            formatting.command = ["nixpkgs-fmt"];
             nixpkgs.expr = "import <nixpkgs> {}";
           };
         };
@@ -168,7 +170,7 @@
       vim.o.shiftwidth = 4     -- Number of spaces to use for each step of (auto)indent
       vim.o.expandtab = true   -- Use spaces instead of tabs
       vim.o.autoindent = true  -- Copy indent from current line when starting a new line
-      vim.o.smartindent = true -- Do smart autoindenting when starting a new line 
+      vim.o.smartindent = true -- Do smart autoindenting when starting a new line
       -- Enable list mode
       vim.opt.list = true
       vim.opt.listchars:append({ tab = '>-', trail = 'x' })
@@ -190,140 +192,203 @@
     globals.mapleader = " ";
     keymaps = [
       {
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>v";
-        options = { noremap = true; desc = "Open CHADTree"; };
+        options = {
+          noremap = true;
+          desc = "Open CHADTree";
+        };
         action = "<cmd>CHADopen<cr>";
       }
       {
         # Clear the search buffer when I press esc twice
-        mode = [ "n" "t" ];
+        mode = ["n" "t"];
         key = "<esc><esc>";
-        options = { noremap = true; desc = "Clear search"; };
+        options = {
+          noremap = true;
+          desc = "Clear search";
+        };
         action = ":nohlsearch<cr>";
       }
       {
         mode = "t";
         key = "<Esc><Esc>";
-        options = { noremap = true; };
+        options = {noremap = true;};
         action = "<C-\\><C-n>";
       }
       {
-        mode = [ "n" "t" ];
+        mode = ["n" "t"];
         key = "<C-a>c";
-        options = { noremap = true; desc = "Open new terminal"; };
+        options = {
+          noremap = true;
+          desc = "Open new terminal";
+        };
         action = "<cmd>:term<cr>";
       }
       {
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<C-a>x";
-        options = { noremap = true; desc = "Close tab"; };
+        options = {
+          noremap = true;
+          desc = "Close tab";
+        };
         action = "<cmd>:bd<cr>";
       }
       {
-        mode = [ "t" ];
+        mode = ["t"];
         key = "<C-a>x";
-        options = { noremap = true; desc = "Close tab"; };
+        options = {
+          noremap = true;
+          desc = "Close tab";
+        };
         action = "<cmd>:bd!<cr>";
       }
       {
-        mode = [ "n" "t" ];
+        mode = ["n" "t"];
         key = "<C-a>s";
-        options = { noremap = true; desc = "Pick buffer"; };
+        options = {
+          noremap = true;
+          desc = "Pick buffer";
+        };
         action = "<cmd>:BufferLinePick<CR>";
       }
       {
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>w";
-        options = { noremap = true; desc = "+windows"; };
+        options = {
+          noremap = true;
+          desc = "+windows";
+        };
         action = "+windows";
       }
       {
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>w<Left>";
-        options = { noremap = true; desc = "Move Left"; };
+        options = {
+          noremap = true;
+          desc = "Move Left";
+        };
         action = "<C-w>h";
       }
       {
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>w<Right>";
-        options = { noremap = true; desc = "Move Right"; };
+        options = {
+          noremap = true;
+          desc = "Move Right";
+        };
         action = "<C-w>l";
       }
       {
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>w<Up>";
-        options = { noremap = true; desc = "Move Up"; };
+        options = {
+          noremap = true;
+          desc = "Move Up";
+        };
         action = "<C-w>k";
       }
       {
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>w<Down>";
-        options = { noremap = true; desc = "Move Down"; };
+        options = {
+          noremap = true;
+          desc = "Move Down";
+        };
         action = "<C-w>j";
       }
       {
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>wx";
-        options = { noremap = true; desc = "Close Window"; };
+        options = {
+          noremap = true;
+          desc = "Close Window";
+        };
         action = "<cmd>:close<cr>";
       }
       {
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>f";
-        options = { noremap = true; desc = "Format Document"; };
+        options = {
+          noremap = true;
+          desc = "Format Document";
+        };
         action = "<cmd>lua vim.lsp.buf.format()<cr>";
       }
       {
-        mode = [ "v" ];
+        mode = ["v"];
         key = "<leader>f";
-        options = { noremap = true; desc = "Format Selection"; };
+        options = {
+          noremap = true;
+          desc = "Format Selection";
+        };
         action = "<cmd>lua FormatFunction()<cr>";
       }
       {
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>ws";
-        options = { noremap = true; desc = "+splits"; };
+        options = {
+          noremap = true;
+          desc = "+splits";
+        };
         action = "+splits";
       }
       {
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>wsh";
-        options = { noremap = true; desc = "Horizontal Split"; };
+        options = {
+          noremap = true;
+          desc = "Horizontal Split";
+        };
         action = "<cmd>:split<cr>";
       }
       {
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>wsv";
-        options = { noremap = true; desc = "Vertical Split"; };
+        options = {
+          noremap = true;
+          desc = "Vertical Split";
+        };
         action = "<cmd>:vsplit<cr>";
       }
       #Spell checking shortcuts
       {
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>zs";
-        options = { noremap = true; desc = "Spell check"; };
+        options = {
+          noremap = true;
+          desc = "Spell check";
+        };
         action = ":setlocal spell!<CR>";
       }
       {
         # mark as good
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>zg";
-        options = { noremap = true; desc = "Mark as good"; };
+        options = {
+          noremap = true;
+          desc = "Mark as good";
+        };
         action = "zg";
       }
       {
         #Mark as bad
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>zw";
-        options = { noremap = true; desc = "Mark as bad"; };
+        options = {
+          noremap = true;
+          desc = "Mark as bad";
+        };
         action = "zw";
       }
       {
         #suggest
-        mode = [ "n" ];
+        mode = ["n"];
         key = "<leader>z=";
-        options = { noremap = true; desc = "Suggest"; };
+        options = {
+          noremap = true;
+          desc = "Suggest";
+        };
         action = "z=";
       }
     ];

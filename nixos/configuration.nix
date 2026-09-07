@@ -1,6 +1,16 @@
 # This is your system's configuration file.
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
-{ inputs, outputs, lib, config, pkgs, hostname, specialArgs, options, ... }: {
+{
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  hostname,
+  specialArgs,
+  options,
+  ...
+}: {
   # You can import other NixOS modules here
   imports = [
     # If you want to use modules your own flake exports (from modules/nixos):
@@ -44,10 +54,9 @@
     };
   };
 
-
   networking.hostName = hostname; # Define your hostname.
   networking.networkmanager.enable = true;
-  nix.settings.trusted-users = [ "root" "traverseda" "logic11" ];
+  nix.settings.trusted-users = ["root" "traverseda" "logic11"];
   boot.tmp.cleanOnBoot = true;
 
   services.davfs2.enable = true;
@@ -60,9 +69,7 @@
     virtualisation.memorySize = 4096;
   };
 
-
   programs.fuse.userAllowOther = true;
-
 
   i18n.supportedLocales = [
     "C.UTF-8/UTF-8"
@@ -72,20 +79,19 @@
 
   # This will add each flake input as a registry
   # To make nix3 commands consistent with your flake
-  nix.registry = (lib.mapAttrs (_: flake: { inherit flake; })) ((lib.filterAttrs (_: lib.isType "flake")) inputs);
+  nix.registry = (lib.mapAttrs (_: flake: {inherit flake;})) ((lib.filterAttrs (_: lib.isType "flake")) inputs);
 
   # This will additionally add your inputs to the system's legacy channels
   # Making legacy nix commands consistent as well, awesome!
-  nix.nixPath = [ "/etc/nix/path" ];
-
+  nix.nixPath = ["/etc/nix/path"];
 
   environment.etc =
     lib.mapAttrs'
-      (name: value: {
-        name = "nix/path/${name}";
-        value.source = value.flake;
-      })
-      config.nix.registry
+    (name: value: {
+      name = "nix/path/${name}";
+      value.source = value.flake;
+    })
+    config.nix.registry
     // {
       "profile".text = lib.mkAfter ''
         # Deduplicate XDG_DATA_DIRS (preserve order, first occurrence wins)
@@ -95,7 +101,6 @@
         fi
       '';
     };
-
 
   nix.settings = {
     # Enable flakes and new 'nix' command
@@ -107,7 +112,6 @@
   #Deduplicate nix store on a timer
   nix.optimise.automatic = true;
 
-
   programs.neovim = {
     enable = true;
     defaultEditor = true;
@@ -117,10 +121,9 @@
 
   services.usbmuxd.enable = true;
 
-
   environment.systemPackages = with pkgs; [
     libimobiledevice
-    ifuse  # optional, for manual FUSE mounting
+    ifuse # optional, for manual FUSE mounting
     #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     qt6.qtmultimedia
     exfat
@@ -173,7 +176,6 @@
   #Puts fonts in /run/current-system/sw/share/X11/fonts
   fonts.fontDir.enable = true;
 
-
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
@@ -186,12 +188,12 @@
       isNormalUser = true;
       openssh.authorizedKeys.keys = [
       ];
-      extraGroups = [ "wheel" "dialout" "networkmanager" "dialout" "docker" "plugdev" "vboxusers" "incus-admin" ];
+      extraGroups = ["wheel" "dialout" "networkmanager" "dialout" "docker" "plugdev" "vboxusers" "incus-admin"];
     };
   };
 
   home-manager = {
-    extraSpecialArgs = { inherit inputs outputs; };
+    extraSpecialArgs = {inherit inputs outputs;};
     backupFileExtension = ".bak";
     users = {
       traverseda = import ../home-manager/traverseda/home.nix;
@@ -207,7 +209,7 @@
       PermitRootLogin = lib.mkDefault "no";
       # Use keys only. Remove if you want to SSH using password (not recommended)
       PasswordAuthentication = true;
-      AllowUsers = [ "traverseda" ];
+      AllowUsers = ["traverseda"];
     };
   };
 
@@ -236,10 +238,8 @@
     SystemGroup root wheel lpadmin
   '';
   users.groups = {
-    lpadmin = { };
+    lpadmin = {};
   };
-
-
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "23.05";

@@ -54,6 +54,16 @@
     # microvm.url = "github:microvm-nix/microvm.nix";
     # microvm.inputs.nixpkgs.follows = "nixpkgs";
 
+    winapps = {
+      url = "github:winapps-org/winapps";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    NixVirt = {
+      url = "github:AshleyYakeley/NixVirt/v0.6.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # openclaw-vm.url = "path:./openclaw-vm";
     # openclaw-vm.inputs.nixpkgs.follows = "nixpkgs";
     # openclaw-vm.inputs.home-manager.follows = "home-manager";
@@ -64,8 +74,9 @@
     self,
     nixpkgs,
     home-manager,
+    winapps,
+    NixVirt,
     # chaotic,
-    # winapps,
     # nixvim,
     # plasma-manager,
     # ros,
@@ -126,7 +137,7 @@
       #Work laptop, dell g15.
       azrael = nixpkgs.lib.nixosSystem {
         specialArgs = {
-          inherit inputs outputs;
+          inherit inputs outputs winapps NixVirt;
           hostname = "azrael";
         };
         modules = [
@@ -145,7 +156,7 @@
           ./nixos/traverseda.nix
           ./nixos/reverse_engineering.nix
           ./nixos/npu.nix
-          ./nixos/winapps.nix
+          ./nixos/winapps-libvirt.nix
           # ./nixos/cluster_computing.nix
         ];
       };

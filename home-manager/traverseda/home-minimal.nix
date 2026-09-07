@@ -49,7 +49,6 @@
     pkgs.rclone
   ];
 
-
   programs.bash = {
     enable = true;
     enableCompletion = true;

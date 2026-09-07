@@ -1,9 +1,5 @@
-{
-   pkgs,
-    ... 
-}:
-{
-  boot.kernelModules = [ "nvidia" ];
+{pkgs, ...}: {
+  boot.kernelModules = ["nvidia"];
 
   hardware.nvidia = {
     modesetting.enable = true;

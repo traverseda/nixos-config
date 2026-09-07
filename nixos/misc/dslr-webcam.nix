@@ -1,6 +1,9 @@
-{ pkgs, config, lib, ... }:
-
-let
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: let
   dslrWebcamConfContent = ''
     alias dslr-webcam v4l2loopback
     options v4l2loopback exclusive_caps=1 max_buffers=2 card_label="DSLR" video_nr=10
@@ -23,12 +26,10 @@ let
     done
     exec "${pkgs.gphoto2}/bin/gphoto2" --stdout --capture-movie | "${pkgs.ffmpeg}/bin/ffmpeg" -i - -vcodec rawvideo -pix_fmt yuv420p -f v4l2 /dev/video10
   '';
-
-in
-{
+in {
   # Ensure your system configuration includes these options:
 
-  boot.extraModulePackages = [ config.boot.kernelPackages.v4l2loopback ];
+  boot.extraModulePackages = [config.boot.kernelPackages.v4l2loopback];
   # Load v4l2loopback module with the required options
   boot.extraModprobeConfig = dslrWebcamConfContent;
 
@@ -51,5 +52,3 @@ in
     };
   };
 }
-
-

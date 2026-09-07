@@ -1,6 +1,14 @@
-{ inputs, outputs, lib, config, pkgs, hostname, specialArgs, options, ... }:
-
 {
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  hostname,
+  specialArgs,
+  options,
+  ...
+}: {
   imports = [
     #    ./misc/dslr-webcam.nix
     ./misc/wifi-multiplex.nix
@@ -10,8 +18,8 @@
   services.xserver.enable = true;
   # services.xserver.displayManager.lightdm.enable = true;
   # services.xserver.displayManager.lightdm.greeters.gtk.enable = true;
-  # services.xserver.displayManager.lightdm.greeters.gtk.indicators = [ 
-  #   "~host" "~spacer" "~clock" "~spacer" 
+  # services.xserver.displayManager.lightdm.greeters.gtk.indicators = [
+  #   "~host" "~spacer" "~clock" "~spacer"
   #   "${pkgs.networkmanagerapplet}/bin/nm-applet"
   #   "~session"
   #   # "~language"
@@ -21,7 +29,6 @@
   #   isSystemUser = true;
   #   extraGroups = [ "networkmanager" ];
   # };
-
 
   # Enable the KDE Desktop Environment.
   services.desktopManager.plasma6.enable = true;
@@ -38,8 +45,7 @@
   environment.etc = {
     "flatpak/remotes.d/flathub.flatpakrepo".source = pkgs.fetchurl {
       url = "https://dl.flathub.org/repo/flathub.flatpakrepo";
-      hash = "sha256-M3HdJQ5h2eFjNjAHP+/aFTzUQm9y9K+gwzc64uj+oDo="
-      ;
+      hash = "sha256-M3HdJQ5h2eFjNjAHP+/aFTzUQm9y9K+gwzc64uj+oDo=";
     };
   };
 
@@ -48,7 +54,7 @@
 
   boot.plymouth = {
     enable = true;
-    themePackages = with pkgs; [ (adi1090x-plymouth-themes.override { selected_themes = [ "hexagon_2" ]; }) ];
+    themePackages = with pkgs; [(adi1090x-plymouth-themes.override {selected_themes = ["hexagon_2"];})];
     theme = "hexagon_2";
   };
 
@@ -104,10 +110,9 @@
     enable = true;
     useEmbeddedBitmaps = true;
     defaultFonts = {
-      emoji = [ "Noto Color Emoji" ];
+      emoji = ["Noto Color Emoji"];
     };
   };
-
 
   programs.dconf.enable = true;
 
@@ -157,7 +162,7 @@
       #     "--env=GTK_THEME=Adwaita:dark"
       #     # Enable system notifications
       #     "--dbus-user.talk=org.freedesktop.Notifications"
-          
+
       #   ];
       # };
       # signal-desktop = {
@@ -181,7 +186,7 @@
   systemd.oomd.enableUserSlices = true;
 
   home-manager = {
-    extraSpecialArgs = { inherit inputs outputs; };
+    extraSpecialArgs = {inherit inputs outputs;};
     backupFileExtension = ".bak";
     users = {
       traverseda = import ../home-manager/traverseda/kde-desktop.nix;

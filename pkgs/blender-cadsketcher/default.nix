@@ -1,6 +1,10 @@
-{ lib, blender, python3Packages, pkgs, fetchurl }:
-
-let
+{
+  lib,
+  blender,
+  python3Packages,
+  pkgs,
+  fetchurl,
+}: let
   py-slvs = python3Packages.buildPythonPackage rec {
     pname = "py-slvs";
     version = "1.0.6";
@@ -34,7 +38,5 @@ let
   };
 
   blenderWithPySlvs = blender.withPackages (p: [py-slvs]);
-
 in
   blenderWithPySlvs
-

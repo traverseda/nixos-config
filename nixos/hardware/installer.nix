@@ -1,3 +1,12 @@
-{ inputs, outputs, lib, config, pkgs, hostname, specialArgs, options, ... }: {
+{
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  hostname,
+  specialArgs,
+  options,
+  ...
+}: {
 }
-

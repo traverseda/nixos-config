@@ -1,30 +1,30 @@
 # Xilinx Runtime (XRT), userspace runtime required by AMD Ryzen AI NPUs
 # (amdxdna kernel driver). Adapted from https://github.com/robcohen/nix-amd-npu
-{ lib
-, stdenv
-, fetchFromGitHub
-, cmake
-, ninja
-, pkg-config
-, git
-, python312
-, boost
-, opencl-headers
-, opencl-clhpp
-, ocl-icd
-, rapidjson
-, protobuf
-, elfutils
-, libdrm
-, systemd
-, curl
-, openssl
-, libuuid
-, libxcrypt
-, ncurses
-, libsystemtap
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  cmake,
+  ninja,
+  pkg-config,
+  git,
+  python312,
+  boost,
+  opencl-headers,
+  opencl-clhpp,
+  ocl-icd,
+  rapidjson,
+  protobuf,
+  elfutils,
+  libdrm,
+  systemd,
+  curl,
+  openssl,
+  libuuid,
+  libxcrypt,
+  ncurses,
+  libsystemtap,
 }:
-
 stdenv.mkDerivation rec {
   pname = "xrt";
   # Pinned to the exact commit amd/xdna-driver's own "xrt" submodule points
@@ -97,80 +97,80 @@ stdenv.mkDerivation rec {
   ];
 
   postPatch = ''
-    # nixpkgs' boost no longer builds a compiled libboost_system (header-only
-    # since Boost 1.69); drop it from find_package COMPONENTS and link lists
-    # so CMake doesn't fail looking for a boost_systemConfig.cmake that will
-    # never exist.
-    find . -name "CMakeLists.txt" -o -name "*.cmake" | xargs sed -i \
-      -e 's/COMPONENTS system filesystem/COMPONENTS filesystem/g' \
-      -e 's/COMPONENTS system program_options/COMPONENTS program_options/g' \
-      -e 's/Boost::system//g' \
-      -e '/^[[:space:]]*boost_system[[:space:]]*$/d' || true
+        # nixpkgs' boost no longer builds a compiled libboost_system (header-only
+        # since Boost 1.69); drop it from find_package COMPONENTS and link lists
+        # so CMake doesn't fail looking for a boost_systemConfig.cmake that will
+        # never exist.
+        find . -name "CMakeLists.txt" -o -name "*.cmake" | xargs sed -i \
+          -e 's/COMPONENTS system filesystem/COMPONENTS filesystem/g' \
+          -e 's/COMPONENTS system program_options/COMPONENTS program_options/g' \
+          -e 's/Boost::system//g' \
+          -e '/^[[:space:]]*boost_system[[:space:]]*$/d' || true
 
-    substituteInPlace src/python/pybind11/CMakeLists.txt \
-      --replace-quiet '/usr/bin/python3' "${pythonWithPackages}/bin/python3" || true
+        substituteInPlace src/python/pybind11/CMakeLists.txt \
+          --replace-quiet '/usr/bin/python3' "${pythonWithPackages}/bin/python3" || true
 
-    substituteInPlace src/CMakeLists.txt \
-      --replace-quiet 'add_subdirectory(runtime_src/core/pcie/driver)' '#add_subdirectory(runtime_src/core/pcie/driver)' || true
+        substituteInPlace src/CMakeLists.txt \
+          --replace-quiet 'add_subdirectory(runtime_src/core/pcie/driver)' '#add_subdirectory(runtime_src/core/pcie/driver)' || true
 
-    for f in src/CMake/version.cmake src/CMake/dkms.cmake src/CMake/dkms-edge.cmake; do
-      if [ -f "$f" ]; then
-        sed -i 's|/usr/src/xrt-|''${CMAKE_INSTALL_PREFIX}/share/xrt-dkms-src/xrt-|g' "$f"
-      fi
-    done
-    if [ -f src/CMake/dkms-aws.cmake ]; then
-      sed -i 's|/usr/src/xrt-aws-|''${CMAKE_INSTALL_PREFIX}/share/xrt-dkms-src/xrt-aws-|g' src/CMake/dkms-aws.cmake
-    fi
+        for f in src/CMake/version.cmake src/CMake/dkms.cmake src/CMake/dkms-edge.cmake; do
+          if [ -f "$f" ]; then
+            sed -i 's|/usr/src/xrt-|''${CMAKE_INSTALL_PREFIX}/share/xrt-dkms-src/xrt-|g' "$f"
+          fi
+        done
+        if [ -f src/CMake/dkms-aws.cmake ]; then
+          sed -i 's|/usr/src/xrt-aws-|''${CMAKE_INSTALL_PREFIX}/share/xrt-dkms-src/xrt-aws-|g' src/CMake/dkms-aws.cmake
+        fi
 
-    for f in src/runtime_src/core/tools/xbflash2/CMakeLists.txt src/runtime_src/core/pcie/tools/xbflash.qspi/CMakeLists.txt; do
-      if [ -f "$f" ]; then
-        sed -i 's|"/usr/local/bin"|"''${CMAKE_INSTALL_PREFIX}/bin"|g' "$f"
-      fi
-    done
+        for f in src/runtime_src/core/tools/xbflash2/CMakeLists.txt src/runtime_src/core/pcie/tools/xbflash.qspi/CMakeLists.txt; do
+          if [ -f "$f" ]; then
+            sed -i 's|"/usr/local/bin"|"''${CMAKE_INSTALL_PREFIX}/bin"|g' "$f"
+          fi
+        done
 
-    if [ -f src/CMake/icd.cmake ]; then
-      sed -i 's|/etc/OpenCL/vendors|''${CMAKE_INSTALL_PREFIX}/etc/OpenCL/vendors|g' src/CMake/icd.cmake
-    fi
+        if [ -f src/CMake/icd.cmake ]; then
+          sed -i 's|/etc/OpenCL/vendors|''${CMAKE_INSTALL_PREFIX}/etc/OpenCL/vendors|g' src/CMake/icd.cmake
+        fi
 
-    substituteInPlace src/runtime_src/core/common/config_reader.cpp \
-      --replace-quiet '/opt/xilinx/xrt' '${placeholder "out"}/opt/xilinx/xrt' || true
+        substituteInPlace src/runtime_src/core/common/config_reader.cpp \
+          --replace-quiet '/opt/xilinx/xrt' '${placeholder "out"}/opt/xilinx/xrt' || true
 
-    mkdir -p $TMPDIR/etc
-    echo 'ID=nixos' > $TMPDIR/etc/os-release
-    echo 'VERSION_ID="26.05"' >> $TMPDIR/etc/os-release
+        mkdir -p $TMPDIR/etc
+        echo 'ID=nixos' > $TMPDIR/etc/os-release
+        echo 'VERSION_ID="26.05"' >> $TMPDIR/etc/os-release
 
-    find . -name "*.cmake" -o -name "CMakeLists.txt" | xargs sed -i \
-      -e 's|/etc/os-release|'$TMPDIR'/etc/os-release|g' || true
+        find . -name "*.cmake" -o -name "CMakeLists.txt" | xargs sed -i \
+          -e 's|/etc/os-release|'$TMPDIR'/etc/os-release|g' || true
 
-    find . -name "CMakeLists.txt" -exec sed -i 's/-Werror//g' {} \; || true
+        find . -name "CMakeLists.txt" -exec sed -i 's/-Werror//g' {} \; || true
 
-    cat > src/runtime_src/core/common/aiebu/specification/markdown_graphviz_svg.py << 'PYEOF'
-from markdown.extensions import Extension
+        cat > src/runtime_src/core/common/aiebu/specification/markdown_graphviz_svg.py << 'PYEOF'
+    from markdown.extensions import Extension
 
-class GraphvizBlocksExtension(Extension):
-    def extendMarkdown(self, md):
-        pass
+    class GraphvizBlocksExtension(Extension):
+        def extendMarkdown(self, md):
+            pass
 
-GraphvizExtension = GraphvizBlocksExtension
+    GraphvizExtension = GraphvizBlocksExtension
 
-def makeExtension(**kwargs):
-    return GraphvizBlocksExtension(**kwargs)
-PYEOF
+    def makeExtension(**kwargs):
+        return GraphvizBlocksExtension(**kwargs)
+    PYEOF
 
-    find . -name "CMakeLists.txt" -exec grep -l "wget" {} \; | while read f; do
-      sed -i 's|COMMAND wget|COMMAND true # wget|g' "$f"
-      sed -i 's|COMMAND powershell wget|COMMAND true # powershell wget|g' "$f"
-    done
+        find . -name "CMakeLists.txt" -exec grep -l "wget" {} \; | while read f; do
+          sed -i 's|COMMAND wget|COMMAND true # wget|g' "$f"
+          sed -i 's|COMMAND powershell wget|COMMAND true # powershell wget|g' "$f"
+        done
 
-    specCmake="src/runtime_src/core/common/aiebu/specification/aie2ps/CMakeLists.txt"
-    if [ -f "$specCmake" ]; then
-      cat > "$specCmake" << 'STUBCMAKE'
-message(STATUS "Skipping aie2ps spec generation (Nix build)")
-STUBCMAKE
-    fi
+        specCmake="src/runtime_src/core/common/aiebu/specification/aie2ps/CMakeLists.txt"
+        if [ -f "$specCmake" ]; then
+          cat > "$specCmake" << 'STUBCMAKE'
+    message(STATUS "Skipping aie2ps spec generation (Nix build)")
+    STUBCMAKE
+        fi
 
-    patchShebangs --build src/runtime_src/core/common/aiebu/specification/
-    patchShebangs --build src/runtime_src/core/common/aiebu/src/python/ || true
+        patchShebangs --build src/runtime_src/core/common/aiebu/specification/
+        patchShebangs --build src/runtime_src/core/common/aiebu/src/python/ || true
   '';
 
   postInstall = ''
@@ -205,7 +205,7 @@ STUBCMAKE
     description = "Xilinx Runtime (XRT) for AMD Ryzen AI NPU";
     homepage = "https://github.com/Xilinx/XRT";
     license = lib.licenses.asl20;
-    platforms = [ "x86_64-linux" ];
-    maintainers = [ ];
+    platforms = ["x86_64-linux"];
+    maintainers = [];
   };
 }

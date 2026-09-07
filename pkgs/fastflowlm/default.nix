@@ -7,29 +7,29 @@
 # orchestration layer (C++) and a small Rust FFI crate pulled in transitively
 # via the third_party/tokenizers-cpp submodule, then links against those
 # prebuilt blobs and our own ../xrt package (see ../xrt-amdxdna).
-{ lib
-, stdenv
-, fetchFromGitHub
-, cmake
-, ninja
-, pkg-config
-, rustPlatform
-, cargo
-, rustc
-, autoPatchelfHook
-, boost
-, curl
-, libdrm
-, fftw
-, fftwFloat
-, fftwLongDouble
-, readline
-, ncurses
-, ffmpeg
-, libuuid
-, xrt
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  cmake,
+  ninja,
+  pkg-config,
+  rustPlatform,
+  cargo,
+  rustc,
+  autoPatchelfHook,
+  boost,
+  curl,
+  libdrm,
+  fftw,
+  fftwFloat,
+  fftwLongDouble,
+  readline,
+  ncurses,
+  ffmpeg,
+  libuuid,
+  xrt,
 }:
-
 stdenv.mkDerivation rec {
   pname = "fastflowlm";
   version = "1.0.2";
@@ -53,40 +53,40 @@ stdenv.mkDerivation rec {
   };
 
   postPatch = ''
-    cp ${./tokenizers-cpp-Cargo.lock} third_party/tokenizers-cpp/rust/Cargo.lock
+        cp ${./tokenizers-cpp-Cargo.lock} third_party/tokenizers-cpp/rust/Cargo.lock
 
-    # Use our own vendored copies of the proprietary NPU kernel binaries and
-    # xclbins (checked into this repo via git-lfs, see pkgs/fastflowlm/vendor)
-    # rather than trusting the upstream fetch to still exist/match later - AMD
-    # owns these, they're closed-source, and there's nothing stopping a future
-    # re-tag or takedown from pulling them out from under a pinned rev.
-    rm -rf src/lib/xrt src/xclbins
-    cp -r ${./vendor/xrt} src/lib/xrt
-    cp -r ${./vendor/xclbins} src/xclbins
-    chmod -R u+w src/lib/xrt src/xclbins
+        # Use our own vendored copies of the proprietary NPU kernel binaries and
+        # xclbins (checked into this repo via git-lfs, see pkgs/fastflowlm/vendor)
+        # rather than trusting the upstream fetch to still exist/match later - AMD
+        # owns these, they're closed-source, and there's nothing stopping a future
+        # re-tag or takedown from pulling them out from under a pinned rev.
+        rm -rf src/lib/xrt src/xclbins
+        cp -r ${./vendor/xrt} src/lib/xrt
+        cp -r ${./vendor/xclbins} src/xclbins
+        chmod -R u+w src/lib/xrt src/xclbins
 
-    # Custom addition, not upstream: a tiny CLI wrapping Q4NX::convert_model(),
-    # which ships unstripped and exported in libq4_npu_eXpress.so but is never
-    # called from the public `flm` CLI. Reuses the XRT_INCLUDE_DIRS /
-    # XRT_LIBRARY_DIRS / FLM_ENGINE_LIB_DIR variables CMakeLists.txt has
-    # already set up for the `flm` target by the time this file is read.
-    mkdir -p src/convert_tool
-    cp ${./convert_tool/main.cpp} src/convert_tool/main.cpp
-    cat >> src/CMakeLists.txt << 'EOF'
+        # Custom addition, not upstream: a tiny CLI wrapping Q4NX::convert_model(),
+        # which ships unstripped and exported in libq4_npu_eXpress.so but is never
+        # called from the public `flm` CLI. Reuses the XRT_INCLUDE_DIRS /
+        # XRT_LIBRARY_DIRS / FLM_ENGINE_LIB_DIR variables CMakeLists.txt has
+        # already set up for the `flm` target by the time this file is read.
+        mkdir -p src/convert_tool
+        cp ${./convert_tool/main.cpp} src/convert_tool/main.cpp
+        cat >> src/CMakeLists.txt << 'EOF'
 
-# --- flm-quantize: not part of upstream, see src/convert_tool/main.cpp ---
-add_executable(flm-quantize convert_tool/main.cpp)
-target_include_directories(flm-quantize PRIVATE ''${CMAKE_SOURCE_DIR}/include)
-if(NOT WIN32 AND XRT_FOUND)
-    target_include_directories(flm-quantize PRIVATE ''${XRT_INCLUDE_DIRS})
-    target_link_directories(flm-quantize PRIVATE ''${XRT_LIBRARY_DIRS})
-endif()
-target_link_directories(flm-quantize PRIVATE ''${FLM_ENGINE_LIB_DIR})
-target_link_libraries(flm-quantize PRIVATE q4_npu_eXpress xrt_coreutil)
-set_target_properties(flm-quantize PROPERTIES BUILD_RPATH "''${FLM_ENGINE_LIB_DIR}")
-install(TARGETS flm-quantize RUNTIME DESTINATION bin)
-set_target_properties(flm-quantize PROPERTIES INSTALL_RPATH "$ORIGIN/../lib")
-EOF
+    # --- flm-quantize: not part of upstream, see src/convert_tool/main.cpp ---
+    add_executable(flm-quantize convert_tool/main.cpp)
+    target_include_directories(flm-quantize PRIVATE ''${CMAKE_SOURCE_DIR}/include)
+    if(NOT WIN32 AND XRT_FOUND)
+        target_include_directories(flm-quantize PRIVATE ''${XRT_INCLUDE_DIRS})
+        target_link_directories(flm-quantize PRIVATE ''${XRT_LIBRARY_DIRS})
+    endif()
+    target_link_directories(flm-quantize PRIVATE ''${FLM_ENGINE_LIB_DIR})
+    target_link_libraries(flm-quantize PRIVATE q4_npu_eXpress xrt_coreutil)
+    set_target_properties(flm-quantize PROPERTIES BUILD_RPATH "''${FLM_ENGINE_LIB_DIR}")
+    install(TARGETS flm-quantize RUNTIME DESTINATION bin)
+    set_target_properties(flm-quantize PROPERTIES INSTALL_RPATH "$ORIGIN/../lib")
+    EOF
   '';
 
   cmakeDir = "../src";
@@ -133,8 +133,8 @@ EOF
     # closed-source and patent-claimed per TERMS.md: free for non-commercial
     # use and commercial use under $10M annual revenue, licensed above that.
     license = lib.licenses.unfree;
-    platforms = [ "x86_64-linux" ];
+    platforms = ["x86_64-linux"];
     mainProgram = "flm";
-    maintainers = [ ];
+    maintainers = [];
   };
 }

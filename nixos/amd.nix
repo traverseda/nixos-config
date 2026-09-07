@@ -1,11 +1,10 @@
 {
   pkgs,
   inputs,
-  ... 
-}:
-{
+  ...
+}: {
   # ===== AMD GPU Kernel Module =====
-  boot.kernelModules = [ "amdgpu" ];
+  boot.kernelModules = ["amdgpu"];
 
   # ===== AMD GPU Hardware Support =====
   hardware.amdgpu.initrd.enable = true;

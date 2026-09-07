@@ -1,6 +1,13 @@
-{ inputs, outputs, lib, config, pkgs, hostname, specialArgs, ... }:
-
-let
+{
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  hostname,
+  specialArgs,
+  ...
+}: let
   kioskUrl = specialArgs.kioskUrl or "http://hearth.local";
   enableDarkMode = specialArgs.enableDarkMode or true;
   dailyRestart = specialArgs.dailyRestart or false;
@@ -25,8 +32,6 @@ let
       --disable-features=OverlayScrollbar
   '';
 
-  
-
   swayIdleCmd = pkgs.writeShellScript "swayidle-kiosk" ''
     exec ${pkgs.swayidle}/bin/swayidle -w \
       timeout ${toString dimTimeout} '${pkgs.brightnessctl}/bin/brightnessctl set ${dimBrightness}' \
@@ -49,9 +54,7 @@ let
   browserRestartScript = pkgs.writeShellScript "restart-browser" ''
     ${pkgs.procps}/bin/pkill -u kiosk chromium || true
   '';
-
-in
-{
+in {
   hardware.graphics.enable = true;
 
   system.autoUpgrade.operation = "boot";
@@ -66,7 +69,7 @@ in
 
   users.users.kiosk = {
     isNormalUser = true;
-    extraGroups = [ "video" "networkmanager" ];
+    extraGroups = ["video" "networkmanager"];
   };
 
   # Add udev rules for backlight control
@@ -101,9 +104,9 @@ in
     layer = "top";
     position = "bottom";
     height = 40;
-    modules-left = [ "custom/launcher" ];
+    modules-left = ["custom/launcher"];
     modules-center = [];
-    modules-right = [ "network" "pulseaudio" "clock" ];
+    modules-right = ["network" "pulseaudio" "clock"];
 
     "custom/launcher" = {
       format = " Apps";
@@ -119,7 +122,7 @@ in
 
     pulseaudio = {
       format = "{icon} {volume}%";
-      format-icons = [ "" "" "" ];
+      format-icons = ["" "" ""];
       on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
     };
 
@@ -159,9 +162,9 @@ in
 
   systemd.user.services.kiosk-browser = {
     description = "Kiosk Chromium browser";
-    wantedBy = [ "sway-session.target" ];
-    after = [ "graphical-session.target" ];
-    partOf = [ "graphical-session.target" ];
+    wantedBy = ["sway-session.target"];
+    after = ["graphical-session.target"];
+    partOf = ["graphical-session.target"];
 
     serviceConfig = {
       Type = "simple";
@@ -179,7 +182,7 @@ in
 
   systemd.timers.restart-kiosk-browser = lib.mkIf dailyRestart {
     description = "Daily restart of kiosk browser";
-    wantedBy = [ "timers.target" ];
+    wantedBy = ["timers.target"];
     timerConfig = {
       OnCalendar = "*-*-* 03:00:00";
       Persistent = true;

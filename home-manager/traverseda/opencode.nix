@@ -45,16 +45,12 @@
         type = "local";
         command = ["${pkgs.playwright-mcp}/bin/playwright-mcp"];
         environment.PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright.browsers}";
+        environment.PLAYWRIGHT_MCP_BROWSER = "firefox";
+        environment.PLAYWRIGHT_MCP_USER_DATA_DIR = "${pkgs.firefox-mcp-profile}";
       };
       plugin = [
         "file://${pkgs.opencode-vision}/dist/index.js"
-        [
-          "@vectorize-io/opencode-hindsight"
-          {
-            hindsightApiUrl = "http://hermes.tail1905aa.ts.net:8888";
-            bankId = "code";
-          }
-        ]
+        "file://${pkgs.hindsight-coding-agents}/dist/index.js"
       ];
     };
   };

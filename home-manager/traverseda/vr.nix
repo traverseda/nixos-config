@@ -1,10 +1,11 @@
-{ inputs
-, outputs
-, # lib,
-  config
-, pkgs
-, specialArgs
-, ...
+{
+  inputs,
+  outputs,
+  # lib,
+  config,
+  pkgs,
+  specialArgs,
+  ...
 }: {
   home.sessionVariables = {
     PRESSURE_VESSEL_FILESYSTEMS_RW = "$XDG_RUNTIME_DIR/wivrn/comp_ipc";

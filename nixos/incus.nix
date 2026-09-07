@@ -1,6 +1,13 @@
-{ inputs, outputs, lib, config, pkgs, hostname, specialArgs, ... }:
-
-let
+{
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  hostname,
+  specialArgs,
+  ...
+}: let
   pam_proxy_helper = pkgs.rustPlatform.buildRustPackage rec {
     pname = "pam_proxy_helper";
     version = "0.1.0";
@@ -14,8 +21,8 @@ let
 
     cargoHash = "sha256-SEN+IHlu5b21khqj3L5RtBGQ3wPMqofDLEGpKQ8/6Sk=";
 
-    buildInputs = [ pkgs.pam ];
-    nativeBuildInputs = [ pkgs.rustPlatform.bindgenHook ];
+    buildInputs = [pkgs.pam];
+    nativeBuildInputs = [pkgs.rustPlatform.bindgenHook];
     LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
 
     meta = {
@@ -51,7 +58,7 @@ let
           font-size: 3rem;
           margin: 0 0 1rem 0;
           color: #ff6b6b;
-          
+
         }
         p {
           font-size: 1.2rem;
@@ -119,12 +126,11 @@ let
     </body>
     </html>
   '';
-in
-{
+in {
   networking.firewall.enable = false;
 
   users.users.traverseda = {
-    extraGroups = [ "incus-admin" "incus-users" ];
+    extraGroups = ["incus-admin" "incus-users"];
   };
 
   users.groups.incus-users = {};
@@ -179,9 +185,9 @@ in
 
   systemd.services.incus-proxy-cert = {
     description = "Generate Incus proxy client certificate";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "incus.service" ];
-    before = [ "nginx.service" ];
+    wantedBy = ["multi-user.target"];
+    after = ["incus.service"];
+    before = ["nginx.service"];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
@@ -252,14 +258,17 @@ in
 
   services.nginx = {
     enable = true;
-    additionalModules = [ pkgs.nginxModules.pam ];
+    additionalModules = [pkgs.nginxModules.pam];
     recommendedProxySettings = true;
     recommendedTlsSettings = true;
 
     virtualHosts."incus" = {
       default = true;
       listen = [
-        { addr = "0.0.0.0"; port = 80; }
+        {
+          addr = "0.0.0.0";
+          port = 80;
+        }
       ];
 
       locations."/" = {
@@ -290,7 +299,10 @@ in
 
     virtualHosts."homeassistant" = {
       listen = [
-        { addr = "0.0.0.0"; port = 8123; }
+        {
+          addr = "0.0.0.0";
+          port = 8123;
+        }
       ];
 
       locations."/" = {
@@ -318,14 +330,14 @@ in
   };
 
   systemd.services.nginx = {
-    after = [ "incus-proxy-cert.service" ];
-    wants = [ "incus-proxy-cert.service" ];
+    after = ["incus-proxy-cert.service"];
+    wants = ["incus-proxy-cert.service"];
     serviceConfig = {
       NoNewPrivileges = lib.mkForce false;
-      CapabilityBoundingSet = [ "CAP_SETUID" "CAP_NET_BIND_SERVICE" ];
-      SystemCallFilter = [ "setuid" "setgid" "capset" ];
+      CapabilityBoundingSet = ["CAP_SETUID" "CAP_NET_BIND_SERVICE"];
+      SystemCallFilter = ["setuid" "setgid" "capset"];
       ProtectSystem = lib.mkForce false;
-      ReadWritePaths = [ "/var/lib/incus-proxy-certs" "/var/www/errors" ];
+      ReadWritePaths = ["/var/lib/incus-proxy-certs" "/var/www/errors"];
     };
   };
 }

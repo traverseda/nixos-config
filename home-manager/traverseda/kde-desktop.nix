@@ -1,8 +1,13 @@
-
-{ inputs, outputs, lib, config, pkgs, ... }: let
-  qt6Pkgs = pkgs.qt6;
-in
 {
+  inputs,
+  outputs,
+  lib,
+  config,
+  pkgs,
+  ...
+}: let
+  qt6Pkgs = pkgs.qt6;
+in {
   imports = [
     inputs.plasma-manager.homeModules.plasma-manager
     # inputs.stylix.homeModules.stylix
@@ -23,8 +28,8 @@ in
 
   programs.plasma = {
     enable = true;
-    kscreenlocker.appearance.wallpaperSlideShow.path = "${builtins.path { path = ../../wallpapers; }}";
-    workspace.wallpaperSlideShow.path = "${builtins.path { path = ../../wallpapers; }}";
+    kscreenlocker.appearance.wallpaperSlideShow.path = "${builtins.path {path = ../../wallpapers;}}";
+    workspace.wallpaperSlideShow.path = "${builtins.path {path = ../../wallpapers;}}";
 
     # The wallpaper slideshow is applied via a qdbus call to plasmashell,
     # fired from an autostart .desktop entry at login. That call can race
@@ -56,25 +61,25 @@ in
       "activate task manager entry 9" = "";
     };
     shortcuts.kwin = {
-      "Switch to Desktop 1" = "Meta+1"; 
+      "Switch to Desktop 1" = "Meta+1";
       "Window to Desktop 1" = "Meta+!";
-      "Switch to Desktop 2" = "Meta+2"; 
+      "Switch to Desktop 2" = "Meta+2";
       "Window to Desktop 2" = "Meta+@";
-      "Switch to Desktop 3" = "Meta+3"; 
+      "Switch to Desktop 3" = "Meta+3";
       "Window to Desktop 3" = "Meta+#";
-      "Switch to Desktop 4" = "Meta+4"; 
+      "Switch to Desktop 4" = "Meta+4";
       "Window to Desktop 4" = "Meta+$";
-      "Switch to Desktop 5" = "Meta+5"; 
+      "Switch to Desktop 5" = "Meta+5";
       "Window to Desktop 5" = "Meta+%";
-      "Switch to Desktop 6" = "Meta+6"; 
+      "Switch to Desktop 6" = "Meta+6";
       "Window to Desktop 6" = "Meta+^";
-      "Switch to Desktop 7" = "Meta+7"; 
+      "Switch to Desktop 7" = "Meta+7";
       "Window to Desktop 7" = "Meta+&";
-      "Switch to Desktop 8" = "Meta+8"; 
+      "Switch to Desktop 8" = "Meta+8";
       "Window to Desktop 8" = "Meta+*";
-      "Switch to Desktop 9" = "Meta+9"; 
+      "Switch to Desktop 9" = "Meta+9";
       "Window to Desktop 9" = "Meta+(";
-      "Switch to Desktop 10" = "Meta+0"; 
+      "Switch to Desktop 10" = "Meta+0";
       "Window to Desktop 10" = "Meta+)";
     };
     configFile = {

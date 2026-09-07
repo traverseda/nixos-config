@@ -1,8 +1,11 @@
-{ config, pkgs, lib, ... }:
-
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   # 1. Enable Firewall (interface specific) and Firejail
-  networking.firewall.interfaces."zt_aura".allowedTCPPorts = [ 2222 ];
+  networking.firewall.interfaces."zt_aura".allowedTCPPorts = [2222];
   programs.firejail.enable = true;
 
   # Enable fping and set it setuid for network discovery without root
@@ -43,7 +46,7 @@
   '';
 
   # GENERIC EXECUTION FRAMEWORK WRAPPER:
-  # This script intercepts requests. If CLUSTER_ENV is set, it wraps the 
+  # This script intercepts requests. If CLUSTER_ENV is set, it wraps the
   # execution in 'nix-shell -p <packages>'. If not, it runs raw in firejail.
   environment.etc."ssh_cluster_login_wrapper.sh".text = ''
     #!/run/current-system/sw/bin/sh
@@ -75,9 +78,9 @@
   # Bound to the cluster-worker-active gate as requested.
   systemd.services.sshd-cluster = {
     description = "SSH Daemon for Cluster Worker User";
-    after = [ "network.target" "cluster-worker-active.service" ];
-    bindsTo = [ "cluster-worker-active.service" ];
-    wantedBy = [ "cluster-worker-active.service" ];
+    after = ["network.target" "cluster-worker-active.service"];
+    bindsTo = ["cluster-worker-active.service"];
+    wantedBy = ["cluster-worker-active.service"];
     serviceConfig = {
       ExecStart = "${pkgs.openssh}/bin/sshd -f /etc/sshd_cluster_config";
       Restart = "always";
@@ -104,9 +107,9 @@
 
   systemd.services.cluster-worker-active = {
     description = "Cluster Worker Availability Gate";
-    after = [ "cluster-worker-ac-power.service" "cluster-worker-unmetered-internet.service" "network-online.target" ];
-    bindsTo = [ "cluster-worker-ac-power.service" "cluster-worker-unmetered-internet.service" ];
-    wantedBy = [ "multi-user.target" ];
+    after = ["cluster-worker-ac-power.service" "cluster-worker-unmetered-internet.service" "network-online.target"];
+    bindsTo = ["cluster-worker-ac-power.service" "cluster-worker-unmetered-internet.service"];
+    wantedBy = ["multi-user.target"];
     serviceConfig = {
       Type = "simple";
       ExecStart = "${pkgs.systemd}/bin/systemd-inhibit --what=sleep:idle --who=cluster-worker-active --why='Distributed compute job in progress' --mode=block -- ${pkgs.coreutils}/bin/sleep infinity";
@@ -116,20 +119,20 @@
   systemd.services.cluster-worker-ac-power = {
     description = "Cluster Worker AC Power Latch";
     serviceConfig = {
-      Type            = "oneshot";
+      Type = "oneshot";
       RemainAfterExit = true;
       ExecStart = "${pkgs.coreutils}/bin/true";
-      ExecStop  = "${pkgs.coreutils}/bin/true";
+      ExecStop = "${pkgs.coreutils}/bin/true";
     };
   };
 
   systemd.services.cluster-worker-unmetered-internet = {
     description = "Cluster Worker Unmetered Internet Latch";
     serviceConfig = {
-      Type            = "oneshot";
+      Type = "oneshot";
       RemainAfterExit = true;
       ExecStart = "${pkgs.coreutils}/bin/true";
-      ExecStop  = "${pkgs.coreutils}/bin/true";
+      ExecStop = "${pkgs.coreutils}/bin/true";
     };
   };
 

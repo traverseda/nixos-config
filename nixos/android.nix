@@ -1,13 +1,10 @@
-
 {
-#  config,
-   pkgs,
-#  lib,
-#  ros,
-... }:
-{
+  #  config,
+  pkgs,
+  #  lib,
+  #  ros,
+  ...
+}: {
   virtualisation.waydroid.enable = true;
-  environment.systemPackages =  [ pkgs.waydroid-helper ];
-
-
+  environment.systemPackages = [pkgs.waydroid-helper];
 }

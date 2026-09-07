@@ -2,14 +2,12 @@
 # physical wlp194s0 radio. Waits for NetworkManager to finish bringing up
 # the managed connection first, since adding virtual interfaces before the
 # radio has associated can upset it.
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   systemd.services.wifi-virtual-interfaces = {
     description = "Add ap0 and mon0 virtual interfaces on wlp194s0";
-    after = [ "NetworkManager-wait-online.service" ];
-    wants = [ "NetworkManager-wait-online.service" ];
-    wantedBy = [ "multi-user.target" ];
+    after = ["NetworkManager-wait-online.service"];
+    wants = ["NetworkManager-wait-online.service"];
+    wantedBy = ["multi-user.target"];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;

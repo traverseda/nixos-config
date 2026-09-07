@@ -6,10 +6,7 @@
   lib,
   #  ros,
   ...
-}:
-
-{
-
+}: {
   # Pylance recursively watches the whole workspace; other modules (incus,
   # x11) already push these up via mkDefault/low-priority mkOverride, but
   # that hasn't been enough to avoid ENOSPC. Force a higher ceiling so it
@@ -20,8 +17,8 @@
     "fs.inotify.max_queued_events" = lib.mkForce 1048576;
   };
 
-  users.extraGroups.vboxusers.members = [ "traverseda" ];
-  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  users.extraGroups.vboxusers.members = ["traverseda"];
+  boot.binfmt.emulatedSystems = ["aarch64-linux"];
   boot.binfmt.preferStaticEmulators = true;
 
   security.wrappers = {
@@ -45,20 +42,15 @@
 
   users.groups.libvirtd.members = ["traverseda"];
 
-  virtualisation.libvirtd.enable = true;
-  virtualisation.spiceUSBRedirection.enable = true;
-
-
   virtualisation.podman = {
     enable = true;
     dockerCompat = false;
     defaultNetwork.settings.dns_enabled = true;
   };
 
-
   # Auto-prune for distrobox-specific podman storage
   systemd.user.timers."podman-distrobox-prune" = {
-    wantedBy = [ "timers.target" ];
+    wantedBy = ["timers.target"];
     timerConfig = {
       OnCalendar = "weekly";
       Persistent = true;
@@ -73,11 +65,9 @@
     };
   };
 
-
   environment.sessionVariables = {
     DBX_CONTAINER_MANAGER = "/run/current-system/sw/bin/podman-distrobox";
   };
-
 
   environment.systemPackages = [
     pkgs.podman
@@ -90,7 +80,7 @@
         --root "$HOME/.local/share/distrobox-podman/storage" \
         --runroot "$XDG_RUNTIME_DIR/distrobox-podman" \
         "$@"
-    '')    
+    '')
     pkgs.qemu
     pkgs.unstable.qgroundcontrol
     pkgs.networkmanager-iodine
@@ -109,7 +99,6 @@
     pkgs.python3
     pkgs.py-spy #Flamegraph profiling
 
-
     pkgs.rustc
     pkgs.cargo
     pkgs.rust-analyzer
@@ -121,15 +110,13 @@
     pkgs.freerdp
     #Github cli
     pkgs.gh
-    
+
     pkgs.playwright
 
     pkgs.anytype #notes
 
     pkgs.vscode
-
   ];
-
 
   programs.direnv = {
     enable = true;
@@ -139,7 +126,6 @@
   environment.sessionVariables = {
     PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright.browsers}";
   };
-
 
   programs.nix-ld = {
     enable = true;

@@ -1,10 +1,9 @@
 {
-#  config,
+  #  config,
   pkgs,
-#  lib,
-  ... }:
-
-{
+  #  lib,
+  ...
+}: {
   environment.systemPackages = [
     #pkgs.creality-print
     # (pkgs.appimageTools.wrapType2
@@ -32,5 +31,4 @@
     #     };
     # })
   ];
-
 }

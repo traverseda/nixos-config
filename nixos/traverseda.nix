@@ -21,7 +21,6 @@
   };
 
   services.winapps.enable = true;
-  services.winapps.windowsUser = "traverseda";
   services.winapps.windowsApps = ["Acrobat"];
   services.winapps.rdpScaling = 140;
 }
