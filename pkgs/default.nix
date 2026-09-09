@@ -2,7 +2,6 @@
 # You can build them using 'nix build .#example'
 #
 {pkgs, ...}: let
-  hindsight-coding-agents = pkgs.callPackage ./hindsight-coding-agents {};
   xrt = pkgs.callPackage ./xrt {};
   xrt-plugin-amdxdna = pkgs.callPackage ./xrt-plugin-amdxdna {inherit xrt;};
   # XRT looks for shim plugins alongside its own libraries, so the plugin's
@@ -18,8 +17,8 @@ in {
   # creality-print = pkgs.callPackage ./creality-print { };
   blender-cadsketcher = pkgs.callPackage ./blender-cadsketcher {};
   opencode-vision = pkgs.callPackage ./opencode-vision {};
-  hindsight-coding-agents = pkgs.callPackage ./hindsight-coding-agents {};
   openrouter-image-mcp = pkgs.callPackage ./openrouter-image-mcp {};
   firefox-mcp-profile = pkgs.callPackage ./firefox-mcp-profile {};
+  playwright-mcp-firefox = pkgs.callPackage ./playwright-mcp-firefox {};
   inherit xrt xrt-plugin-amdxdna xrt-amdxdna fastflowlm;
 }

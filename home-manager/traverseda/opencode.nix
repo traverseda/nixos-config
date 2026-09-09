@@ -9,20 +9,10 @@
     extraPackages = [pkgs.nixd pkgs.nixpkgs-fmt pkgs.pyright];
     settings = {
       lsp = true;
-      provider = {
-        openrouter.models = {
-          "${config.home.sessionVariables.AI_WEAK_MODEL}" = {};
-          "${config.home.sessionVariables.AI_VISION_MODEL}" = {};
-        };
-        "${config.home.sessionVariables.AI_STRONG_PROVIDER}" = {
-          npm = "@ai-sdk/openai-compatible";
-          name = "Local VLLM";
-          options = {
-            baseURL = "http://192.168.193.96:8000/v1";
-            apiKey = "{env:VLLM_API_KEY}";
-          };
-          models."${config.home.sessionVariables.AI_STRONG_MODEL}" = {};
-        };
+      provider.openrouter.models = {
+        "${config.home.sessionVariables.AI_STRONG_MODEL}" = {};
+        "${config.home.sessionVariables.AI_WEAK_MODEL}" = {};
+        "${config.home.sessionVariables.AI_VISION_MODEL}" = {};
       };
       mcp.tavily = {
         type = "remote";
@@ -45,12 +35,16 @@
         type = "local";
         command = ["${pkgs.playwright-mcp}/bin/playwright-mcp"];
         environment.PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright.browsers}";
-        environment.PLAYWRIGHT_MCP_BROWSER = "firefox";
-        environment.PLAYWRIGHT_MCP_USER_DATA_DIR = "${pkgs.firefox-mcp-profile}";
       };
       plugin = [
         "file://${pkgs.opencode-vision}/dist/index.js"
-        "file://${pkgs.hindsight-coding-agents}/dist/index.js"
+        [
+          "@vectorize-io/opencode-hindsight"
+          {
+            hindsightApiUrl = "http://hermes.tail1905aa.ts.net:8888";
+            bankId = "code";
+          }
+        ]
       ];
     };
   };

@@ -13,7 +13,6 @@
   imports = [
     ./home-minimal.nix
     ./aider.nix
-    ./hindsight.nix
     ./opencode.nix
     inputs.nix-index-database.homeModules.nix-index
     # (import ./nixvim.nix { inherit pkgs; })
@@ -115,8 +114,6 @@
     pkgs.playwright.browsers
     pkgs.playwright-test
     pkgs.playwright-mcp
-    pkgs.firefox-mcp-profile
-
     pkgs.python3Packages.flake8
     (pkgs.writeShellScriptBin "nvim-lsp-format" ./nvim-lsp-format.sh)
 
