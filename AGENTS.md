@@ -71,12 +71,9 @@ nix fmt
 ## OpenCode MCP servers & plugins
 
 - **tavily** — remote MCP (`https://mcp.tavily.com`) for web search.
-- **xaelwiki** — remote MCP (`http://hermes.tail1905aa.ts.net:8000`) for wiki/memory access. Requires `XAEL_AUTH_TOKEN`.
 - **openrouter_image** — local MCP (`pkgs/openrouter-image-mcp`) that analyzes images via the OpenRouter vision model. Needs `OPENROUTER_API_KEY`.
 - **playwright** — local MCP (`pkgs/playwright-mcp`) for browser automation and screenshots. Uses nix-packaged browsers via `PLAYWRIGHT_BROWSERS_PATH`.
 - **opencode-vision** plugin — intercepts pasted images for text-only models (see AGENTS.md below for details).
-- **`@vectorize-io/opencode-hindsight`** plugin — long-term conversation memory (RAG over past conversations) via `http://hermes.tail1905aa.ts.net:8888`.
-
 ## Key conventions
 
 - **Formatter is `alejandra`** (set in `flake.nix` outputs). Run `nix fmt` before committing.

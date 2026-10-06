@@ -7,6 +7,10 @@
   #  ros,
   ...
 }: {
+  imports = [
+    ./odoo-kanban.nix
+  ];
+
   # Pylance recursively watches the whole workspace; other modules (incus,
   # x11) already push these up via mkDefault/low-priority mkOverride, but
   # that hasn't been enough to avoid ENOSPC. Force a higher ceiling so it
@@ -82,7 +86,7 @@
         "$@"
     '')
     pkgs.qemu
-    pkgs.unstable.qgroundcontrol
+    # pkgs.unstable.qgroundcontrol
     pkgs.networkmanager-iodine
     pkgs.squashfsTools
     pkgs.parted

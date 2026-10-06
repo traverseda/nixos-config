@@ -20,5 +20,6 @@ in {
   openrouter-image-mcp = pkgs.callPackage ./openrouter-image-mcp {};
   firefox-mcp-profile = pkgs.callPackage ./firefox-mcp-profile {};
   playwright-mcp-firefox = pkgs.callPackage ./playwright-mcp-firefox {};
+  odoo-kanban = pkgs.callPackage ./odoo-kanban {};
   inherit xrt xrt-plugin-amdxdna xrt-amdxdna fastflowlm;
 }

@@ -28,11 +28,6 @@
         type = "remote";
         url = "https://mcp.tavily.com/mcp/?tavilyApiKey={env:TAVILY_API_KEY}";
       };
-      mcp.xaelwiki = {
-        type = "remote";
-        url = "http://hermes.tail1905aa.ts.net:8000/mcp";
-        headers.Authorization = "Bearer {env:XAEL_AUTH_TOKEN}";
-      };
       mcp.openrouter_image = {
         type = "local";
         command = ["${pkgs.openrouter-image-mcp}/bin/openrouter-image-mcp"];
@@ -48,13 +43,6 @@
       };
       plugin = [
         "file://${pkgs.opencode-vision}/dist/index.js"
-        [
-          "@vectorize-io/opencode-hindsight"
-          {
-            hindsightApiUrl = "http://hermes.tail1905aa.ts.net:8888";
-            bankId = "code";
-          }
-        ]
       ];
     };
   };

@@ -75,7 +75,6 @@
           '';
         };
         sources = [
-          {name = "copilot";}
           {name = "nvim_lsp";}
           {name = "path";}
           {name = "buffer";}
