@@ -5,5 +5,8 @@
   environment.systemPackages = [pkgs.odoo-kanban];
 
   # Teach Claude Code about the CLI.
-  home-manager.users.traverseda.home.file.".claude/skills/odoo-kanban/SKILL.md".source = ../pkgs/odoo-kanban/SKILL.md;
+  home-manager.users.traverseda.home.file = {
+    ".claude/skills/odoo-kanban/SKILL.md".source = ../pkgs/odoo-kanban/SKILL.md;
+    ".claude/skills/odoo-timesheet/SKILL.md".source = ../pkgs/odoo-kanban/timesheet-skill.md;
+  };
 }

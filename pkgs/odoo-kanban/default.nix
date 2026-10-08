@@ -2,10 +2,12 @@
   lib,
   writers,
   kdePackages,
+  python3Packages,
 }:
-# Stdlib-only Python CLI for Odoo project kanban boards via the Odoo 19
+# Python CLI (stdlib + PyYAML) for Odoo project kanban boards via the Odoo 19
 # JSON-2 API. The API key lives in kwallet; see odoo_kanban.py for details.
 writers.writePython3Bin "odoo-kanban" {
+  libraries = [python3Packages.pyyaml];
   # E501: long f-strings; W503/W504: either line-break style around operators.
   flakeIgnore = ["E501" "W503" "W504"];
 }
