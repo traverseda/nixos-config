@@ -151,15 +151,15 @@
 
   home.sessionVariables = {
     OLLAMA_API_BASE = "http://localhost:11434";
-    AI_STRONG_MODEL = "QuantTrio/Qwen3.6-35B-A3B-AWQ";
+    AI_STRONG_MODEL = "default";
     AI_STRONG_PROVIDER = "hosted_vllm";
     AI_WEAK_MODEL = "meta-llama/llama-4-scout";
     AI_WEAK_PROVIDER = "openrouter";
     AI_VISION_MODEL = "openai/gpt-4.1-nano";
     AI_VISION_PROVIDER = "openrouter";
-    # Local VLLM instance serving AI_STRONG_MODEL; litellm (used by aider) picks up
+    # Spiri LiteLLM proxy serving AI_STRONG_MODEL; litellm (used by aider) picks up
     # the base URL/key for the "hosted_vllm" provider prefix from these two vars.
-    HOSTED_VLLM_API_BASE = "http://192.168.193.96:8000";
+    HOSTED_VLLM_API_BASE = "https://llm.internal.spiri.ca";
     HOSTED_VLLM_API_KEY = ''$VLLM_API_KEY'';
     PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright.browsers}";
   };
@@ -239,6 +239,9 @@
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
+
+  # Lets agent sessions in other projects queue OS-level changes in TODO.md
+  home.file.".claude/skills/nixos-todo/SKILL.md".source = ./skills/nixos-todo/SKILL.md;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "23.05";

@@ -75,6 +75,13 @@ prints a note, and you should pass it on to the user.
 
 ### Descriptions and comments
 
+Tickets describe problems, not solutions. Write the title and description
+around what's wrong or missing, who it affects, and how you'd know it's
+resolved. Context is welcome: relevant files, logs, error messages, related
+tickets, constraints. Don't propose fixes, implementations or approaches unless
+the user asked you to. For example, write "Deploys fail when the cache volume is full",
+not "Add a cache cleanup cron job".
+
 Plain text is converted for you. Blank lines separate paragraphs. Lines
 starting with `- `, `* ` or `1. ` become lists. `#123` becomes a link to task
 123.
@@ -93,7 +100,7 @@ tasks:
   - key: A1
     name: Epic title
     description: |
-      Why and what.
+      The problem and its impact.
       - bullet
     hours: 8
     milestone: M1

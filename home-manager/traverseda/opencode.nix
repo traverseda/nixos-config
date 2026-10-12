@@ -16,9 +16,9 @@
         };
         "${config.home.sessionVariables.AI_STRONG_PROVIDER}" = {
           npm = "@ai-sdk/openai-compatible";
-          name = "Local VLLM";
+          name = "Spiri LLM";
           options = {
-            baseURL = "http://192.168.193.96:8000/v1";
+            baseURL = "https://llm.internal.spiri.ca/v1";
             apiKey = "{env:VLLM_API_KEY}";
           };
           models."${config.home.sessionVariables.AI_STRONG_MODEL}" = {};
