@@ -9,6 +9,7 @@
 }: {
   imports = [
     ./odoo-kanban.nix
+    ./expose-synq.nix
   ];
 
   # Pylance recursively watches the whole workspace; other modules (incus,

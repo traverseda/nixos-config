@@ -12,6 +12,8 @@
     paths = [xrt xrt-plugin-amdxdna];
   };
   fastflowlm = pkgs.callPackage ./fastflowlm {inherit xrt;};
+  spirisynq = pkgs.python3Packages.callPackage ./spirisynq {};
+  expose-synq = pkgs.python3Packages.callPackage ./expose-synq {inherit spirisynq;};
 in {
   # example = pkgs.callPackage ./example { };
   # creality-print = pkgs.callPackage ./creality-print { };
@@ -21,5 +23,5 @@ in {
   firefox-mcp-profile = pkgs.callPackage ./firefox-mcp-profile {};
   playwright-mcp-firefox = pkgs.callPackage ./playwright-mcp-firefox {};
   odoo-kanban = pkgs.callPackage ./odoo-kanban {};
-  inherit xrt xrt-plugin-amdxdna xrt-amdxdna fastflowlm;
+  inherit spirisynq expose-synq xrt xrt-plugin-amdxdna xrt-amdxdna fastflowlm;
 }
