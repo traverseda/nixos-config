@@ -14,6 +14,7 @@
     ./home-minimal.nix
     ./aider.nix
     ./opencode.nix
+    ./hindsight.nix
     inputs.nix-index-database.homeModules.nix-index
     # (import ./nixvim.nix { inherit pkgs; })
   ];

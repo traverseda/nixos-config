@@ -23,5 +23,6 @@ in {
   firefox-mcp-profile = pkgs.callPackage ./firefox-mcp-profile {};
   playwright-mcp-firefox = pkgs.callPackage ./playwright-mcp-firefox {};
   odoo-kanban = pkgs.callPackage ./odoo-kanban {};
+  hindsight-coding-agents = pkgs.callPackage ./hindsight-coding-agents {};
   inherit spirisynq expose-synq xrt xrt-plugin-amdxdna xrt-amdxdna fastflowlm;
 }

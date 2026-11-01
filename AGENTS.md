@@ -74,6 +74,14 @@ nix fmt
 - **openrouter_image** — local MCP (`pkgs/openrouter-image-mcp`) that analyzes images via the OpenRouter vision model. Needs `OPENROUTER_API_KEY`.
 - **playwright** — local MCP (`pkgs/playwright-mcp`) for browser automation and screenshots. Uses nix-packaged browsers via `PLAYWRIGHT_BROWSERS_PATH`.
 - **opencode-vision** plugin — intercepts pasted images for text-only models (see AGENTS.md below for details).
+## Hindsight memory (Claude Code + opencode)
+
+- `home-manager/traverseda/hindsight.nix` wires `pkgs/hindsight-coding-agents` (upstream's coding-agents plugin, patched to add `{host}`/`{gitRoot}` placeholders) into both agents, writing to hermes's central **`hermes` bank** at `https://hindsight-api.0u0.ca`. Key: `HINDSIGHT_API_TOKEN` from kwallet.
+- Every retain is tagged `host:<host>`, `repo:<host>:<repo root>`, `project:<repo>`, `session:<id>`, and the retain context makes extraction state machine facts as being about that host.
+- The plugin must not reshape hermes's bank: `manageBankConfig`, git seeding, codebase survey and the five seeded knowledge pages are all off.
+- A second local patch adds a `hindsight_define_topic_page` MCP tool: agents create standing topic pages (design principles, platform overviews) by stating the question, in a `Topics` folder, and can only reword pages in that folder.
+- Config is `~/.hindsight/coding-agent.json` (generated). Claude Code's hooks (`~/.claude/settings.json`) and MCP server (`~/.claude.json`) are merged in by a home-manager activation script, because Claude rewrites those files itself.
+
 ## Key conventions
 
 - **Formatter is `alejandra`** (set in `flake.nix` outputs). Run `nix fmt` before committing.

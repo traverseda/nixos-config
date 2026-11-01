@@ -1,0 +1,56 @@
+Add {host} and {gitRoot} to the retain-stamp placeholders (retainTags, retainMetadata,
+retainContext), so memories written into one shared bank from several machines say which machine
+and which checkout they came from. {gitProject} only names the repo, and two hosts' checkouts of
+the same repo can be in very different states.
+diff --git src/core/bank.ts src/core/bank.ts
+index 0a31a6b..e61f24a 100644
+--- a/src/core/bank.ts
++++ b/src/core/bank.ts
+@@ -100,6 +100,15 @@ export function projectNameOf(directory: string, sessionRoot?: string): string {
+   return gitProjectName(directory, true, sessionRoot);
+ }
+ 
++/** Absolute path of the main worktree's root, for {gitRoot}: worktree-aware like projectNameOf,
++ *  so every linked worktree of a repo stamps the same path. Outside a repository (or when git
++ *  cannot answer) it is the directory the session started in, as for {gitProject}. */
++export function projectRootOf(directory: string, sessionRoot?: string): string {
++  const projectRoot = mainWorktreeRoot(directory, sessionRoot);
++  if (projectRoot.status === "resolved") return projectRoot.root;
++  return nearestExistingDir(sessionRoot || directory) || "unknown";
++}
++
+ /**
+  * Project roots a harness exports into its hook process. Only Claude Code is known to export one,
+  * so this is deliberately a list of ONE rather than a guess at nine names — the mechanism that
+diff --git src/core/retain-stamp.ts src/core/retain-stamp.ts
+index 4d5fead..ca71578 100644
+--- a/src/core/retain-stamp.ts
++++ b/src/core/retain-stamp.ts
+@@ -14,6 +14,7 @@
+  *   {harness}    the agent that wrote it       {bankId}   the bank being written to
+  *   {sessionId}  the agent session             {timestamp} ISO-8601, resolved at retain time
+  *   {channel}    $HINDSIGHT_CHANNEL_ID         {user}     $HINDSIGHT_USER_ID
++ *   {host}       this machine's hostname       {gitRoot}  absolute path of the main worktree
+  *
+  * The built-in tags and metadata always win over configured ones. `harness` in particular is load-
+  * bearing: the control plane resolves a document's agent logo from `metadata.harness` and the
+@@ -22,8 +23,9 @@
+  */
+ import { applyTemplate, type Resolvers } from "./template";
+ import { log } from "./log";
+-import { projectNameOf } from "./bank";
++import { projectNameOf, projectRootOf } from "./bank";
+ import { basename } from "node:path";
++import { hostname } from "node:os";
+ 
+ /** Tag namespaces the plugin owns — see the filter in buildRetainStamp. */
+ const RESERVED_TAG_PREFIX = /^(source|harness):/;
+@@ -59,6 +61,8 @@ function resolversFor(ctx: RetainStampContext): Resolvers {
+     // otherwise a shared bank ends up with `project:app` and `project:app-wt2` for one repository.
+     gitProject: () => projectNameOf(ctx.directory, ctx.sessionRoot),
+     project: () => (ctx.directory ? basename(ctx.directory) : "unknown"),
++    host: () => hostname().split(".")[0] || "unknown",
++    gitRoot: () => projectRootOf(ctx.directory, ctx.sessionRoot),
+     harness: () => ctx.harness,
+     bankId: () => ctx.bankId,
+     sessionId: () => ctx.sessionId ?? "unknown",
